@@ -35,6 +35,7 @@
 <button class="chat-launch" onclick="openChat()"><i class="fa-solid fa-robot"></i> Chat with Caliphate Analytics</button>
 <div id="chatBox" class="chat" aria-label="Chat with Caliphate Analytics"><div class="chat-head"><div><b><i class="fa-solid fa-robot"></i> Chat with Caliphate Analytics</b><span class="online">● AI Assistant</span></div><button class="chat-close" onclick="closeChat()">×</button></div><div id="messages" class="messages"><div class="msg bot">Hello! I'm Caliphate Analytics AI. I can answer questions about our analytics services and training, and I can prepare a sample chart for you.</div></div><div class="chat-tools"><button onclick="quick('Show me a sample sales trend chart')">📈 Sales chart</button><button onclick="quick('Tell me about Power BI training')">🎓 Training</button><button onclick="sendEmailUpdate()">✉ Email update</button></div><div class="notice">For live AI responses and automatic email delivery, connect the secure backend described in SETUP.md.</div><div class="chat-input"><input id="chatInput" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button></div></div>
 <script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQuVyO4wCTofQFgC42wmIkPb10p7hBIJYkoBcSg4IOMSOc4HsbXhxUeNyWVXERJbVB/exec";
 const SITE_URL='https://alidanjumah-glitch.github.io/';
 // Set this after deploying the secure backend. Example: https://script.google.com/macros/s/DEPLOYMENT_ID/exec
 const AI_ENDPOINT='';
@@ -59,4 +60,115 @@ async function sendChat(){const input=document.getElementById('chatInput');const
 async function sendEmailUpdate(){const summary='Caliphate Analytics website chat update requested. Website: '+SITE_URL+'
 A visitor requested an analytics/chart update from the AI assistant.';if(AI_ENDPOINT){try{let img='';if(chartInstance)img=chartInstance.toBase64Image();const r=await fetch(AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'email',to:CONTACT_EMAIL,subject:'Caliphate Analytics — Chart/Chat Update',body:summary,chartImage:img})});const j=await r.json();addMsg(j.message||'Email update request submitted.','bot');return}catch(e){}}location.href='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent('Caliphate Analytics — Chart/Chat Update')+'&body='+encodeURIComponent(summary)}
 </script>
+
+<style>
+#cda-chat-launcher{position:fixed;right:22px;bottom:22px;z-index:9999;border:0;border-radius:999px;
+padding:14px 18px;background:#10b981;color:#03130d;font-weight:900;box-shadow:0 12px 35px rgba(0,0,0,.35);cursor:pointer}
+#cda-chat{position:fixed;right:22px;bottom:82px;width:min(390px,calc(100vw - 30px));height:540px;z-index:9998;
+background:#081522;border:1px solid #29435c;border-radius:18px;box-shadow:0 25px 70px rgba(0,0,0,.55);display:none;overflow:hidden}
+#cda-chat.open{display:flex;flex-direction:column}
+#cda-chat-head{padding:15px;background:#0d2539;border-bottom:1px solid #29435c;display:flex;justify-content:space-between;align-items:center}
+#cda-chat-title{font-weight:900;color:#fff}
+#cda-chat-sub{font-size:11px;color:#9fb0c0;margin-top:3px}
+#cda-chat-close{background:transparent;color:#fff;border:0;font-size:20px;cursor:pointer}
+#cda-chat-log{flex:1;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.cda-msg{max-width:88%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.45;white-space:pre-wrap}
+.cda-user{align-self:flex-end;background:#0e6b52;color:#fff}
+.cda-ai{align-self:flex-start;background:#14283b;color:#e8f1f8}
+#cda-chat-form{display:flex;gap:7px;padding:10px;border-top:1px solid #29435c}
+#cda-chat-input{flex:1;background:#07121d;color:#fff;border:1px solid #29435c;border-radius:9px;padding:10px;outline:0}
+#cda-chat-send{background:#10b981;color:#03130d;border:0;border-radius:9px;padding:0 14px;font-weight:900;cursor:pointer}
+#cda-chat-send:disabled{opacity:.5}
+</style>
+
+<button id="cda-chat-launcher" type="button">🤖 Chat with Caliphate Analytics</button>
+
+<div id="cda-chat" aria-label="Chat with Caliphate Analytics">
+  <div id="cda-chat-head">
+    <div>
+      <div id="cda-chat-title">Chat with Caliphate Analytics</div>
+      <div id="cda-chat-sub">AI-powered data analytics assistant</div>
+    </div>
+    <button id="cda-chat-close" type="button">×</button>
+  </div>
+  <div id="cda-chat-log">
+    <div class="cda-msg cda-ai">Hello! I’m the Caliphate Analytics AI assistant. Ask me about data analytics, Excel, Power BI, dashboards, survey analytics, training, or business intelligence.</div>
+  </div>
+  <form id="cda-chat-form">
+    <input id="cda-chat-input" autocomplete="off" placeholder="Ask a data analytics question…">
+    <button id="cda-chat-send" type="submit">Send</button>
+  </form>
+</div>
+
+<script>
+(function(){
+  const API_URL = APPS_SCRIPT_URL;
+  const launcher = document.getElementById("cda-chat-launcher");
+  const panel = document.getElementById("cda-chat");
+  const close = document.getElementById("cda-chat-close");
+  const form = document.getElementById("cda-chat-form");
+  const input = document.getElementById("cda-chat-input");
+  const send = document.getElementById("cda-chat-send");
+  const log = document.getElementById("cda-chat-log");
+
+  launcher.addEventListener("click",()=>{panel.classList.add("open");input.focus();});
+  close.addEventListener("click",()=>panel.classList.remove("open"));
+
+  function add(text, cls){
+    const el=document.createElement("div");
+    el.className="cda-msg "+cls;
+    el.textContent=text;
+    log.appendChild(el);
+    log.scrollTop=log.scrollHeight;
+    return el;
+  }
+
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    const message=input.value.trim();
+    if(!message) return;
+    add(message,"cda-user");
+    input.value="";
+    send.disabled=true;
+    const waiting=add("Caliphate Analytics is thinking…","cda-ai");
+
+    try{
+      const r=await fetch(API_URL,{
+        method:"POST",
+        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body:JSON.stringify({action:"chat",message:message})
+      });
+      const data=await r.json();
+      if(!data.success) throw new Error(data.error||"AI service error");
+      waiting.textContent=data.answer;
+    }catch(err){
+      console.error(err);
+      waiting.textContent="I’m unable to connect to the AI assistant right now. Please contact +234 813 404 2317 or alidanjumah@gamail.com.";
+    }finally{
+      send.disabled=false;
+      input.focus();
+    }
+  });
+})();
+</script>
+
+
+<script>
+window.sendCaliphateChartUpdate = async function(subject, message, chartImage){
+  const r = await fetch(APPS_SCRIPT_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify({
+      action:"sendChartEmail",
+      subject:subject || "Caliphate Analytics — Chart Update",
+      message:message || "Latest analytics update.",
+      chartImage:chartImage || ""
+    })
+  });
+  const data=await r.json();
+  if(!data.success) throw new Error(data.error || "Email failed");
+  return data;
+};
+</script>
+
 </body></html>

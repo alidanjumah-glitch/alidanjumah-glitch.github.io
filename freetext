@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auditable Free-Text Survey Analytics Engine</title>
+<style>
+:root{--navy:#073b5c;--blue:#087ea4;--green:#0a8060;--gold:#c9a227;--red:#b83b4b;--ink:#18252f;--muted:#667783;--bg:#eef3f5;--card:#fff;--line:#d8e2e7;--purple:#7257a6}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Segoe UI,Arial,sans-serif}
+header{background:linear-gradient(115deg,#052d47,#087a86);color:#fff;padding:24px 4%;display:flex;justify-content:space-between;gap:20px;align-items:center}
+header h1{margin:0;font-size:25px}header p{margin:6px 0 0;opacity:.86}
+.container{width:95%;max-width:1550px;margin:20px auto}.toolbar,.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 3px 15px #17333d10}
+.toolbar{padding:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:15px}
+button,.upload{border:0;border-radius:7px;padding:10px 14px;font-weight:700;cursor:pointer;background:var(--navy);color:white}.upload{display:inline-block}
+button.secondary{background:#e8eff2;color:var(--navy)}button.green{background:var(--green)}button.gold{background:#987600}
+input[type=file]{display:none}.status{margin-left:auto;color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.kpi{padding:15px}.kpi .label{font-size:11px;text-transform:uppercase;color:var(--muted)}.kpi .value{font-size:24px;font-weight:800;color:var(--navy);margin-top:4px}
+.tabs{display:flex;gap:6px;overflow:auto;margin:16px 0}.tab{background:#dce7eb;color:var(--navy);white-space:nowrap}.tab.active{background:var(--navy);color:#fff}
+.page{display:none}.page.active{display:block}.two{display:grid;grid-template-columns:1fr 1fr;gap:15px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card{padding:17px;margin-bottom:15px}.card h2{font-size:17px;color:var(--navy);margin:0 0 12px}.card h3{font-size:14px;color:var(--green)}
+.chartbox{height:315px}.smallchart{height:260px}.scroll{overflow:auto;max-height:500px}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#edf3f5;color:var(--navy);position:sticky;top:0;z-index:1}
+select,input[type=text],input[type=number],textarea{border:1px solid var(--line);border-radius:7px;padding:9px;background:white;color:var(--ink)}
+select{min-width:150px}.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.filters label{font-size:12px;color:var(--muted);font-weight:700}
+.badge{display:inline-block;padding:4px 8px;border-radius:14px;background:#eaf1f4;margin:2px;font-size:11px}.pos{background:#dcf3e8;color:#17633f}.neg{background:#fde3e6;color:#9a2635}.neu{background:#edf0f2;color:#56626a}.high{color:#17633f;font-weight:700}.medium{color:#9b7200;font-weight:700}.low{color:#9a2635;font-weight:700}
+.question-context{background:linear-gradient(135deg,#f3f8fa,#ffffff);border:1px solid #cfe0e7;border-left:5px solid var(--blue);border-radius:10px;padding:14px;margin-bottom:15px}.question-context .q-label{font-size:10px;text-transform:uppercase;font-weight:800;color:var(--blue);letter-spacing:.5px}.question-context .q-text{font-size:16px;font-weight:700;color:var(--navy);margin-top:5px}.question-context .q-note{font-size:11px;color:var(--muted);margin-top:6px}.column-question{background:#eef7fa;border-radius:7px;padding:7px 10px;margin:6px 0;font-size:11px;color:var(--navy)}
+.note{padding:12px;background:#f8f5e7;border-left:4px solid var(--gold);border-radius:5px;font-size:12px}.success{background:#e8f6ef;border-left-color:var(--green)}.danger{background:#fce9eb;border-left-color:var(--red)}
+.wordcloud{
+height:430px;
+background:linear-gradient(180deg,#ffffff 0%,#f8fbfc 100%);
+border:1px solid #dbe6eb;
+border-radius:12px;
+position:relative;
+overflow:hidden;
+box-shadow:inset 0 1px 0 #ffffff;
+}
+.wordcloud canvas{
+width:100%;
+height:100%;
+display:block;
+}
+.cloud-tip{
+position:absolute;
+display:none;
+pointer-events:none;
+background:rgba(7,59,92,.96);
+color:#fff;
+padding:7px 10px;
+border-radius:7px;
+font-size:11px;
+line-height:1.35;
+box-shadow:0 4px 14px rgba(0,0,0,.16);
+z-index:5;
+white-space:nowrap;
+}
+.report{background:#fff;max-width:1000px;margin:auto;padding:42px;box-shadow:0 2px 15px #0001}.report h1{color:var(--navy);border-bottom:3px solid var(--gold);padding-bottom:10px}.report h2{color:var(--green);margin-top:28px}
+pre{white-space:pre-wrap;background:#f4f7f8;padding:10px;border-radius:7px;font-size:11px}.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;background:#eef3f5;border-radius:20px;font-size:11px}
+footer{text-align:center;color:var(--muted);padding:25px;font-size:11px}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.three,.two{grid-template-columns:1fr}}
+@media(max-width:650px){.grid{grid-template-columns:repeat(2,1fr)}header{display:block}.status{width:100%;margin:0}}
+
+#processingOverlay{display:none;position:fixed;inset:0;background:rgba(7,20,28,.55);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+#processingOverlay.active{display:flex}
+.processing-card{width:min(560px,92vw);background:#fff;border-radius:16px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.processing-title{font-size:18px;font-weight:800;color:var(--navy,#073b5c);margin-bottom:6px}
+.processing-step{font-size:12px;color:#687985;min-height:18px;margin-bottom:12px}
+.progress-track{height:12px;background:#e8eef1;border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#087ea4,#19a974);border-radius:999px;transition:width .18s ease}
+.progress-meta{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#687985}
+.performance-note{padding:10px 12px;border-radius:8px;background:#f7fbfc;border:1px solid #d9e8ed;color:#52636d;font-size:11px;margin:8px 0}
+
+/* ===== V5.2 WORD CLOUD PRESENTATION ===== */
+#cloud{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  justify-content:center !important;
+  align-content:center !important;
+  text-align:center !important;
+  gap:2px 4px !important;
+  padding:28px 34px !important;
+  min-height:360px;
+  overflow:hidden;
+}
+#cloud > span{
+  text-align:center !important;
+  vertical-align:middle !important;
+}
+#cloud .cloud-tip{
+  position:absolute;
+  z-index:50;
+  left:50%;
+  top:12px;
+  transform:translateX(-50%);
+  background:rgba(7,59,92,.96);
+  color:#fff;
+  padding:9px 12px;
+  border-radius:8px;
+  font-size:11px;
+  line-height:1.4;
+  pointer-events:none;
+  max-width:320px;
+  text-align:left;
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+}
+
+.offline-badge{display:inline-block;background:#e8f6ef;color:#17633f;border:1px solid #b9dfc9;border-radius:14px;padding:4px 9px;font-size:10px;font-weight:800;letter-spacing:.3px;margin-left:8px}.offline-note{padding:10px 12px;background:#eef8fb;border-left:4px solid var(--blue);border-radius:6px;font-size:11px;color:#52636d;margin:8px 0}.cloud-mode-card{background:linear-gradient(135deg,#f7fbfc,#fff)}
+
+.no-theme-badge{display:inline-block;padding:3px 8px;border-radius:999px;background:#fff3cd;color:#7a5700;font-weight:700;font-size:11px}
+.audit-review-panel{margin:12px 0;padding:14px;border:1px solid #d8e5ea;border-radius:10px;background:#f8fbfc}
+.audit-review-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.audit-review-grid label{font-size:11px;font-weight:700;color:#536670;display:block;margin-bottom:4px}
+.audit-review-grid select,.audit-review-grid input{width:100%;padding:8px;border:1px solid #cbd9df;border-radius:6px;box-sizing:border-box;background:#fff}
+.audit-review-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.audit-review-help{font-size:11px;color:#657782;margin-top:7px;line-height:1.45}
+.no-theme-response{padding:10px;border:1px solid #eadba0;background:#fffaf0;border-radius:7px;margin-top:8px}
+@media(max-width:700px){.audit-review-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div style="margin:6px 0;padding:7px 10px;border-radius:6px;background:#eef7fb;color:#24566b;font-size:11px"><b>ONLINE VERSION:</b> Internet-enabled libraries may be used where configured; survey analysis remains browser-side.</div>
+<div id="processingOverlay">
+ <div class="processing-card">
+  <div class="processing-title">Analysing Survey Responses</div>
+  <div id="processingStep" class="processing-step">Preparing analysis...</div>
+  <div class="progress-track"><div id="processingFill" class="progress-fill"></div></div>
+  <div class="progress-meta"><span id="processingPercent">0%</span><span id="processingCount"></span></div>
+  <div class="performance-note">Large datasets are processed in batches so the browser remains responsive. Please keep this tab open while analysis is running.</div>
+ </div>
+</div>
+
+<header>
+<div><h1>Dr. Ali D. Umaru Free-Text Survey Analytics Engine</h1><p>Traceable: Executive Insight → Theme → Words/Phrases → Evidence → Original Response</p></div>
+<div><b>Research-grade prototype</b><br><small>Browser-based • Local processing • Human-in-the-loop</small></div>
+</header>
+
+<div class="container">
+<div class="toolbar">
+<label class="upload">📤 Upload Excel / CSV<input id="file" type="file" accept=".xlsx,.xls,.csv"></label>
+<button class="secondary" onclick="loadDemo()">Load Demonstration Data</button>
+<button class="green" onclick="runAnalysis()">▶ Run Analysis</button>
+<button class="secondary" onclick="exportExcel()">Export Excel</button>
+<button class="secondary" onclick="exportWord()">Export Word</button>
+<button class="gold" onclick="printReport()">Print / PDF</button>
+<span id="status" class="status">Upload a dataset to begin.</span>
+</div>
+
+<div class="card">
+<div class="filters">
+<label>Free-text fields:</label><select id="columnSelect" multiple size="1"></select>
+<button class="secondary" onclick="selectAllColumns()">All detected text fields</button>
+<label>Min theme confidence:</label><input id="threshold" type="number" min="0" max="100" value="60" style="width:75px">
+<label>Min n-gram frequency:</label><input id="minFreq" type="number" min="1" value="2" style="width:65px">
+<label>Custom stop words:</label><input id="customStop" type="text" placeholder="e.g. respondent, business" style="min-width:230px">
+<button class="secondary" onclick="restoreStops()">Restore defaults</button>
+</div>
+<div style="margin-top:9px;font-size:11px;color:#687985">Multiple selected fields are analysed individually and as a combined corpus. Original responses are retained unchanged.</div><div id="questionContext" class="question-context">
+<div class="q-label">Question Context — Column Header</div>
+<div id="questionContextText" class="q-text">Upload a survey file and select a free-text field.</div>
+<div id="questionContextNote" class="q-note">The selected column header is treated as the survey question that gives meaning and context to its responses. It is used as analytical context, not as a response or classification evidence by itself.</div>
+</div>
+<div class="offline-note"><b>Offline / Standalone:</b> all survey data processing, charts, word clouds and exports run locally in this HTML file. No CDN, external JavaScript library or internet connection is required. For legacy binary <b>.xls</b> files, save once as <b>.xlsx</b> or <b>.csv</b> in Excel before using the offline engine.</div>
+</div>
+
+<div class="grid">
+<div class="card kpi"><div class="label">Records</div><div id="kRecords" class="value">0</div></div>
+<div class="card kpi"><div class="label">Valid text</div><div id="kValid" class="value">0</div></div>
+<div class="card kpi"><div class="label">Blank</div><div id="kBlank" class="value">0</div></div>
+<div class="card kpi"><div class="label">Duplicates</div><div id="kDup" class="value">0</div></div>
+<div class="card kpi"><div class="label">Positive</div><div id="kPos" class="value">0%</div></div>
+<div class="card kpi"><div class="label">Themes</div><div id="kThemes" class="value">0</div></div>
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="tab('overview',this)">1 Overview</button>
+<button class="tab" onclick="tab('phrases',this)">2 Words & Phrases</button>
+<button class="tab" onclick="tab('sentiment',this)">3 Sentiment</button>
+<button class="tab" onclick="tab('themes',this)">4 Themes</button>
+<button class="tab" onclick="tab('audit',this)">5 Thematic Audit</button>
+<button class="tab" onclick="tab('responses',this)">6 Response Explorer</button>
+<button class="tab" onclick="tab('quality',this)">7 Quality & Method</button>
+<button class="tab" onclick="tab('reportPage',this)">8 Report Builder</button>
+</div>
+
+<section id="overview" class="page active">
+<div class="two">
+<div class="card"><h2>Overall Sentiment</h2><div class="chartbox"><canvas id="sentChart"></canvas></div></div>
+<div class="card"><h2>Theme Prevalence</h2><div class="chartbox"><canvas id="themeChart"></canvas></div></div>
+</div>
+<div class="card"><h2>Executive Analytical Insights</h2><div id="insights" class="note">Run analysis to generate evidence-based insights.</div></div>
+<div class="card"><h2>Colourful Meaningful Trigram Word Cloud</h2><div style="font-size:11px;color:#687985;margin:-5px 0 10px">Collision-aware layout • readable horizontal phrases • font size reflects frequency • hover a phrase for details</div><div id="cloud" class="wordcloud"><div style="padding:40px;text-align:center;color:#778">No analysis yet.</div></div></div>
+<div class="card cloud-mode-card"><h2>Word Cloud Controls — Overview</h2><div class="filters"><label>Mode</label><select id="cloudMode"><option value="word">Words</option>
+<option value="bigram">Bigrams</option>
+<option value="trigram">Trigrams</option>
+<option value="phrase">Meaningful Phrases</option></select><label>Terms</label><input id="cloudN" type="number" min="10" max="60" value="30" style="width:70px"><button onclick="drawCloud()">Refresh Word Cloud</button><div class="performance-note"><b>Cloud methodology:</b> the visual cloud shows meaningful, non-redundant phrases. Raw overlapping bigrams/trigrams are retained separately in the N-gram Analysis table and are not used to inflate theme counts.</div><button class="secondary" onclick="downloadCloud()">Download PNG</button></div></div>
+
+
+<div class="card"><h2>Top Themes</h2><div id="topThemeTable"></div></div>
+</section>
+
+<section id="phrases" class="page">
+<div class="two">
+<div class="card"><h2>Term Frequency vs Response Frequency</h2><div class="scroll"><table id="termTable"><thead><tr><th>Rank</th><th>Term</th><th>Frequency</th><th>Responses</th><th>% Responses</th></tr></thead><tbody></tbody></table></div></div>
+<div class="card"><h2>N-gram Analysis</h2><div class="scroll"><table id="ngramTable"><thead><tr><th>Type</th><th>Phrase</th><th>Frequency</th><th>Responses</th><th>Sentiment</th></tr></thead><tbody></tbody></table></div></div>
+</div>
+</section>
+
+<section id="sentiment" class="page">
+<div class="two">
+<div class="card"><h2>Sentiment Distribution</h2><div class="chartbox"><canvas id="sent2"></canvas></div></div>
+<div class="card"><h2>Sentiment by Free-text Column</h2><div class="chartbox"><canvas id="colSent"></canvas></div></div>
+</div>
+<div class="card"><h2>Sentiment by Theme</h2><div class="scroll"><table id="themeSentTable"><thead><tr><th>Theme</th><th>Positive</th><th>Neutral</th><th>Negative</th><th>Total</th><th>Avg. Score</th></tr></thead><tbody></tbody></table></div></div>
+<div class="card"><h2>Sentiment Method</h2><div class="note">Sentiment is an auditable estimate based on a transparent bilingual-ready lexicon architecture (currently English), contextual negation handling and term weighting. A score is retained for every response. Automated sentiment should be human-reviewed for publication-critical work.</div></div>
+</section>
+
+<section id="themes" class="page">
+<div class="card"><h2>Automated Thematic Analysis</h2><div class="note">Themes are evidence-driven from domain concept dictionaries, n-grams, term co-occurrence and TF-IDF-style relevance. Theme assignments retain evidence and confidence; low-confidence classifications can be filtered or reviewed.</div></div>
+<div id="themeProfiles"></div>
+</section>
+
+<section id="audit" class="page">
+<div class="card">
+<h2>THEMATIC AUDIT — Word → Theme → Response → Evidence</h2>
+<div class="filters">
+<label>View</label><select id="auditMode" onchange="renderAudit()"><option value="word">Word/Phrase → Theme</option><option value="theme">Theme → Words</option><option value="response">Response → Themes</option></select>
+<select id="auditFilter" onchange="renderAudit()"><option value="">All</option></select>
+<input id="auditSearch" type="text" placeholder="Search term, theme or response..." oninput="renderAudit()" style="min-width:260px">
+</div>
+<div class="scroll" style="margin-top:12px"><table id="auditTable"></table></div>
+</div>
+<div class="card"><h2>Human-in-the-Loop Review</h2>
+<div class="filters"><select id="reviewTheme"></select><select id="reviewAction"><option>Accept</option><option>Reassign</option><option>Remove</option><option>Create New Theme</option><option>Merge Themes</option><option>Split Theme</option></select><input id="reviewResponse" placeholder="Response ID (optional)"><input id="reviewNewTheme" placeholder="New theme (for reassign/create)" style="min-width:210px"><button class="green" onclick="logReview()">Record Decision</button></div>
+<div class="scroll" style="margin-top:12px"><table id="auditLogTable"><thead><tr><th>Timestamp</th><th>Response ID</th><th>Original Theme</th><th>Action</th><th>New Theme</th><th>User Decision</th></tr></thead><tbody></tbody></table></div>
+</div>
+</section>
+
+<section id="responses" class="page">
+<div class="card"><h2>Response Explorer</h2>
+<div class="filters"><input id="responseSearch" type="text" placeholder="Search original response..." oninput="renderResponses()" style="min-width:300px"><select id="responseSent" onchange="renderResponses()"><option value="">All sentiment</option><option>Positive</option><option>Neutral</option><option>Negative</option></select><select id="responseTheme" onchange="renderResponses()"><option value="">All themes</option></select></div>
+<div class="scroll" style="margin-top:12px"><table id="responseTable"><thead><tr><th>ID</th><th>Column</th><th>Original Response</th><th>Processed</th><th>Sentiment</th><th>Score</th><th>Themes & Relevance</th><th>Evidence</th></tr></thead><tbody></tbody></table></div></div>
+</section>
+
+<section id="quality" class="page">
+<div class="two">
+<div class="card"><h2>Data Quality</h2><div id="qualityStats"></div></div>
+<div class="card"><h2>Methodology & Traceability</h2><div class="note">
+<b>Pipeline:</b> ingestion → preserve original text → cleaning → stop-word control → term/response frequency → n-grams → sentiment → evidence-based theme matching → confidence/relevance → audit relationships → human review → report.<br><br>
+<b>Question-aware audit principle:</b> every primary theme classification stores the question/column header, Response ID, original response, extracted terms/phrases, theme, relevance score, evidence and sentiment. The question header is contextual only; it cannot by itself create a theme assignment.<br><br>
+<b>Privacy:</b> this file processes uploaded data in the browser. It does not intentionally send survey responses to a server. External CDN libraries are loaded by the browser when internet access is available.
+</div></div>
+</div>
+<div class="card"><h2>Analytical Data Model</h2><pre>RESPONSES        ResponseID | OriginalText | CleanedText | Column
+TERMS            Term | Frequency | ResponseFrequency
+PHRASES          Phrase | Type | Frequency | ResponseFrequency
+THEMES           ThemeID | ThemeName | Description
+TERM_THEME       Term | Theme | Relevance | Evidence
+RESPONSE_THEME   ResponseID | Theme | Relevance | Evidence
+SENTIMENT        ResponseID | Sentiment | Score
+AUDIT_LOG        Timestamp | ResponseID | Theme | Action | Previous | New</pre></div>
+</section>
+
+<section id="reportPage" class="page">
+<div class="toolbar"><button class="green" onclick="generateReport()">Generate / Refresh Report</button><button onclick="exportWord()">Export Microsoft Word</button><button class="gold" onclick="printReport()">Print / PDF</button></div>
+<div id="report" class="report"><h1>Free-Text Survey Analytics Report</h1><p>Run the analysis to generate the report.</p></div>
+</section>
+</div>
+<footer>Auditable Free-Text Survey Analytics Engine • Human-in-the-loop • Original responses preserved • Research-use prototype</footer>
+
+<script>
+/* V6.1: NO THEME EVIDENCE + HUMAN REVIEW */
+function ensureAuditState(){
+  if(!analysis)return;
+  analysis.manualAssignments=analysis.manualAssignments||{};
+  analysis.auditLog=analysis.auditLog||[];
+}
+function generatedThemeNames(){
+  return [...new Set((analysis?.themes||[]).map(t=>typeof t==="string"?t:(t.theme||t.name||t.ThemeName||"")).filter(Boolean))];
+}
+function aiThemes(x){return Array.isArray(x?.themes)?x.themes.filter(t=>t&&t.theme):[]}
+function noThemeEvidence(x){
+  if(!String(x?.original||"").trim())return "No Theme Evidence: blank response.";
+  if(!String(x?.cleaned||"").trim())return "No Theme Evidence: no meaningful terms remained after preprocessing.";
+  return "No Theme Evidence: no generated theme met the configured relevance/confidence threshold.";
+}
+function noThemeRows(){
+  ensureAuditState();
+  return (analysis?.all||[]).filter(x=>!aiThemes(x).length&&!analysis.manualAssignments?.[x.id]);
+}
+function openNoThemeReview(id){
+  ensureAuditState();
+  const x=(analysis.all||[]).find(r=>String(r.id)===String(id)); if(!x)return;
+  const opts=generatedThemeNames().map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  const o=document.createElement("div"); o.id="noThemeReviewOverlay";
+  o.style.cssText="position:fixed;inset:0;z-index:100000;background:rgba(4,25,35,.58);display:flex;align-items:center;justify-content:center;padding:18px";
+  o.innerHTML=`<div class="audit-review-panel" style="width:min(700px,96vw);background:#fff;box-shadow:0 18px 55px rgba(0,0,0,.3)">
+  <h4>Review & Assign Theme</h4>
+  <div style="font-size:11px;color:#667781"><b>Response ID:</b> ${escapeHtml(x.id)}</div>
+  <div class="no-theme-response"><b>Original Response</b><br>${escapeHtml(x.original)}</div>
+  <div class="no-theme-response"><b>No Theme Evidence</b><br><span style="font-size:11px">${escapeHtml(noThemeEvidence(x))}</span></div>
+  <div class="audit-review-grid" style="margin-top:12px">
+   <div><label>ENGINE-GENERATED THEME</label><select id="auditGeneratedTheme"><option value="">— Select generated theme —</option>${opts}</select></div>
+   <div><label>OR CREATE A NEW THEME</label><input id="auditNewTheme" placeholder="Enter new theme name"></div>
+  </div>
+  <div class="audit-review-help">Choose an existing generated theme or create a new human theme. The AI result remains recorded as <b>No Theme</b>.</div>
+  <div class="audit-review-actions">
+   <button onclick="assignNoThemeGenerated('${String(x.id).replace(/'/g,"\\'")}')">Assign Generated Theme</button>
+   <button onclick="assignNoThemeNew('${String(x.id).replace(/'/g,"\\'")}')">Assign New Theme</button>
+   <button onclick="closeNoThemeReview()">Cancel</button>
+  </div></div>`;
+  document.body.appendChild(o);
+}
+function closeNoThemeReview(){document.getElementById("noThemeReviewOverlay")?.remove()}
+function assignNoThemeGenerated(id){
+  const t=document.getElementById("auditGeneratedTheme")?.value?.trim();
+  if(!t)return alert("Please select an engine-generated theme.");
+  saveHumanTheme(id,t,"Reassigned from No Theme to generated theme");
+}
+function assignNoThemeNew(id){
+  const t=document.getElementById("auditNewTheme")?.value?.trim();
+  if(!t)return alert("Please enter a new theme name.");
+  saveHumanTheme(id,t,"New human theme created from No Theme");
+}
+function saveHumanTheme(id,theme,action){
+  ensureAuditState();
+  const x=(analysis.all||[]).find(r=>String(r.id)===String(id)); if(!x)return;
+  analysis.manualAssignments[x.id]={theme,source:"Human-Validated",originalAITheme:"No Theme",evidence:noThemeEvidence(x),timestamp:new Date().toISOString()};
+  analysis.auditLog.push({timestamp:new Date().toISOString(),responseId:x.id,originalTheme:"No Theme",action,newTheme:theme,userDecision:"Human validated"});
+  closeNoThemeReview(); refreshNoThemeAuditHost();
+  const s=document.getElementById("status"); if(s)s.textContent=`Human validation recorded: ${x.id} → ${theme}`;
+}
+function renderNoThemeAudit(){
+  const rows=noThemeRows();
+  if(!rows.length)return `<div class="audit-review-panel"><h4>No Theme Evidence</h4><div class="audit-review-help">No responses currently require human thematic review.</div></div>`;
+  return `<div class="audit-review-panel"><h4>No Theme Evidence — Human Review</h4>
+  <div class="audit-review-help">Assign each unclassified response to an engine-generated theme or create a new theme.</div>
+  <div style="overflow:auto;margin-top:10px"><table class="data-table" style="width:100%"><thead><tr><th>Response ID</th><th>Original Response</th><th>Evidence</th><th>Action</th></tr></thead><tbody>
+  ${rows.map(x=>`<tr><td>${escapeHtml(x.id)}</td><td>${escapeHtml(x.original)}</td><td><span class="no-theme-badge">NO THEME</span><br><small>${escapeHtml(noThemeEvidence(x))}</small></td><td><button onclick="openNoThemeReview('${String(x.id).replace(/'/g,"\\'")}')">Assign Theme</button></td></tr>`).join("")}
+  </tbody></table></div></div>`;
+}
+function refreshNoThemeAuditHost(){const h=document.getElementById("noThemeAuditHost");if(h)h.innerHTML=renderNoThemeAudit()}
+function getCompleteThematicAuditRows(){
+  ensureAuditState();
+  return (analysis?.all||[]).map(x=>{const ai=aiThemes(x),m=analysis.manualAssignments?.[x.id];return {
+   ResponseID:x.id,OriginalResponse:x.original||"",AITheme:ai.length?ai.map(t=>t.theme).join("; "):"No Theme",
+   HumanValidatedTheme:m?.theme||"",ClassificationStatus:m?"Human-Validated":(ai.length?"AI-Assigned":"Unassigned — No Theme"),
+   ClassificationEvidence:m?.evidence||(ai.map(t=>t.evidence||"").filter(Boolean).join("; ")||noThemeEvidence(x))
+  }})
+}
+
+
+/* -------------------- EMBEDDED LOCAL CHART ENGINE -------------------- */
+/* Lightweight canvas renderer replacing Chart.js so the file has zero CDN dependencies. */
+class Chart{
+ constructor(canvas,config){this.canvas=canvas;this.config=config;this.render()}
+ destroy(){const c=this.canvas,ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);this._destroyed=true}
+ render(){
+  const c=this.canvas,box=c.getBoundingClientRect(),dpr=Math.max(1,window.devicePixelRatio||1),w=Math.max(300,box.width||600),h=Math.max(220,box.height||300);
+  c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px';const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.font='12px Segoe UI, Arial';
+  const cfg=this.config||{},labels=(cfg.data?.labels||[]).map(String),ds=cfg.data?.datasets||[],type=cfg.type||'bar';
+  const vals=ds.map(d=>d.data||[]); const flat=vals.flat().map(Number).filter(Number.isFinite);const max=Math.max(1,...flat);
+  const colors=['#087ea4','#0a8060','#c9a227','#b83b4b','#7257a6','#405a7a'];
+  if(type==='pie'||type==='doughnut'){const data=(vals[0]||[]).map(Number),sum=Math.max(1,data.reduce((a,b)=>a+(Number.isFinite(b)?b:0),0));let a=-Math.PI/2;const cx=w*.5,cy=h*.48,r=Math.min(w,h)*.31;
+   data.forEach((v,i)=>{const ang=(v/sum)*Math.PI*2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a,a+ang);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();a+=ang});
+   if(type==='doughnut'){ctx.beginPath();ctx.arc(cx,cy,r*.55,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill()}
+   ctx.textAlign='left';ctx.fillStyle='#18252f';labels.forEach((l,i)=>{const y=22+i*20;ctx.fillStyle=colors[i%colors.length];ctx.fillRect(10,y-9,10,10);ctx.fillStyle='#18252f';ctx.fillText(`${l}: ${data[i]??0}`,27,y)});return;
+  }
+  const horizontal=cfg.options?.indexAxis==='y';const left=horizontal?Math.min(210,w*.38):45, bottom=horizontal?25:55, top=25,right=20;ctx.strokeStyle='#d8e2e7';ctx.fillStyle='#667783';ctx.lineWidth=1;
+  if(horizontal){const n=labels.length||1,rowH=(h-top-bottom)/n;labels.forEach((l,i)=>{const y=top+i*rowH+rowH*.2;ctx.textAlign='right';ctx.fillText(l.slice(0,30),left-8,y+rowH*.25);ds.forEach((d,j)=>{const v=Number(d.data?.[i]||0),bw=(w-left-right)*v/max,barH=Math.max(8,rowH/(ds.length+1)*.72),yy=y+j*(barH+3);ctx.fillStyle=colors[j%colors.length];ctx.fillRect(left,yy,bw,barH);ctx.fillStyle='#52636d';ctx.textAlign='left';ctx.fillText(String(v),left+bw+5,yy+barH*.78)})});
+  }else{const n=labels.length||1,base=h-bottom,groupW=(w-left-right)/n,barW=Math.max(8,groupW/(ds.length+1)*.72);labels.forEach((l,i)=>{const x=left+i*groupW+groupW*.12;ctx.textAlign='center';ctx.fillStyle='#667783';ctx.fillText(l.slice(0,16),x+groupW*.35,base+22);ds.forEach((d,j)=>{const v=Number(d.data?.[i]||0),bh=(base-top)*v/max,xx=x+j*(barW+3);ctx.fillStyle=colors[j%colors.length];ctx.fillRect(xx,base-bh,barW,bh)});});}
+  ctx.fillStyle='#667783';ctx.textAlign='left';ds.forEach((d,i)=>{if(!d.label)return;ctx.fillStyle=colors[i%colors.length];ctx.fillRect(left+i*110,5,10,10);ctx.fillStyle='#52636d';ctx.fillText(d.label,left+i*110+15,14)});
+ }
+}
+
+/* -------------------- DATA + CONFIG -------------------- */
+let rows=[], analysis=null, charts={}, auditLog=[];
+const DEFAULT_STOPS=`a an and are as at be been being but by can could did do does for from had has have he her here hers him his how i if in into is it its me my no not of on or our ours she so some than that the their theirs them then there these they this those to too was we were what when where which who why will with would you your yours about above after again against all am any because before below between both during each few further having himself itself more most other over own same such through under until very while whom whose`.split(/\s+/);
+let stops=new Set(DEFAULT_STOPS);
+
+/* Professional survey/economic concept taxonomy.
+   It is deliberately explicit so that each classification can be audited. */
+const TAXONOMY={
+"Inflation & Price Pressures":{desc:"Rising prices, inflation, cost-of-living and general price pressure.",words:["inflation","inflationary","price","prices","cost of living","cost-of-living","rising prices","high prices","expensive","consumer price","food price","living costs"]},
+"Exchange Rate & Currency Pressures":{desc:"Foreign exchange, currency depreciation/appreciation and exchange-rate pressure.",words:["exchange rate","exchange rates","forex","foreign exchange","fx","naira","currency","depreciation","depreciation of the naira","depreciated","dollar","usd","devaluation","currency volatility"]},
+"Energy & Utility Costs":{desc:"Electricity, fuel, diesel, petrol, power supply and energy costs.",words:["electricity","power","diesel","fuel","petrol","energy","generator","utility","utilities","power supply","energy cost","fuel price"]},
+"Financing & Interest Rates":{desc:"Credit availability, lending conditions, funding costs and interest rates.",words:["interest rate","interest rates","loan","loans","credit","finance","financing","funding","lending","borrowing","cost of credit","access to credit"]},
+"Demand & Business Activity":{desc:"Demand, sales, orders, market activity and overall business conditions.",words:["demand","consumer demand","sales","customers","customer demand","orders","new orders","business activity","market","market demand","turnover"]},
+"Government Policy & Regulation":{desc:"Fiscal policy, taxation, regulation, compliance and public policy concerns.",words:["government","policy","regulation","regulations","tax","taxes","taxation","levy","compliance","regulatory","government policy","fiscal policy"]},
+"Supply Chain & Logistics":{desc:"Supply constraints, suppliers, transportation, delivery, imports and logistics.",words:["supply","supplier","suppliers","supply chain","logistics","transport","transportation","delivery","shipping","shortage","shortages","inventory","imports","imported inputs"]},
+"Employment & Labour":{desc:"Employment, wages, staffing, labour costs and workforce conditions.",words:["employee","employees","staff","worker","workers","wage","wages","salary","salaries","labour","labor","employment","workforce","manpower"]},
+"Technology & Infrastructure":{desc:"Digital systems, ICT, internet, infrastructure and technology constraints.",words:["technology","digital","internet","network","infrastructure","system","software","ict","connectivity","digitalisation","digitization"]},
+"Security & Operating Environment":{desc:"Security, insecurity, crime, safety and operating-environment risks.",words:["security","crime","insecurity","bandit","banditry","safety","risk","risks","operating environment","uncertainty"]},
+"Raw Material & Input Costs":{desc:"Raw materials, production inputs and input-cost pressures.",words:["raw material","raw materials","input","inputs","input cost","input costs","materials","production cost","production costs"]},
+"Production Capacity & Supply Constraints":{desc:"Production capacity, output constraints and operational bottlenecks.",words:["production","capacity","output","capacity constraint","production constraint","bottleneck","constraints","operational constraint","manufacturing"]}
+};
+
+const POS=new Set(`good great excellent improve improved improvement positive strong stronger success successful benefit beneficial better increase increased increasing support supportive satisfied satisfaction favourable favorable opportunity opportunities progress stable growth expand expanded expanding confident confidence effective efficient improve improved convenient recovery`.split(/\s+/));
+const NEG=new Set(`bad poor decline declined decrease decreased difficult difficulty challenge challenges problem problems high costly cost inflation expensive shortage shortages delay delayed weak weaker negative concern concerns risk risks uncertain uncertainty dissatisfaction dissatisfied worse worsen worsening constraint constraints inadequate crisis pressure volatility depreciation unemployment unreliable`.split(/\s+/));
+
+/* -------------------- OFFLINE / STANDALONE INGESTION -------------------- */
+/*
+   No external JavaScript libraries are required in this version.
+   CSV is parsed locally. XLSX is parsed locally using a small OOXML/ZIP reader
+   based on browser-native ArrayBuffer, DataView, DOMParser and DecompressionStream.
+   No file contents leave the browser.
+*/
+function parseCSV(text){
+ const out=[]; let row=[],cell="",quote=false;
+ for(let i=0;i<text.length;i++){
+   const ch=text[i],next=text[i+1];
+   if(quote){
+     if(ch==='"' && next==='"'){cell+='"';i++;}
+     else if(ch==='"') quote=false;
+     else cell+=ch;
+   }else{
+     if(ch==='"') quote=true;
+     else if(ch===','){row.push(cell);cell="";}
+     else if(ch==='\n'){row.push(cell);out.push(row);row=[];cell="";}
+     else if(ch==='\r'){}
+     else cell+=ch;
+   }
+ }
+ row.push(cell); if(row.length>1 || row[0]!=='' || !out.length) out.push(row);
+ if(!out.length)return [];
+ const headers=out[0].map((h,i)=>String(h??'').trim()||`Column_${i+1}`);
+ return out.slice(1).filter(r=>r.some(v=>String(v??'').trim()!=='')).map(r=>{
+   const o={};headers.forEach((h,i)=>o[h]=r[i]??'');return o;
+ });
+}
+
+function xmlText(el){return el?Array.from(el.querySelectorAll('t')).map(t=>t.textContent).join(''):''}
+function colIndex(ref){
+ const m=String(ref).match(/[A-Z]+/i); if(!m)return 0;
+ let n=0; for(const ch of m[0].toUpperCase())n=n*26+(ch.charCodeAt(0)-64); return n-1;
+}
+function zipU16(view,pos){return view.getUint16(pos,true)}
+function zipU32(view,pos){return view.getUint32(pos,true)}
+
+function readZipCentral(buf){
+ const view=new DataView(buf), bytes=new Uint8Array(buf);
+ let eocd=-1;
+ for(let i=bytes.length-22;i>=Math.max(0,bytes.length-66000);i--){
+   if(zipU32(view,i)===0x06054b50){eocd=i;break;}
+ }
+ if(eocd<0)throw new Error('Invalid XLSX ZIP container: end-of-directory record not found.');
+ const count=zipU16(view,eocd+10), cdSize=zipU32(view,eocd+12), cdOffset=zipU32(view,eocd+16);
+ const entries={}; let p=cdOffset;
+ for(let i=0;i<count;i++){
+   if(zipU32(view,p)!==0x02014b50)throw new Error('Invalid XLSX central directory.');
+   const method=zipU16(view,p+10), csize=zipU32(view,p+20), usize=zipU32(view,p+24);
+   const nlen=zipU16(view,p+28), xlen=zipU16(view,p+30), clen=zipU16(view,p+32), local=zipU32(view,p+42);
+   const name=new TextDecoder().decode(bytes.slice(p+46,p+46+nlen));
+   entries[name]={method,csize,usize,local};
+   p+=46+nlen+xlen+clen;
+ }
+ return entries;
+}
+
+async function unzipEntry(buf,entry){
+ const view=new DataView(buf), bytes=new Uint8Array(buf), p=entry.local;
+ if(zipU32(view,p)!==0x04034b50)throw new Error('Invalid XLSX local file header.');
+ const nlen=zipU16(view,p+26), xlen=zipU16(view,p+28);
+ const data=bytes.slice(p+30+nlen+xlen,p+30+nlen+xlen+entry.csize);
+ if(entry.method===0)return data.buffer;
+ if(entry.method!==8)throw new Error('Unsupported XLSX compression method: '+entry.method);
+ if(typeof DecompressionStream==='undefined')throw new Error('This browser does not support offline XLSX decompression. Please use current Chrome or Edge.');
+ const ds=new DecompressionStream('deflate-raw');
+ const stream=new Blob([data]).stream().pipeThrough(ds);
+ return await new Response(stream).arrayBuffer();
+}
+
+async function readXLSXOffline(buf){
+ const entries=readZipCentral(buf);
+ const get=async path=>{
+   const e=entries[path]; if(!e) return null;
+   return new TextDecoder('utf-8').decode(new Uint8Array(await unzipEntry(buf,e)));
+ };
+ const wbText=await get('xl/workbook.xml');
+ if(!wbText)throw new Error('The workbook.xml part was not found.');
+ const wbXml=new DOMParser().parseFromString(wbText,'application/xml');
+ if(wbXml.querySelector('parsererror'))throw new Error('Could not parse workbook.xml.');
+ const relText=await get('xl/_rels/workbook.xml.rels');
+ const relXml=relText?new DOMParser().parseFromString(relText,'application/xml'):null;
+ const relMap={};
+ if(relXml)Array.from(relXml.getElementsByTagName('*')).filter(e=>e.localName==='Relationship').forEach(e=>{
+   relMap[e.getAttribute('Id')]=e.getAttribute('Target');
+ });
+ let shared=[];
+ const ssText=await get('xl/sharedStrings.xml');
+ if(ssText){
+   const ssXml=new DOMParser().parseFromString(ssText,'application/xml');
+   shared=Array.from(ssXml.getElementsByTagName('*')).filter(e=>e.localName==='si').map(si=>xmlText(si));
+ }
+ const sheets=Array.from(wbXml.getElementsByTagName('*')).filter(e=>e.localName==='sheet').map(e=>({
+   name:e.getAttribute('name'),rid:e.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id')||e.getAttribute('r:id')
+ }));
+ const result={};
+ for(const sh of sheets){
+   let target=relMap[sh.rid];
+   if(!target)continue;
+   target=target.replace(/^\//,'');
+   if(!target.startsWith('xl/'))target='xl/'+target.replace(/^\.\//,'');
+   const text=await get(target); if(!text)continue;
+   const xml=new DOMParser().parseFromString(text,'application/xml');
+   const rowEls=Array.from(xml.getElementsByTagName('*')).filter(e=>e.localName==='row');
+   const matrix=[];
+   for(const re of rowEls){
+     const arr=[];
+     Array.from(re.children).filter(e=>e.localName==='c').forEach(c=>{
+       const ref=c.getAttribute('r')||''; const idx=colIndex(ref); const type=c.getAttribute('t');
+       let val='';
+       if(type==='inlineStr'){val=xmlText(c)}
+       else {const v=Array.from(c.children).find(e=>e.localName==='v'); const raw=v?v.textContent:'';
+         if(type==='s')val=shared[Number(raw)]??'';
+         else if(type==='b')val=raw==='1'?'TRUE':'FALSE';
+         else val=raw;
+       }
+       arr[idx]=val;
+     });
+     matrix.push(arr);
+   }
+   const header=(matrix[0]||[]).map((h,i)=>String(h??'').trim()||`Column_${i+1}`);
+   result[sh.name]=matrix.slice(1).filter(r=>r.some(v=>String(v??'').trim()!=='')).map(r=>{const o={};header.forEach((h,i)=>o[h]=r[i]??'');return o;});
+ }
+ return result;
+}
+
+async function readSpreadsheetFile(file){
+ const lower=file.name.toLowerCase();
+ if(lower.endsWith('.csv'))return {sheets:{CSV:parseCSV(await file.text())},name:'CSV'};
+ if(lower.endsWith('.xlsx'))return {sheets:await readXLSXOffline(await file.arrayBuffer()),name:'XLSX'};
+ if(lower.endsWith('.xls'))throw new Error('Legacy binary .xls files are not supported by the fully offline standalone engine. Please save the workbook as .xlsx or .csv once in Excel, then analyse it offline.');
+ throw new Error('Unsupported file type. Use .xlsx or .csv for the offline standalone engine.');
+}
+
+document.getElementById('file').addEventListener('change',async e=>{
+ const f=e.target.files[0]; if(!f)return;
+ try{
+   setProcessing(5,'Reading file locally — no internet connection is required...');
+   const parsed=await readSpreadsheetFile(f);
+   analysis=null;
+   const names=Object.keys(parsed.sheets); let name=names[0];
+   if(names.length>1){name=prompt('Worksheet to analyse:\n'+names.join('\n'),names[0])||names[0];if(!parsed.sheets[name])name=names[0]}
+   rows=parsed.sheets[name]||[]; populateColumns();
+   document.getElementById('status').textContent=`Loaded ${rows.length.toLocaleString()} records locally from ${f.name} • Sheet: ${name} • OFFLINE MODE`;
+   hideProcessing();
+ }catch(err){hideProcessing();alert('Could not read the file offline: '+err.message)}
+});
+function populateColumns(){
+ const sel=document.getElementById('columnSelect');sel.innerHTML='';
+ if(!rows.length)return;
+ const keys=Object.keys(rows[0]);
+ const likely=keys.filter(k=>{
+  const vals=rows.slice(0,100).map(r=>String(r[k]??"")).filter(Boolean);
+  if(!vals.length)return false;
+  const avg=vals.reduce((s,v)=>s+v.length,0)/vals.length;
+  return avg>12 || /reason|comment|remark|feedback|response|text|explain|why|issue|concern/i.test(k);
+ });
+ (likely.length?likely:keys).forEach(k=>sel.add(new Option(k,k)));
+ Array.from(sel.options).forEach(o=>o.selected=likely.includes(o.value));
+}
+function selectAllColumns(){Array.from(document.getElementById('columnSelect').options).forEach(o=>o.selected=true)}
+function restoreStops(){document.getElementById('customStop').value='';stops=new Set(DEFAULT_STOPS);if(analysis)runAnalysis()}
+
+/* -------------------- PREPROCESSING -------------------- */
+function getStops(){
+ const extra=document.getElementById('customStop').value.toLowerCase().split(/[,\s]+/).filter(Boolean);
+ return new Set([...stops,...extra]);
+}
+function cleanText(t){
+ return String(t??"").replace(/https?:\/\/\S+/gi," ").replace(/<[^>]*>/g," ")
+ .replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/[^a-zA-Z0-9\s'-]/g," ")
+ .replace(/\s+/g," ").trim().toLowerCase();
+}
+function tokenise(t){
+ const st=getStops();
+ return cleanText(t).split(" ").map(x=>x.replace(/^[-']+|[-']+$/g,"")).filter(x=>x.length>2&&!st.has(x)&&!/^\d+$/.test(x));
+}
+function normaliseWord(w){
+ const irregular={children:"child",people:"person",companies:"company",businesses:"business",prices:"price",costs:"cost",employees:"employee",workers:"worker",loans:"loan",taxes:"tax",rates:"rate",orders:"order",suppliers:"supplier",utilities:"utility"};
+ if(irregular[w])return irregular[w];
+ if(w.endsWith("ies")&&w.length>4)return w.slice(0,-3)+"y";
+ if(w.endsWith("s")&&w.length>4&&!w.endsWith("ss"))return w.slice(0,-1);
+ return w;
+}
+
+/* -------------------- SENTIMENT -------------------- */
+function sentiment(text){
+ const ts=tokenise(text);let score=0,hits=[];
+ for(let i=0;i<ts.length;i++){
+  let w=ts[i],mult=1;
+  if(ts[i-1]&&["not","never","no"].includes(ts[i-1]))mult=-1;
+  if(POS.has(w)){score+=1*mult;hits.push({term:w,pol:"Positive"})}
+  if(NEG.has(w)){score-=1*mult;hits.push({term:w,pol:"Negative"})}
+ }
+ const norm=Math.max(-1,Math.min(1,score/Math.max(3,ts.length/3)));
+ return {score:norm,label:norm>.12?"Positive":norm<-.12?"Negative":"Neutral",hits};
+}
+
+/* -------------------- N-GRAMS / TF-IDF STYLE -------------------- */
+function grams(text,n){
+ const ts=tokenise(text).map(normaliseWord),out=[];
+ for(let i=0;i<=ts.length-n;i++){
+  const p=ts.slice(i,i+n); if(new Set(p).size<n)continue;
+  out.push(p.join(" "));
+ }
+ return out;
+}
+function corpusStats(items){
+ const term={}; const big={}; const tri={}; const docCount=items.length;
+ items.forEach(x=>{
+  const seen=new Set();
+  tokenise(x.original).map(normaliseWord).forEach(w=>{
+   term[w]=(term[w]||{freq:0,docs:0});term[w].freq++;
+   if(!seen.has(w)){term[w].docs++;seen.add(w)}
+  });
+  [2,3].forEach(n=>{const obj=n===2?big:tri;const seenP=new Set();grams(x.original,n).forEach(p=>{obj[p]=(obj[p]||{freq:0,docs:0});obj[p].freq++;if(!seenP.has(p)){obj[p].docs++;seenP.add(p)}})});
+ });
+ return {term,big,tri,docCount};
+}
+
+/* -------------------- THEME ENGINE -------------------- */
+function questionContext(header){
+ const q=String(header||"").trim();
+ const cleaned=cleanText(q);
+ const qTokens=tokenise(q).map(normaliseWord);
+ const intents=[];
+ if(/^\s*(why|what.*reason|reason|cause|factor|factors)/i.test(q))intents.push("Reason/Cause");
+ if(/challenge|problem|barrier|constraint|difficulty|issue/i.test(q))intents.push("Challenges/Issues");
+ if(/impact|effect|affect|influence/i.test(q))intents.push("Impact/Effect");
+ if(/expect|outlook|future|forecast/i.test(q))intents.push("Expectation/Outlook");
+ if(/improve|recommend|suggest|should|measure/i.test(q))intents.push("Recommendation/Improvement");
+ if(/satisfaction|satisfied|experience/i.test(q))intents.push("Experience/Satisfaction");
+
+ const contextThemes=[];
+ Object.entries(TAXONOMY).forEach(([theme,obj])=>{
+  let matches=0;
+  obj.words.forEach(term=>{
+   const t=cleanText(term);
+   if(t.includes(" ")){if(cleaned.includes(t))matches++}
+   else if(qTokens.includes(normaliseWord(t)))matches++;
+  });
+  if(matches)contextThemes.push({theme,matches});
+ });
+ return {header:q,cleaned,tokens:qTokens,intents,contextThemes};
+}
+
+function findEvidence(text,themeObj){
+ const c=cleanText(text), ts=new Set(tokenise(text).map(normaliseWord));
+ let keywordHits=[],phraseHits=[];
+ themeObj.words.forEach(term=>{
+  const tc=cleanText(term);
+  if(tc.includes(" ")){if(c.includes(tc))phraseHits.push(term)}
+  else if(ts.has(normaliseWord(tc)))keywordHits.push(term);
+ });
+ const allP=grams(text,2).concat(grams(text,3));
+ themeObj.words.forEach(term=>{
+  if(allP.includes(cleanText(term)))phraseHits.push(term);
+ });
+ return {keywordHits:[...new Set(keywordHits)],phraseHits:[...new Set(phraseHits)]};
+}
+
+function themeAssignments(item, qctx){
+ const results=[];
+ Object.entries(TAXONOMY).forEach(([theme,obj])=>{
+  const ev=findEvidence(item.original,obj);
+
+  // The response MUST contain actual evidence before a theme can be assigned.
+  if(!ev.keywordHits.length&&!ev.phraseHits.length)return;
+
+  const c=cleanText(item.original);
+  const words=tokenise(item.original).map(normaliseWord);
+
+  const keywordScore=Math.min(.50,ev.keywordHits.length*.14);
+  const phraseScore=Math.min(.28,ev.phraseHits.length*.14);
+  const density=Math.min(.12,(ev.keywordHits.length+ev.phraseHits.length)/Math.max(1,words.length)*.7);
+
+  // Header/question is contextual support only. It never creates a theme assignment.
+  const qMatch=(qctx.contextThemes.find(x=>x.theme===theme)||{matches:0}).matches;
+  const contextScore=qMatch?Math.min(.10,qMatch*.04):0;
+
+  const relevance=Math.min(1,keywordScore+phraseScore+density+contextScore+.08);
+
+  const evidence=
+    `Response Evidence — Keyword Match: ${ev.keywordHits.length}; `+
+    `Phrase Match: ${ev.phraseHits.length}; Context Density: ${(density*100).toFixed(0)}%; `+
+    `Question Context Match: ${qMatch>0?"Yes":"No"}${qMatch>0?` (${qMatch} term${qMatch===1?"":"s"})`:""}. `+
+    `Question header is contextual only and is not counted as response evidence.`;
+
+  results.push({
+    theme,description:obj.desc,relevance,evidence,
+    keywordHits:ev.keywordHits,phraseHits:ev.phraseHits,
+    questionContext:qctx.header,
+    questionContextMatch:qMatch
+  });
+ });
+ return results.sort((a,b)=>b.relevance-a.relevance);
+}
+
+
+/* ===== V5: PERFORMANCE + NON-REDUNDANT PHRASE INTELLIGENCE ===== */
+const ENGINE_V5={batchSize:200,maxPhraseCandidates:100};
+
+function setProcessing(percent,step,count=""){
+ const o=document.getElementById("processingOverlay");
+ if(!o)return;
+ o.classList.add("active");
+ document.getElementById("processingFill").style.width=Math.max(0,Math.min(100,percent))+"%";
+ document.getElementById("processingPercent").textContent=Math.round(percent)+"%";
+ document.getElementById("processingStep").textContent=step||"Processing...";
+ document.getElementById("processingCount").textContent=count;
+}
+function hideProcessing(){
+ const o=document.getElementById("processingOverlay");
+ if(o)o.classList.remove("active");
+}
+function yieldToBrowser(){
+ return new Promise(resolve=>{
+   if("requestIdleCallback" in window) requestIdleCallback(()=>resolve(),{timeout:50});
+   else setTimeout(resolve,0);
+ });
+}
+
+/* Exact n-grams remain available for detailed linguistic analysis.
+   The phrase cloud uses non-redundant phrases and unique-response counts. */
+function buildMeaningfulPhraseCloud(items){
+ const occ={},docs={};
+
+ /* Common function/verb fragments are useful in raw n-gram diagnostics,
+    but should not dominate a professional phrase cloud. */
+ const weakCloudTerms=new Set([
+   "increase","increased","increasing","decrease","decreased","decreasing",
+   "drive","drives","driven","affect","affects","affected","cause","causes",
+   "caused","lead","leads","led","make","makes","made","impact","impacts",
+   "impacting","result","results","resulted","remain","remains","remained",
+   "become","becomes","became","have","has","had","get","gets","got",
+   "provide","provides","provided","use","uses","used","need","needs","needed",
+   "want","wants","wanted","see","sees","saw","say","says","said"
+ ]);
+
+ items.forEach(x=>{
+   const seen=new Set();
+   const raw=grams(x.original,2).concat(grams(x.original,3));
+
+   raw.forEach(p=>{
+     const words=p.split(/\s+/).filter(Boolean);
+     if(words.length<2)return;
+
+     /* Reject phrases that are mostly generic action language. */
+     const weakCount=words.filter(w=>weakCloudTerms.has(w)).length;
+     if(weakCount>0 && (words.length===2 || weakCount>=1 && words.length===3)){
+       /* Allow a useful phrase such as "drives high inflation" only in
+          raw n-gram analysis, not in the primary phrase cloud. */
+       return;
+     }
+
+     /* Reject phrases that begin with an action word. */
+     if(weakCloudTerms.has(words[0]))return;
+
+     occ[p]=(occ[p]||0)+1;
+     if(!seen.has(p)){
+       docs[p]=(docs[p]||0)+1;
+       seen.add(p);
+     }
+   });
+ });
+
+ const candidates=Object.keys(occ).map(p=>({
+   phrase:p,
+   occurrences:occ[p],
+   responses:docs[p],
+   score:docs[p]*0.70+occ[p]*0.30
+ })).sort((a,b)=>b.score-a.score);
+
+ /* Remove a shorter phrase when a longer selected phrase contains it
+    and has at least the same response coverage. */
+ const selected=[];
+ for(const c of candidates){
+   const redundant=selected.some(s=>{
+     const longWords=s.phrase.split(/\s+/);
+     const shortWords=c.phrase.split(/\s+/);
+     if(longWords.length<=shortWords.length)return false;
+     const short=c.phrase;
+     return s.phrase.includes(short) && s.responses>=c.responses;
+   });
+   if(!redundant)selected.push(c);
+   if(selected.length>=ENGINE_V5.maxPhraseCandidates)break;
+ }
+
+ return selected.map(x=>({
+   text:x.phrase,
+   value:Math.max(1,x.responses),
+   occurrences:x.occurrences,
+   responses:x.responses
+ }));
+}
+
+/* Response-level theme prevalence: repeated terms/phrases in one response
+   never make that response count multiple times for the same theme. */
+function responseLevelThemeCounts(items){
+ const out={};
+ items.forEach(x=>{
+   const seen=new Set();
+   (x.themes||[]).forEach(t=>{
+     const threshold=Number(document.getElementById("threshold")?.value||0);
+     if(t.relevance*100<threshold || seen.has(t.theme))return;
+     seen.add(t.theme);
+     out[t.theme]=(out[t.theme]||0)+1;
+   });
+ });
+ return out;
+}
+
+/* -------------------- ANALYSIS -------------------- */
+
+async function runAnalysis(){
+ if(!rows.length){alert("Upload Excel/CSV or load demonstration data first.");return}
+ const sel=Array.from(document.getElementById('columnSelect').selectedOptions).map(o=>o.value);
+ if(!sel.length){alert("Select at least one free-text column.");return}
+
+ setProcessing(1,"Preparing survey questions and text fields...");
+ await yieldToBrowser();
+
+ try{
+  const questions={};
+  sel.forEach(c=>questions[c]=questionContext(c));
+  const all=[],byCol={},duplicateMap={};
+  sel.forEach(c=>byCol[c]=[]);
+
+  const total=rows.length*sel.length;
+  let done=0;
+
+  for(let ri=0;ri<rows.length;ri++){
+   const r=rows[ri];
+   for(const c of sel){
+    const original=String(r[c]??"").trim();
+    if(original){
+     const id=`R${String(ri+1).padStart(5,"0")}_${c}`;
+     const s=sentiment(original);
+     const qctx=questions[c];
+     const item={
+      id,row:ri+1,column:c,question:c,questionContext:qctx,
+      original,cleaned:cleanText(original),sentiment:s,
+      themes:themeAssignments({original},qctx)
+     };
+     byCol[c].push(item); all.push(item);
+     const key=c+"||"+cleanText(original);
+     duplicateMap[key]=(duplicateMap[key]||0)+1;
+    }
+    done++;
+   }
+   if(ri%ENGINE_V5.batchSize===0){
+    setProcessing(5+(done/total)*45,"Reading and classifying responses...",
+      `${done.toLocaleString()} of ${total.toLocaleString()} fields`);
+    await yieldToBrowser();
+   }
+  }
+
+  setProcessing(55,"Calculating frequencies, sentiment and data quality...");
+  await yieldToBrowser();
+
+  const stats=corpusStats(all);
+  const themes=aggregateThemes(all);
+  const termRows=Object.entries(stats.term)
+   .map(([term,v])=>({term,...v,pct:all.length?v.docs/all.length*100:0}))
+   .sort((a,b)=>b.freq-a.freq);
+
+  setProcessing(68,"Extracting meaningful, non-redundant phrases...");
+  await yieldToBrowser();
+  const phraseCloud=buildMeaningfulPhraseCloud(all);
+
+  setProcessing(78,"Preparing detailed bigram and trigram statistics...");
+  await yieldToBrowser();
+  const ng=makeNgrams(stats,all);
+
+  setProcessing(88,"Building question-aware thematic audit...");
+  await yieldToBrowser();
+
+  analysis={
+   selected:sel,questions,all,byCol,stats,themes,termRows,ngrams:ng,
+   phraseCloud,responseThemeCounts:responseLevelThemeCounts(all),
+   duplicates:Object.values(duplicateMap).filter(x=>x>1).reduce((s,x)=>s+x-1,0),
+   timestamp:new Date().toISOString()
+  };
+
+  renderQuestionContext();
+  document.getElementById('kRecords').textContent=rows.length.toLocaleString();
+  document.getElementById('kValid').textContent=all.length.toLocaleString();
+  document.getElementById('kBlank').textContent=(rows.length*sel.length-all.length).toLocaleString();
+  document.getElementById('kDup').textContent=analysis.duplicates.toLocaleString();
+  const cc=sentCounts(all);
+  document.getElementById('kPos').textContent=all.length?Math.round(cc.Positive/all.length*100)+"%":"0%";
+  document.getElementById('kThemes').textContent=themes.length;
+
+  setProcessing(94,"Rendering dashboard, word cloud and audit tables...");
+  await yieldToBrowser();
+  renderAll();
+
+  setProcessing(98,"Generating executive report...");
+  await yieldToBrowser();
+  generateReport();
+
+  setProcessing(100,"Analysis complete.",
+    `${all.length.toLocaleString()} valid observations • ${themes.length} themes`);
+  await new Promise(r=>setTimeout(r,350));
+
+  document.getElementById('status').textContent=
+   `Analysis complete • ${all.length.toLocaleString()} text observations • `+
+   `${themes.length} themes • question-aware analysis • non-redundant phrase cloud • audit trail generated`;
+ }catch(err){
+  console.error("Free-text engine error:",err);
+  document.getElementById('status').textContent="Analysis stopped because an internal processing error occurred.";
+  const step=document.getElementById("processingStep");
+  if(step)step.textContent="Processing stopped — an internal error was detected.";
+  const fill=document.getElementById("processingFill");
+  if(fill)fill.style.background="#b23a48";
+  alert("Analysis stopped because of an internal engine error. Your original survey data has not been changed. Technical detail: "+(err && err.message ? err.message : err));
+ }finally{
+  hideProcessing();
+ }
+}
+
+function renderQuestionContext(){
+ const box=document.getElementById("questionContextText");
+ const note=document.getElementById("questionContextNote");
+ if(!analysis || !analysis.selected || !analysis.selected.length){
+   if(box) box.textContent="Upload a survey file and select a free-text field.";
+   return;
+ }
+ const qs=analysis.selected.map(c=>{
+   const q=analysis.questions[c] || {header:c};
+   return `<div class="column-question"><b>${escapeHtml(c)}</b> — ${escapeHtml(q.header)}</div>`;
+ }).join("");
+ if(box) box.innerHTML=qs;
+ if(note) note.innerHTML=`Each column header is treated as the <b>survey question/context</b> for that response field. `+
+   `The question helps interpret the response and resolve context, but <b>cannot create a theme assignment on its own</b>. `+
+   `Only evidence found in the respondent's actual response can support a thematic classification.`;
+}
+
+function sentCounts(a){const c={Positive:0,Neutral:0,Negative:0};a.forEach(x=>c[x.sentiment.label]++);return c}
+function aggregateThemes(all){
+ const map={};
+ all.forEach(x=>x.themes.forEach(t=>{
+  if(t.relevance*100 < Number(document.getElementById('threshold').value))return;
+  if(!map[t.theme])map[t.theme]={
+    theme:t.theme,description:t.description,count:0,positive:0,neutral:0,negative:0,
+    scores:[],terms:{},phrases:{},responses:[],columns:{},questions:{}
+  };
+  const z=map[t.theme];
+  if(!z._responseSeen) z._responseSeen=new Set();
+  if(z._responseSeen.has(x.id)) return;
+  z._responseSeen.add(x.id);
+  z.count++;
+  z.scores.push(t.relevance);
+  z[x.sentiment.label.toLowerCase()]++;
+  z.terms={...z.terms};
+  z.phrases={...z.phrases};
+  t.keywordHits.forEach(w=>z.terms[w]=(z.terms[w]||0)+1);
+  t.phraseHits.forEach(w=>z.phrases[w]=(z.phrases[w]||0)+1);
+  z.columns[x.column]=(z.columns[x.column]||0)+1;
+  z.questions[x.column]=x.questionContext.header;
+  z.responses.push({
+    id:x.id,original:x.original,column:x.column,
+    question:x.questionContext.header,
+    relevance:t.relevance,evidence:t.evidence,sentiment:x.sentiment,
+    questionContextMatch:t.questionContextMatch||0
+  });
+ }));
+ return Object.values(map).map(t=>({
+   ...t,
+   share:all.length?t.count/all.length*100:0,
+   confidence:t.scores.length?t.scores.reduce((a,b)=>a+b,0)/t.scores.length:0,
+   avgSent:t.responses.length?t.responses.reduce((s,r)=>s+r.sentiment.score,0)/t.responses.length:0
+ })).sort((a,b)=>b.count-a.count);
+}
+
+function makeNgrams(stats,all){
+ const min=Number(document.getElementById('minFreq').value)||2;
+ const out={bigram:[],trigram:[],flat:[]};
+ [["Bigram",stats.big,2,out.bigram],["Trigram",stats.tri,3,out.trigram]].forEach(([type,obj,n,target])=>{
+  Object.entries(obj).filter(([p,v])=>v.freq>=min).forEach(([phrase,v])=>{
+   const avg=v.docs?all.filter(x=>grams(x.original,n).includes(phrase)).reduce((s,x)=>s+x.sentiment.score,0)/v.docs:0;
+   const rec={type,phrase,freq:v.freq,docs:v.docs,pct:all.length?v.docs/all.length*100:0,sent:avg>0.12?'Positive':avg<-.12?'Negative':'Neutral',score:avg};
+   target.push(rec);out.flat.push(rec);
+  });
+ });
+ out.bigram.sort((a,b)=>b.freq-a.freq);out.trigram.sort((a,b)=>b.freq-a.freq);out.flat.sort((a,b)=>b.freq-a.freq);return out;
+}
+
+/* -------------------- RENDERING -------------------- */
+function destroyChart(k){if(charts[k])charts[k].destroy()}
+function renderAll(){renderOverview();renderPhrases();renderSentiment();renderThemes();populateAuditFilters();renderAudit();renderResponses();renderQuality();renderAuditLog();drawCloud()
+refreshNoThemeAuditHost();
+}
+function renderOverview(){
+ const cc=sentCounts(analysis.all);
+ destroyChart("sent");charts.sent=new Chart(document.getElementById("sentChart"),{type:"doughnut",data:{labels:["Positive","Neutral","Negative"],datasets:[{data:[cc.Positive,cc.Neutral,cc.Negative]}]},options:{responsive:true,maintainAspectRatio:false}});
+ const th=analysis.themes.slice(0,10);destroyChart("theme");charts.theme=new Chart(document.getElementById("themeChart"),{type:"bar",data:{labels:th.map(x=>x.theme),datasets:[{label:"Responses",data:th.map(x=>x.count)}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false}});
+ const top=analysis.themes.slice(0,8);
+ document.getElementById("topThemeTable").innerHTML=`<table><thead><tr><th>Rank</th><th>Theme</th><th>Responses</th><th>Share</th><th>Confidence</th><th>Avg Sentiment</th></tr></thead><tbody>${top.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.theme}</b><br><small>${x.description}</small></td><td>${x.count}</td><td>${x.share.toFixed(1)}%</td><td>${confidenceBadge(x.confidence)}</td><td>${x.avgSent.toFixed(2)}</td></tr>`).join("")}</tbody></table>`;
+ const mostNeg=analysis.themes.slice().sort((a,b)=>a.avgSent-b.avgSent)[0],lead=analysis.themes[0];
+ document.getElementById("insights").innerHTML=`<p><b>Scope:</b> ${analysis.all.length.toLocaleString()} non-blank observations from ${analysis.selected.length} selected free-text field(s).</p><p><b>Question context:</b> Each selected column header is treated as the question that prompted its responses. The engine uses this context when interpreting thematic relevance, while requiring actual response evidence for every theme assignment.</p>
+ <ul><li><b>Dominant theme:</b> ${lead?`${lead.theme} (${lead.share.toFixed(1)}% of valid observations).`:"No supported theme detected."}</li>
+ <li><b>Sentiment:</b> ${cc.Positive/analysis.all.length*100 .toFixed?((cc.Positive/analysis.all.length*100).toFixed(1)):0}% positive, ${(cc.Neutral/analysis.all.length*100).toFixed(1)}% neutral and ${(cc.Negative/analysis.all.length*100).toFixed(1)}% negative.</li>
+ <li><b>Most negative theme:</b> ${mostNeg?`${mostNeg.theme} (average score ${mostNeg.avgSent.toFixed(2)}).`:"Not available."}</li>
+ <li><b>Traceability:</b> each assignment is linked to extracted keyword/phrase evidence and the original response.</li></ul>`;
+}
+function confidenceBadge(v){const p=Math.round(v*100),cls=p>=80?"high":p>=60?"medium":"low";return `<span class="${cls}">${p}% (${p>=80?"High":p>=60?"Medium":"Low"})</span>`}
+function renderPhrases(){
+ const tb=document.querySelector("#termTable tbody");tb.innerHTML=analysis.termRows.slice(0,100).map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.term}</b></td><td>${x.freq}</td><td>${x.docs}</td><td>${x.pct.toFixed(1)}%</td></tr>`).join("");
+ document.querySelector("#ngramTable tbody").innerHTML=analysis.ngrams.flat.map(x=>`<tr><td>${x.type}</td><td><b>${x.phrase}</b></td><td>${x.freq}</td><td>${x.docs}</td><td><span class="badge ${x.sent==="Positive"?"pos":x.sent==="Negative"?"neg":"neu"}">${x.sent}</span></td></tr>`).join("");
+}
+function renderSentiment(){
+ const cc=sentCounts(analysis.all);destroyChart("sent2");charts.sent2=new Chart(document.getElementById("sent2"),{type:"pie",data:{labels:["Positive","Neutral","Negative"],datasets:[{data:[cc.Positive,cc.Neutral,cc.Negative]}]},options:{responsive:true,maintainAspectRatio:false}});
+ const labels=analysis.selected,sets={Positive:[],Neutral:[],Negative:[]};
+ labels.forEach(c=>{const a=analysis.byCol[c],s=sentCounts(a);sets.Positive.push(s.Positive);sets.Neutral.push(s.Neutral);sets.Negative.push(s.Negative)});
+ destroyChart("col");charts.col=new Chart(document.getElementById("colSent"),{type:"bar",data:{labels,datasets:Object.keys(sets).map(k=>({label:k,data:sets[k]}))},options:{responsive:true,maintainAspectRatio:false}});
+ const tb=document.querySelector("#themeSentTable tbody");tb.innerHTML=analysis.themes.map(x=>`<tr><td><b>${x.theme}</b></td><td>${x.positive}</td><td>${x.neutral}</td><td>${x.negative}</td><td>${x.count}</td><td>${x.avgSent.toFixed(2)}</td></tr>`).join("");
+}
+function renderThemes(){
+ const root=document.getElementById("themeProfiles");root.innerHTML="";
+ analysis.themes.forEach((t,idx)=>{
+  const terms=Object.entries(t.terms).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const phrases=Object.entries(t.phrases).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const reps=t.responses.slice().sort((a,b)=>b.relevance-a.relevance).slice(0,5);
+  root.innerHTML+=`<div class="card"><h2>${idx+1}. ${t.theme}</h2><p>${t.description}</p>
+  <div class="three"><div><b>Responses</b><br>${t.count.toLocaleString()} (${t.share.toFixed(1)}%)</div><div><b>Confidence</b><br>${confidenceBadge(t.confidence)}</div><div><b>Average sentiment</b><br>${t.avgSent.toFixed(2)}</div></div>
+  <h3>Question Context</h3><div class="column-question"><b>${escapeHtml(Object.values(t.questions).join(" | "))}</b></div><h3>Key Words</h3>${terms.map(x=>`<span class="badge">${x[0]} (${x[1]})</span>`).join("")||"None"}
+  <h3>Key Phrases</h3>${phrases.map(x=>`<span class="badge">${x[0]} (${x[1]})</span>`).join("")||"None"}
+  <h3>Representative Responses</h3><div class="scroll"><table><thead><tr><th>ID</th><th>Original Response</th><th>Relevance</th><th>Sentiment</th><th>Evidence</th></tr></thead><tbody>${reps.map(r=>`<tr><td>${r.id}</td><td>${escapeHtml(r.original)}</td><td>${(r.relevance*100).toFixed(1)}%</td><td>${r.sentiment.label} (${r.sentiment.score.toFixed(2)})</td><td>${r.evidence}</td></tr>`).join("")}</tbody></table></div></div>`;
+ });
+}
+function populateAuditFilters(){
+ const sel=document.getElementById("auditFilter"),th=document.getElementById("responseTheme");sel.innerHTML='<option value="">All</option>';th.innerHTML='<option value="">All themes</option>';
+ analysis.themes.forEach(t=>{sel.add(new Option(t.theme,t.theme));th.add(new Option(t.theme,t.theme))});
+ const rt=document.getElementById("reviewTheme");rt.innerHTML="";analysis.themes.forEach(t=>rt.add(new Option(t.theme,t.theme)));
+}
+function renderAudit(){
+ if(!analysis)return;
+ const mode=document.getElementById("auditMode").value,filter=document.getElementById("auditFilter").value,q=document.getElementById("auditSearch").value.toLowerCase();
+ const table=document.getElementById("auditTable");
+ if(mode==="word"){
+  let records=[];
+  analysis.all.forEach(x=>x.themes.forEach(t=>{if(t.relevance*100<Number(document.getElementById("threshold").value))return;t.keywordHits.concat(t.phraseHits).forEach(w=>records.push({w,t,x}))}));
+  records=records.filter(r=>(!filter||r.t.theme===filter)&&(!q||JSON.stringify(r).toLowerCase().includes(q))).slice(0,1500);
+  table.innerHTML=`<thead><tr><th>Question / Column</th><th>Word/Phrase</th><th>Response ID</th><th>Theme</th><th>Relevance</th><th>Sentiment</th><th>Evidence</th><th>Original Response</th></tr></thead><tbody>${records.map(r=>`<tr><td><b>${escapeHtml(r.x.column)}</b><br><small>${escapeHtml(r.x.questionContext.header)}</small></td><td><b>${escapeHtml(r.w)}</b></td><td>${r.x.id}</td><td>${r.t.theme}</td><td>${(r.t.relevance*100).toFixed(1)}%</td><td>${r.x.sentiment.label}</td><td>${r.t.evidence}</td><td>${escapeHtml(r.x.original)}</td></tr>`).join("")}</tbody>`;
+ }else if(mode==="theme"){
+  let rec=analysis.themes.filter(t=>!filter||t.theme===filter);
+  table.innerHTML=`<thead><tr><th>Theme</th><th>Description</th><th>Word/Phrase</th><th>Frequency</th><th>Relevance</th><th>Supporting Response Count</th></tr></thead><tbody>${rec.flatMap(t=>Object.entries(t.terms).concat(Object.entries(t.phrases)).map(([w,n])=>({t,w,n}))).filter(r=>!q||r.w.includes(q)||r.t.theme.toLowerCase().includes(q)).slice(0,1500).map(r=>`<tr><td><b>${r.t.theme}</b></td><td>${r.t.description}</td><td>${escapeHtml(r.w)}</td><td>${r.n}</td><td>${confidenceBadge(r.t.confidence)}</td><td>${r.t.count}</td></tr>`).join("")}</tbody>`;
+ }else{
+  let rec=analysis.all.filter(x=>(!filter||x.themes.some(t=>t.theme===filter))&&(!q||x.original.toLowerCase().includes(q))).slice(0,1000);
+  table.innerHTML=`<thead><tr><th>Response</th><th>Question / Column</th><th>Original Response</th><th>Cleaned Response</th><th>Theme(s)</th><th>Relevance</th><th>Evidence</th><th>Sentiment</th></tr></thead><tbody>${rec.map(x=>`<tr><td>${x.id}</td><td><b>${escapeHtml(x.column)}</b><br><small>${escapeHtml(x.questionContext.header)}</small></td><td>${escapeHtml(x.original)}</td><td>${escapeHtml(x.cleaned)}</td><td>${x.themes.map(t=>`${t.theme} (${(t.relevance*100).toFixed(0)}%)`).join("<br>")||"None"}</td><td>${x.themes.length?(x.themes[0].relevance*100).toFixed(1)+"%":"—"}</td><td>${x.themes.map(t=>t.evidence).join("<br>")||"No theme evidence"}</td><td>${x.sentiment.label} (${x.sentiment.score.toFixed(2)})</td></tr>`).join("")}</tbody>`;
+ }
+}
+function renderResponses(){
+ if(!analysis)return;
+ const q=document.getElementById("responseSearch").value.toLowerCase(),sent=document.getElementById("responseSent").value,theme=document.getElementById("responseTheme").value;
+ const a=analysis.all.filter(x=>(!q||x.original.toLowerCase().includes(q))&&(!sent||x.sentiment.label===sent)&&(!theme||x.themes.some(t=>t.theme===theme))).slice(0,1500);
+ document.querySelector("#responseTable tbody").innerHTML=a.map(x=>`<tr><td>${x.id}</td><td>${x.column}</td><td>${escapeHtml(x.original)}</td><td>${escapeHtml(x.cleaned)}</td><td>${x.sentiment.label}</td><td>${x.sentiment.score.toFixed(2)}</td><td>${x.themes.map(t=>`<span class="badge">${t.theme}: ${(t.relevance*100).toFixed(0)}%</span>`).join("")||"None"}</td><td>${x.themes.map(t=>t.evidence).join("<br>")||"No theme evidence"}</td></tr>`).join("");
+}
+function renderQuality(){
+ const total=analysis.selected.length*rows.length,valid=analysis.all.length,blank=total-valid,unique=new Set(analysis.all.map(x=>cleanText(x.original))).size;
+ document.getElementById("qualityStats").innerHTML=`<table><tr><th>Metric</th><th>Value</th></tr><tr><td>Rows</td><td>${rows.length}</td></tr><tr><td>Selected text fields</td><td>${analysis.selected.length}</td></tr><tr><td>Potential text cells</td><td>${total}</td></tr><tr><td>Valid/non-blank text cells</td><td>${valid}</td></tr><tr><td>Blank text cells</td><td>${blank}</td></tr><tr><td>Unique cleaned responses</td><td>${unique}</td></tr><tr><td>Duplicate excess observations</td><td>${analysis.duplicates}</td></tr><tr><td>Detected themes</td><td>${analysis.themes.length}</td></tr></table>`;
+}
+function renderAuditLog(){document.querySelector("#auditLogTable tbody").innerHTML=auditLog.map(x=>`<tr><td>${x.time}</td><td>${x.responseId||"—"}</td><td>${x.originalTheme||"—"}</td><td>${x.action}</td><td>${x.newTheme||"—"}</td><td>${x.action}</td></tr>`).join("")}
+function logReview(){
+ if(!analysis)return;
+ const theme=document.getElementById("reviewTheme").value,action=document.getElementById("reviewAction").value,id=document.getElementById("reviewResponse").value.trim(),newTheme=document.getElementById("reviewNewTheme").value.trim();
+ auditLog.push({time:new Date().toLocaleString(),responseId:id,originalTheme:theme,action,newTheme});
+ renderAuditLog();
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+/* -------------------- WORD CLOUD -------------------- */
+/*
+  Professional word-cloud renderer:
+  - Uses d3-cloud for true collision-aware placement.
+  - Keeps phrases horizontal or only very slightly rotated.
+  - Uses logarithmic scaling so a few frequent phrases do not dominate.
+  - Limits the number of terms and applies padding around every phrase.
+  - Renders at device-pixel resolution for a sharper Power BI-style appearance.
+*/
+function cloudSource(){
+ if(!analysis)return [];
+ const mode=document.getElementById('cloudMode').value;
+ const requested=Math.max(10,Math.min(100,Number(document.getElementById('cloudN').value)||30));
+ if(mode==='word')return analysis.termRows.slice(0,requested).map(x=>({text:x.term,freq:Number(x.freq)||1,responses:Number(x.docs)||0,kind:'Word'}));
+ if(mode==='bigram')return (analysis.ngrams.bigram||[]).slice(0,requested).map(x=>({text:x.phrase,freq:Number(x.freq)||1,responses:Number(x.docs)||0,kind:'Bigram'}));
+ if(mode==='trigram')return (analysis.ngrams.trigram||[]).slice(0,requested).map(x=>({text:x.phrase,freq:Number(x.freq)||1,responses:Number(x.docs)||0,kind:'Trigram'}));
+ return (analysis.phraseCloud||[]).slice(0,requested).map(x=>({text:x.text,freq:Number(x.responses)||1,responses:Number(x.responses)||0,occurrences:Number(x.occurrences)||1,kind:'Meaningful Phrase'}));
+}
+function drawCloud(){
+ if(!analysis)return;const source=cloudSource(),el=document.getElementById('cloud');if(!el)return;el.innerHTML='';
+ const tip=document.createElement('div');tip.className='cloud-tip';tip.style.display='none';el.appendChild(tip);
+ if(!source.length){el.insertAdjacentHTML('beforeend','<div style="padding:55px;text-align:center;color:#778;width:100%">No terms or phrases are available for this mode.</div>');return;}
+ const vals=source.map(x=>x.freq),min=Math.min(...vals),max=Math.max(...vals),palette=['#0b6f8f','#087ea4','#0b4f71','#138a72','#b7791f','#8a3f7a','#b23a48','#405a7a'];
+ source.forEach((x,i)=>{const span=document.createElement('span'),size=max===min?30:18+((x.freq-min)/(max-min))*36;span.textContent=x.text;span.style.fontSize=size.toFixed(1)+'px';span.style.fontWeight='700';span.style.display='inline-block';span.style.margin='8px 12px';span.style.lineHeight='1.08';span.style.cursor='pointer';span.style.color=palette[i%palette.length];span.title=`${x.kind}: ${x.text} | Frequency: ${x.freq} | Responses: ${x.responses}`;
+ span.addEventListener('mouseenter',()=>{tip.style.display='block';tip.innerHTML=`<b>${escapeHtml(x.text)}</b><br>Type: ${x.kind}<br>Frequency: ${x.freq}<br>Responses: ${x.responses}`+(x.occurrences?`<br>Occurrences: ${x.occurrences}`:'')});span.addEventListener('mouseleave',()=>tip.style.display='none');el.appendChild(span);});
+}
+function downloadCloud(){
+ if(!analysis){alert('Run analysis first.');return}
+ const source=cloudSource();const c=document.createElement('canvas');c.width=1400;c.height=700;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.textAlign='center';ctx.textBaseline='middle';
+ const vals=source.map(x=>x.freq),min=Math.min(...vals),max=Math.max(...vals),palette=['#0b6f8f','#087ea4','#0b4f71','#138a72','#b7791f','#8a3f7a','#b23a48','#405a7a'];let x=700,y=350,rowH=70;
+ source.forEach((item,i)=>{const size=max===min?34:22+((item.freq-min)/(max-min))*40;ctx.font=`700 ${size}px Segoe UI, Arial`;const tw=ctx.measureText(item.text).width;if(x+tw/2>1320){x=700;y+=rowH}if(y>650){return}ctx.fillStyle=palette[i%palette.length];ctx.fillText(item.text,x,y);x+=tw+35;if(x>1300){x=700;y+=rowH}});
+ const a=document.createElement('a');a.href=c.toDataURL('image/png');a.download='Survey_Word_Cloud_'+document.getElementById('cloudMode').value+'.png';a.click();
+}
+/* -------------------- REPORT / EXPORT -------------------- */
+function generateReport(){
+ if(!analysis)return;
+ const cc=sentCounts(analysis.all),lead=analysis.themes[0],negative=analysis.themes.slice().sort((a,b)=>a.avgSent-b.avgSent)[0];
+ const topTerms=analysis.termRows.slice(0,10),topPhrases=analysis.ngrams.flat.slice(0,10);
+ document.getElementById("report").innerHTML=`<h1>Free-Text Survey Analytics Report</h1>
+ <p><b>Analysis date:</b> ${new Date().toLocaleString()}<br><b>Fields analysed:</b> ${analysis.selected.join(", ")}<br><b>Records:</b> ${rows.length.toLocaleString()}<br><b>Valid text observations:</b> ${analysis.all.length.toLocaleString()}</p>
+ <h2>1. Executive Summary</h2><p>The analysis identified <b>${analysis.themes.length}</b> evidence-supported themes across ${analysis.all.length.toLocaleString()} non-blank observations. Overall sentiment was ${(cc.Positive/analysis.all.length*100).toFixed(1)}% positive, ${(cc.Neutral/analysis.all.length*100).toFixed(1)}% neutral and ${(cc.Negative/analysis.all.length*100).toFixed(1)}% negative. The leading theme was <b>${lead?lead.theme:"not detected"}</b>${lead?` (${lead.share.toFixed(1)}% of valid observations)`:''}.</p>
+ <h2>2. Sentiment Analysis</h2><p>Positive observations: ${cc.Positive}; Neutral: ${cc.Neutral}; Negative: ${cc.Negative}. The most negative theme by average response sentiment was <b>${negative?negative.theme:"not available"}</b>.</p>
+ <h2>3. Dominant Themes</h2><ol>${analysis.themes.slice(0,10).map(t=>`<li><b>${t.theme}</b> — ${t.count} responses (${t.share.toFixed(1)}%); confidence ${Math.round(t.confidence*100)}%; average sentiment ${t.avgSent.toFixed(2)}.</li>`).join("")}</ol>
+ <h2>4. Top Terms</h2><p>${topTerms.map(x=>`<b>${x.term}</b> (${x.freq} occurrences; ${x.docs} responses)`).join(" • ")}</p>
+ <h2>5. Meaningful Phrases</h2><p>${topPhrases.map(x=>`<b>${x.phrase}</b> (${x.freq})`).join(" • ")}</p>
+ <h2>6. Auditability Statement</h2><p>Each supported thematic assignment retains a response identifier, original response, cleaned representation, extracted keyword/phrase evidence, relevance score and sentiment. The thematic audit supports navigation from theme to evidence and from response to theme. Human review decisions are retained separately in the audit log.</p>
+ <h2>7. Methodological Limitation</h2><p>This browser implementation uses transparent lexical/domain concept matching, n-grams, co-occurrence and relevance scoring. It does not claim that a classification is objectively true. For high-stakes research publication, analysts should review low-confidence and borderline classifications and may reassign, merge, split or remove themes.</p>`;
+}
+function exportWord(){
+ if(!analysis){alert("Run analysis first.");return}
+ const body=document.getElementById("report").innerHTML;
+ const htmlDoc=`<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:Arial;margin:45px;color:#222}h1{color:#073b5c;border-bottom:3px solid #c9a227;padding-bottom:10px}h2{color:#0a8060}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:6px}</style></head><body>${body}</body></html>`;
+ const blob=new Blob(["\ufeff",htmlDoc],{type:"application/msword"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Auditable_Free_Text_Survey_Report.doc";a.click();URL.revokeObjectURL(a.href);
+}
+function printReport(){if(!analysis){alert("Run analysis first.");return}const w=window.open("","_blank");w.document.write(`<html><head><title>Survey Report</title><style>body{font-family:Arial;margin:40px}h1{color:#073b5c}h2{color:#0a8060}</style></head><body>${document.getElementById("report").innerHTML}</body></html>`);w.document.close();w.print()}
+function xmlEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
+function crc32(data){let c=0xffffffff;for(let i=0;i<data.length;i++){c^=data[i];for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0)}return (c^0xffffffff)>>>0}
+function u16(n){return new Uint8Array([n&255,(n>>>8)&255])}function u32(n){return new Uint8Array([n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255])}
+function joinBytes(parts){let n=parts.reduce((s,p)=>s+p.length,0),o=new Uint8Array(n),p=0;parts.forEach(x=>{o.set(x,p);p+=x.length});return o}
+function makeZip(files){const enc=new TextEncoder(),locals=[],centrals=[];let offset=0;const now=new Date(),time=((now.getHours()<<11)|(now.getMinutes()<<5)|(Math.floor(now.getSeconds()/2)))&65535,date=(((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate())&65535;
+ Object.entries(files).forEach(([name,text])=>{const nb=enc.encode(name),db=enc.encode(text),crc=crc32(db),lh=joinBytes([new Uint8Array([80,75,3,4]),u16(20),u16(0),u16(0),u16(time),u16(date),u32(crc),u32(db.length),u32(db.length),u16(nb.length),u16(0),nb,db]);locals.push(lh);const ch=joinBytes([new Uint8Array([80,75,1,2]),u16(20),u16(20),u16(0),u16(0),u16(time),u16(date),u32(crc),u32(db.length),u32(db.length),u16(nb.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset),nb]);centrals.push(ch);offset+=lh.length});const cd=joinBytes(centrals),local=joinBytes(locals),eocd=joinBytes([new Uint8Array([80,75,5,6]),u16(0),u16(0),u16(centrals.length),u16(centrals.length),u32(cd.length),u32(local.length),u16(0)]);return joinBytes([local,cd,eocd])}
+function excelCol(ci){let n=ci+1,s="";while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s} function sheetXml(data){return `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${data.map((r,ri)=>`<row r="${ri+1}">${r.map((v,ci)=>{const ref=excelCol(ci)+(ri+1);const val=String(v??'');return `<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${xmlEsc(val)}</t></is></c>`}).join('')}</row>`).join('')}</sheetData></worksheet>`}
+function exportExcel(){
+ if(!analysis){alert('Run analysis first.');return}
+ const sheets={Summary:[['Metric','Value'],['Records',rows.length],['Selected columns',analysis.selected.join(', ')],['Valid text',analysis.all.length],['Blank cells',analysis.selected.length*rows.length-analysis.all.length],['Duplicates',analysis.duplicates]],Terms:[['Term','Frequency','Response Frequency','% Responses'],...analysis.termRows.map(x=>[x.term,x.freq,x.docs,x.pct])],Ngrams:[['Type','Phrase','Frequency','Response Frequency','% Responses','Sentiment'],...analysis.ngrams.flat.map(x=>[x.type,x.phrase,x.freq,x.docs,x.pct,x.sent])],Themes:[['Theme','Description','Responses','Share %','Confidence %','Avg Sentiment'],...analysis.themes.map(x=>[x.theme,x.description,x.count,x.share,x.confidence*100,x.avgSent])],Responses:[['Response ID','Column','Original Response','Processed Response','Sentiment','Score','Themes'],...analysis.all.map(x=>[x.id,x.column,x.original,x.cleaned,x.sentiment.label,x.sentiment.score,x.themes.map(t=>`${t.theme} (${(t.relevance*100).toFixed(0)}%)`).join('; ')])],Theme_Audit:[['Response ID','Column','Question','Original Response','Extracted Evidence','Theme','Relevance %','Sentiment','Sentiment Score'],...analysis.all.flatMap(x=>x.themes.map(t=>[x.id,x.column,x.questionContext.header,x.original,[...(t.keywordHits||[]),...(t.phraseHits||[])].join('; '),t.theme,t.relevance*100,x.sentiment.label,x.sentiment.score]))],Audit_Log:[['Timestamp','Response ID','Original Theme','Action','New Theme'],...auditLog.map(x=>[x.time,x.responseId,x.originalTheme,x.action,x.newTheme])]};
+ const names=Object.keys(sheets);const files={'[Content_Types].xml':`<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${names.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>`, '_rels/.rels':`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`, 'xl/workbook.xml':`<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${names.map((n,i)=>`<sheet name="${xmlEsc(n)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets></workbook>`, 'xl/_rels/workbook.xml.rels':`<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${names.map((_,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}</Relationships>`};names.forEach((n,i)=>files[`xl/worksheets/sheet${i+1}.xml`]=sheetXml(sheets[n]));const zip=makeZip(files);const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([zip],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));a.download='Auditable_Free_Text_Survey_Analytics_Offline.xlsx';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* -------------------- UI -------------------- */
+function tab(id,btn){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active");if(id==="overview")setTimeout(drawCloud,50)}
+function loadDemo(){
+ rows=[
+ {Reason1:"High inflation has increased operating costs and the price of inputs",Reason2:"Exchange rate pressure and naira depreciation are affecting imported materials",Reason3:"Electricity supply is unreliable and diesel is expensive",Reason4:"Interest rates are too high and access to credit is difficult",Reason5:"Customer demand has improved and sales increased",Reason6:"Government regulation and tax compliance remain challenging"},
+ {Reason1:"Rising prices have reduced purchasing power",Reason2:"Foreign exchange volatility makes planning difficult",Reason3:"Power supply improved slightly but fuel costs remain high",Reason4:"Cost of borrowing is a major concern",Reason5:"Weak consumer demand is affecting sales",Reason6:"Taxes and regulatory requirements increase business costs"},
+ {Reason1:"Food prices and transport costs continue to increase",Reason2:"The dollar exchange rate has increased import costs",Reason3:"Diesel prices are putting pressure on production",Reason4:"Credit conditions remain tight",Reason5:"New orders are improving",Reason6:"Policy uncertainty affects investment decisions"},
+ {Reason1:"Inflation remains a major concern",Reason2:"Currency depreciation creates uncertainty",Reason3:"Electricity shortages disrupt operations",Reason4:"Funding is difficult to obtain",Reason5:"Demand is stable",Reason6:"Security risks affect the operating environment"},
+ {Reason1:"Prices have stabilised somewhat",Reason2:"Forex access is still difficult",Reason3:"Energy costs are high",Reason4:"Interest rates remain elevated",Reason5:"Sales improved during the quarter",Reason6:"Compliance costs are increasing"}
+ ];
+ populateColumns();document.getElementById("status").textContent="DEMONSTRATION DATA loaded. Run Analysis to inspect the full audit trail.";
+}
+</script>
+</body>
+</html><div id="noThemeAuditHost"></div>

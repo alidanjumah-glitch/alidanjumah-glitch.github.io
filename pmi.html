@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CBN/MPC PMI Analytical Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root{--navy:#081d31;--navy2:#123452;--teal:#007f7b;--gold:#c8a44d;--bg:#eef3f6;--card:#fff;--line:#d7e0e7;--muted:#64748b;--green:#16803c;--red:#b42318;--amber:#a16207;--blue:#2563eb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#172033;font:13px "Segoe UI",Arial,sans-serif}
+.header{background:linear-gradient(115deg,var(--navy),var(--navy2));color:#fff;padding:17px 25px;border-bottom:4px solid var(--gold)}
+.head{max-width:1650px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.brand{display:flex;gap:13px;align-items:center}.logo{width:46px;height:46px;border:2px solid var(--gold);border-radius:50%;display:grid;place-items:center;font-weight:800;color:var(--gold)}h1{font-size:22px;margin:0}.sub{font-size:11px;color:#cbd5e1;margin-top:4px}
+.upload{display:flex;align-items:center;gap:9px}.btn{border:0;border-radius:7px;padding:9px 14px;background:var(--gold);font-weight:800;cursor:pointer}.btn.alt{background:#e5edf3;color:var(--navy)}
+.wrap{max-width:1650px;margin:auto;padding:15px}.filters{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:10px}.f{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px}.f label{display:block;color:var(--muted);font-size:9px;font-weight:800;text-transform:uppercase;margin-bottom:4px}.f select,.f input{width:100%;padding:7px;border:1px solid #cbd5e1;border-radius:5px;background:#fff}
+.kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-bottom:11px}.kpi{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px;box-shadow:0 2px 7px #0f172a0b;position:relative}.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--teal)}.kt{font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase}.kv{font-size:25px;font-weight:850;margin:3px 0}.mom{font-size:11px;font-weight:800}.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--muted)}.badge{display:inline-block;padding:2px 6px;border-radius:10px;font-size:9px;font-weight:800}.exp{background:#dcfce7;color:#166534}.con{background:#fee2e2;color:#991b1b}.neu{background:#e2e8f0;color:#475569}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:11px;margin-bottom:11px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:11px}.card{background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px;box-shadow:0 2px 7px #0f172a0b}.card h3{font-size:12px;margin:3px 5px 5px;color:var(--navy)}.chart{height:300px}.sm{height:270px}
+.brief{background:linear-gradient(120deg,#f8fbfc,#fff);border-left:5px solid var(--gold);padding:12px;border-radius:8px;line-height:1.5}.brief h2{font-size:14px;margin:0 0 7px;color:var(--navy)}.brief ul{margin:5px 0 0 18px;padding:0}.brief li{margin:3px 0}
+.sectorCards{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:6px}.sector{border:1px solid var(--line);border-radius:7px;padding:9px}.sector strong{font-size:11px}.sector .big{font-size:22px;font-weight:850}.sector small{color:var(--muted)}
+.mapgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:5px}.state{border:1px solid #dbe3e8;border-radius:5px;padding:6px 3px;text-align:center;font-size:9px;font-weight:800;min-height:37px;display:flex;flex-direction:column;justify-content:center}.state span{font-size:8px;font-weight:500;margin-top:2px}.unknown{background:#f1f5f9;color:#64748b}.green{background:#d9f4e4}.green2{background:#b9e9cb}.red{background:#fbd8d5}.red2{background:#f5b5af}.yellow{background:#f9edc7}
+.table{max-height:290px;overflow:auto}table{width:100%;border-collapse:collapse;font-size:10px}th{position:sticky;top:0;background:var(--navy);color:#fff;padding:7px;text-align:left}td{padding:6px;border-bottom:1px solid #edf1f4}
+.note,.footer{font-size:9px;color:var(--muted);line-height:1.45}.footer{text-align:center;padding:10px}
+@media(max-width:1200px){.kpis{grid-template-columns:repeat(4,1fr)}.filters{grid-template-columns:repeat(4,1fr)}.grid,.grid3{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.kpis,.filters,.grid,.grid3{grid-template-columns:1fr 1fr}.mapgrid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header class="header"><div class="head">
+<div class="brand"><div class="logo">CBN</div><div><h1>PMI • MPC Analytical Dashboard</h1><div class="sub">Composite PMI | Industry | Agriculture | Services | State Intelligence | Monthly Technical Committee Brief</div></div></div>
+<div class="upload"><label class="btn" for="file">⬆ Upload Excel / CSV</label><input id="file" type="file" accept=".xlsx,.xls,.csv" hidden><span id="fn" class="sub">Demo dataset</span></div>
+</div></header>
+
+<main class="wrap">
+<div class="filters">
+<div class="f"><label>State</label><select id="state"><option>ALL</option></select></div>
+<div class="f"><label>Sector</label><select id="sector"><option>ALL</option></select></div>
+<div class="f"><label>Sub-Sector</label><select id="sub"><option>ALL</option></select></div>
+<div class="f"><label>Business Type</label><select id="biz"><option>ALL</option></select></div>
+<div class="f"><label>Employment Size</label><select id="emp"><option>ALL</option></select></div>
+<div class="f"><label>From</label><input id="from" type="date"></div>
+<div class="f"><label>To / Reset</label><input id="to" type="date" onchange="render()"></div>
+</div>
+<div class="filters" style="grid-template-columns:1fr 1fr 1fr 2fr 1fr 1fr 1fr">
+<div class="f"><label>Quick Period</label><select id="period"><option value="ALL">All months</option><option value="12">Last 12 months</option><option value="24">Last 24 months</option><option value="36">Last 36 months</option></select></div>
+<div class="f"><label>Map Metric</label><select id="mapMetric"><option value="pmi">Composite PMI</option><option value="output">Output</option><option value="orders">New Orders</option><option value="employment">Employment</option><option value="inventory">Raw Materials</option></select></div>
+<div class="f"><label>Sector View</label><select id="sectorView"><option value="ALL">All sectors</option><option>Industry</option><option>Services</option><option>Agriculture</option></select></div>
+<div class="f" style="display:flex;align-items:end"><button class="btn alt" style="width:100%" onclick="resetAll()">Reset Filters</button></div>
+<div class="f"><label>Threshold</label><input value="50.0" disabled></div><div></div><div></div>
+</div>
+
+<section class="kpis">
+<div class="kpi"><div class="kt">Composite PMI</div><div id="pmi" class="kv">—</div><div id="pmim" class="mom">—</div><div id="pmis" class="note"></div></div>
+<div class="kpi"><div class="kt">Output</div><div id="out" class="kv">—</div><div id="outm" class="mom">—</div><div class="note">Weight 25%</div></div>
+<div class="kpi"><div class="kt">New Orders</div><div id="ord" class="kv">—</div><div id="ordm" class="mom">—</div><div class="note">Weight 30%</div></div>
+<div class="kpi"><div class="kt">Employment</div><div id="em" class="kv">—</div><div id="emm" class="mom">—</div><div class="note">Weight 20%</div></div>
+<div class="kpi"><div class="kt">Raw Materials / Inventory</div><div id="inv" class="kv">—</div><div id="invm" class="mom">—</div><div class="note">Weight 10%</div></div>
+<div class="kpi"><div class="kt">Supplier Delivery Time</div><div id="sup" class="kv">—</div><div id="supm" class="mom">—</div><div class="note">Industry only • Weight 15%</div></div>
+</section>
+
+<div class="grid">
+<div class="card"><h3>Composite & Sector PMI Trend</h3><div id="trend" class="chart"></div></div>
+<div class="card"><h3>Current Sector Decomposition</h3><div class="sectorCards" id="sectorCards"></div><div id="sectorChart" class="sm"></div></div>
+</div>
+
+<div class="grid3">
+<div class="card"><h3>MoM Change: Contribution by Component</h3><div id="contrib" class="sm"></div></div>
+<div class="card"><h3>Component Diagnostic — Current Month</h3><div id="comp" class="sm"></div></div>
+<div class="card"><h3>Diffusion Response Diagnostic</h3><div id="diff" class="sm"></div></div>
+</div>
+
+<div class="grid">
+<div class="card"><h3>Auxiliary Survey Indices — Separate from PMI</h3><div id="auxCards" class="sectorCards"></div><div id="auxChart" class="sm"></div></div>
+<div class="card"><h3>New Orders vs Price Transmission</h3><div id="passChart" class="sm"></div></div>
+</div>
+
+<div class="grid3">
+<div class="card"><h3>Average Input vs Output Price Indices</h3><div id="prices" class="sm"></div></div>
+<div class="card"><h3>Input–Output Price Gap / Cost Absorption</h3><div id="gap" class="sm"></div></div>
+<div class="card"><h3>Inflationary Pressure / Pass-through Diagnostic</h3><div id="pressure" class="brief"></div></div>
+</div>
+
+<div class="grid">
+<div class="card"><h3>Nigeria 36-State PMI Heatmap</h3><div id="mapgrid" class="mapgrid"></div><div class="note">State tiles are colour-coded around the 50-point neutral threshold. Hover/click is available through the state values shown in each tile.</div></div>
+<div class="card"><h3>Automatic MPC Technical Committee Brief</h3><div id="brief" class="brief"></div></div>
+</div>
+
+<div class="card" style="margin-bottom:11px"><h3>Monthly PMI Analytical Table</h3><div id="table" class="table"></div></div>
+<div class="footer">CBN/MPC analytical template • PMI interpretation: &gt;50 expansion, 50 no change, &lt;50 contraction. Supplier delivery is direction-adjusted: faster delivery raises the index. Sector methodology follows the CBN reporting structure; see methodology note below.</div>
+<div class="note" style="margin:0 3px 12px"><b>Methodology:</b> <b>Industry PMI:</b> Output 25%, New Orders 30%, Supplier Delivery 15%, Employment 20%, Raw Materials/Inventory 10%. <b>Services and Agriculture:</b> Output, New Orders, Employment and Raw Materials/Inventory at 25% each. <b>Composite PMI:</b> Output 25%, New Orders 30%, Employment 20%, Raw Materials/Inventory 10% and Supplier Delivery Time 15%; Supplier Delivery Time is calculated only for Industry and included in the Composite. Services and Agriculture do not have Supplier Delivery Time and use their four available components equally. The additional survey variables — Export Orders, Import Orders, Average Output Price, Average Input Price, Quantity Purchased, Outstanding Business and Finished Goods — are separate diffusion indices and are not added to PMI. Average Output Price and Average Input Price are converted from Higher/Same/Lower responses to diffusion percentages and displayed to one decimal place. Average Input and Output Prices are juxtaposed with New Orders to distinguish demand-led from cost-push/pass-through pressure; the Input-Output gap is a cost-absorption diagnostic.</div>
+</main>
+
+<script>
+const W={output:.25,orders:.30,employment:.10,inventory:.20,supplier:.15};
+const N={output:"Output",orders:"New Orders",employment:"Employment",inventory:"Raw Materials",supplier:"Supplier Delivery"};
+const STATES=["Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno","Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","FCT - Abuja","Gombe","Imo","Jigawa","Kaduna","Kano","Katsina","Kebbi","Kogi","Kwara","Lagos","Nasarawa","Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara"];
+let C={},data=[];
+
+function norm(x){return String(x??"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
+function col(h,p){let a=h.map(x=>[x,norm(x)]);for(let q of p){let z=norm(q),e=a.find(x=>x[1]===z);if(e)return e[0]}for(let q of p){let z=norm(q),e=a.find(x=>x[1].includes(z));if(e)return e[0]}return null}
+function detect(h){C={
+date:col(h,["Date"]),state:col(h,["State"]),sector:col(h,["Sector"]),sub:col(h,["Sub-Sector","Sub Sector"]),
+biz:col(h,["Business type","Business Type"]),emp:col(h,["Employment size","Employment Size"]),
+output:col(h,["Output","Production level"]),orders:col(h,["New Order","New Orders","Level of New Orders"]),
+employment:col(h,["Level of employment","Employment level","Employment"]),
+inventory:col(h,["Raw Material/Inventory","Raw Materials/WIP Inventory","Raw Material Inventory","Inventory"]),
+supplier:col(h,["Supplier Delivery","Supplier Delivery Time","Suppliers Delivery Time"]),
+exportOrder:col(h,["New export order","New Export Order","Export Order"]),
+importOrder:col(h,["New import order","New Import Order","Import Order"]),
+outputPrice:col(h,["Average output price","Average Output Price","Average price of your output","Output Price"]),
+inputPrice:col(h,["Average input price","Average Input Price","Average price of your input","Input Price"]),
+quantity:col(h,["Quantity of raw materials purchased","Quantity of goods/Farm produce/services Purchased","Quantity Purchased"]),
+outstanding:col(h,["Level of outstanding business","Outstanding Business"]),
+finished:col(h,["Stock of finished goods","Stock of Finished goods/Farm yield","Finished goods/Farm yield","Stock of Finished Produce"])
+}}
+function date(v){if(v instanceof Date&&!isNaN(v))return v;if(typeof v==="number")return new Date(Date.UTC(1899,11,30)+v*86400000);let d=new Date(v);return isNaN(d)?null:d}
+function month(v){let d=date(v);return d?d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"):null}
+function ml(k){let [y,m]=k.split("-");return new Date(+y,+m-1,1).toLocaleDateString("en-NG",{month:"short",year:"numeric"})}
+
+// Supports both numeric (1=Higher, 2=Same, 3=Lower) and text responses ("Higher", "Lower", "Same", "Faster", "Slower")
+function score(v,sup=false){
+  let s=norm(v),n=Number(v);
+  if(n===1||n===2||n===3)return sup?(n===3?1:n===2?.5:0):(n===1?1:n===2?.5:0);
+  if(["increase","increased","higher","high","up","rose","rising","grow","growing","positive","better"].some(x=>s.includes(x)))return sup?0:1;
+  if(["decrease","decreased","lower","low","down","fell","falling","decline","declining","negative","worse"].some(x=>s.includes(x)))return sup?1:0;
+  if(["same","no change","unchanged","constant"].some(x=>s.includes(x)))return .5;
+  if(["faster","shorter","improved","quick"].some(x=>s.includes(x)))return 1;
+  if(["slower","longer","worsened","delay","delayed"].some(x=>s.includes(x)))return 0;
+  return null;
+}
+
+function prep(rows){return rows.map(r=>({...r,_date:date(r[C.date]),_month:month(r[C.date]),_state:String(r[C.state]??"Unknown").trim()||"Unknown",_sector:String(r[C.sector]??"Unknown").trim()||"Unknown",_sub:String(r[C.sub]??"Unknown").trim()||"Unknown",_biz:String(r[C.biz]??"Unknown").trim()||"Unknown",_emp:String(r[C.emp]??"Unknown").trim()||"Unknown",_s:{output:score(r[C.output]),orders:score(r[C.orders]),employment:score(r[C.employment]),inventory:score(r[C.inventory]),supplier:score(r[C.supplier],true),exportOrder:score(r[C.exportOrder]),importOrder:score(r[C.importOrder]),quantity:score(r[C.quantity]),outstanding:score(r[C.outstanding]),finished:score(r[C.finished])}})).filter(r=>r._month)}
+function avg(a){a=a.filter(x=>x!=null&&!isNaN(x));return a.length?a.reduce((x,y)=>x+y,0)/a.length*100:null}
+function calc(rows,sectorOverride=null){
+ let ks=sectorOverride==="Industry"?["output","orders","employment","inventory","supplier"]:["output","orders","employment","inventory"];
+ let v={};ks.forEach(k=>v[k]=avg(rows.map(r=>r._s[k])));
+ let p=null;if(ks.every(k=>v[k]!=null)){let ww=sectorOverride==="Industry"?W:{output:.25,orders:.25,employment:.25,inventory:.25};p=ks.reduce((s,k)=>s+v[k]*ww[k],0)}
+ return {...v,pmi:p}
+}
+function priceAvg(a){a=a.filter(x=>x!=null&&!isNaN(x));return a.length?a.reduce((x,y)=>x+y,0)/a.length:null}
+function overall(rows){
+ let by={Industry:[],Services:[],Agriculture:[]};
+ rows.forEach(r=>{if(by[r._sector])by[r._sector].push(r)});
+ let inds=calc(by.Industry,"Industry"), ser=calc(by.Services,"Services"), agr=calc(by.Agriculture,"Agriculture");
+ let output=avg(rows.map(r=>r._s.output)), orders=avg(rows.map(r=>r._s.orders)),
+     employment=avg(rows.map(r=>r._s.employment)), inventory=avg(rows.map(r=>r._s.inventory)),
+     supplier=avg(by.Industry.map(r=>r._s.supplier));
+ let pmi=[output,orders,employment,inventory,supplier].every(v=>v!=null)
+   ? output*.25+orders*.30+employment*.20+inventory*.10+supplier*.15 : null;
+ return {pmi,industry:inds.pmi,services:ser.pmi,agriculture:agr.pmi,output,orders,employment,inventory,supplier};
+}
+function aggs(rows){let g={};rows.forEach(r=>(g[r._month]??=[]).push(r));return Object.keys(g).sort().map(m=>{let rr=g[m],o=overall(rr),ip=priceAvg(rr.map(r=>score(r[C.inputPrice]))),op=priceAvg(rr.map(r=>score(r[C.outputPrice])));let ex=avg(rr.map(r=>r._s.exportOrder)),im=avg(rr.map(r=>r._s.importOrder)),qty=avg(rr.map(r=>r._s.quantity)),ob=avg(rr.map(r=>r._s.outstanding)),fg=avg(rr.map(r=>r._s.finished));return {month:m,...o,inputPrice:ip,outputPrice:op,priceGap:ip!=null&&op!=null?ip-op:null,exportOrder:ex,importOrder:im,quantity:qty,outstanding:ob,finished:fg,n:rr.length};});}
+function filtered(){
+ let d=[...data];let fs=[["state","_state"],["sector","_sector"],["sub","_sub"],["biz","_biz"],["emp","_emp"]];fs.forEach(([i,k])=>{let v=document.getElementById(i).value;if(v!=="ALL")d=d.filter(r=>r[k]===v)});
+ let f=document.getElementById("from").value,t=document.getElementById("to").value;if(f)d=d.filter(r=>r._date>=new Date(f));if(t)d=d.filter(r=>r._date<=new Date(t+"T23:59:59"));
+ let p=document.getElementById("period").value;if(p!=="ALL"){let ms=[...new Set(d.map(r=>r._month))].sort();let keep=new Set(ms.slice(-+p));d=d.filter(r=>keep.has(r._month))}
+ let sv=document.getElementById("sectorView").value;if(sv!=="ALL")d=d.filter(r=>r._sector===sv);return d
+}
+function set(id,v,prev){document.getElementById(id).textContent=v==null?"—":v.toFixed(1);let e=document.getElementById(id+"m");if(e){let d=v!=null&&prev!=null?v-prev:null;e.textContent=d==null?"MoM —":`MoM ${d>=0?"+":""}${d.toFixed(1)} pts`;e.className="mom "+(d>0?"up":d<0?"down":"flat")}}
+function status(v){return v==null?"":v>50?'<span class="badge exp">EXPANSION</span>':v<50?'<span class="badge con">CONTRACTION</span>':'<span class="badge neu">NO CHANGE</span>'}
+const L={paper_bgcolor:"rgba(0,0,0,0)",plot_bgcolor:"rgba(0,0,0,0)",font:{family:"Segoe UI,Arial",size:10,color:"#334155"},margin:{l:48,r:20,t:12,b:40}};
+function charts(a,cur,prev,rows){
+ Plotly.react("trend",[
+ {x:a.map(x=>ml(x.month)),y:a.map(x=>x.pmi),name:"Composite",mode:"lines+markers",line:{width:3}},
+ {x:a.map(x=>ml(x.month)),y:a.map(x=>x.industry),name:"Industry",mode:"lines",line:{dash:"dot"}},
+ {x:a.map(x=>ml(x.month)),y:a.map(x=>x.services),name:"Services",mode:"lines",line:{dash:"dash"}},
+ {x:a.map(x=>ml(x.month)),y:a.map(x=>x.agriculture),name:"Agriculture",mode:"lines",line:{dash:"dashdot"}},
+ {x:a.map(x=>ml(x.month)),y:a.map(()=>50),name:"50 Neutral",mode:"lines",line:{dash:"dot",width:1}}
+ ],{...L,yaxis:{range:[35,65],gridcolor:"#e5e7eb"},xaxis:{gridcolor:"#f1f5f9"},legend:{orientation:"h",y:1.15}},{responsive:true,displayModeBar:false});
+ let ss=[["Industry",cur.industry],["Services",cur.services],["Agriculture",cur.agriculture]];
+ document.getElementById("sectorCards").innerHTML=ss.map(x=>`<div class="sector"><strong>${x[0]}</strong><div class="big">${x[1]==null?"—":x[1].toFixed(1)}</div><small>${status(x[1])}</small></div>`).join("");
+ Plotly.react("sectorChart",[{x:ss.map(x=>x[0]),y:ss.map(x=>x[1]),type:"bar",text:ss.map(x=>x[1]?.toFixed(1)??"—"),textposition:"auto"}],{...L,yaxis:{range:[35,65],gridcolor:"#e5e7eb"}},{responsive:true,displayModeBar:false});
+ let ks=["output","orders","employment","inventory","supplier"], vals=ks.map(k=>(cur[k]??0)-(prev?.[k]??0)), labels=ks.map(k=>N[k]);
+ Plotly.react("contrib",[{x:vals,y:labels,orientation:"h",type:"bar",text:vals.map(v=>(v>=0?"+":"")+v.toFixed(1)),textposition:"auto"}],{...L,xaxis:{title:"Component MoM change (pts)",zeroline:true},yaxis:{automargin:true}},{responsive:true,displayModeBar:false});
+ Plotly.react("comp",[{type:"bar",x:labels,y:ks.map(k=>cur[k]),text:ks.map(k=>cur[k]?.toFixed(1)??"—"),textposition:"auto"}],{...L,yaxis:{range:[35,65],gridcolor:"#e5e7eb"}},{responsive:true,displayModeBar:false});
+ let cnt=[0,0,0];ks.forEach(k=>rows.filter(r=>r._month===cur.month).forEach(r=>{let s=r._s[k];if(s===1)cnt[0]++;else if(s===.5)cnt[1]++;else if(s===0)cnt[2]++}));
+ Plotly.react("diff",[{type:"pie",labels:["Positive","No Change","Negative"],values:cnt,hole:.58,textinfo:"label+percent"}],{...L,showlegend:false},{responsive:true,displayModeBar:false});
+}
+function stateMap(rows,cur){
+ let a={};STATES.forEach(s=>a[s]=null);let metric=document.getElementById("mapMetric").value;
+ let gr={};rows.filter(r=>r._month===cur.month).forEach(r=>(gr[r._state]??=[]).push(r));
+ Object.keys(gr).forEach(s=>{let c=calc(gr[s]);a[s]=metric==="pmi"?c.pmi:c[metric]});
+ document.getElementById("mapgrid").innerHTML=STATES.map(s=>{let v=a[s],cl=v==null?"unknown":v>=55?"green2":v>50?"green":v<45?"red2":v<50?"red":"yellow";return `<div class="state ${cl}" title="${s}: ${v==null?"No data":v.toFixed(1)}">${s.replace("FCT - Abuja","FCT").replace("Akwa Ibom","Akwa Ibom")}<span>${v==null?"N/A":v.toFixed(1)}</span></div>`}).join("");
+}
+function brief(cur,prev,rows){
+ let dir=v=>v>50?"expanded":v<50?"contracted":"was unchanged";
+ let d=cur.pmi-prev?.pmi||0, strongest=["industry","services","agriculture"].map(k=>[k,cur[k]]).filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1])[0];
+ let comps=[["Output",cur.output],["New Orders",cur.orders],["Employment",cur.employment],["Raw Materials",cur.inventory],["Supplier Delivery",cur.supplier]].filter(x=>x[1]!=null).sort((a,b)=>b[1]-a[1]);
+ let weak=comps.at(-1);let ms=[...new Set(rows.map(r=>r._month))].sort();let states={};rows.filter(r=>r._month===cur.month).forEach(r=>(states[r._state]??=[]).push(r));let sa=Object.entries(states).map(([s,v])=>[s,calc(v).pmi]).filter(x=>x[1]!=null);let exp=sa.filter(x=>x[1]>50).length,con=sa.filter(x=>x[1]<50).length;
+ document.getElementById("brief").innerHTML=`<h2>Monthly MPC Intelligence — ${ml(cur.month)}</h2><ul>
+ <li><b>Headline:</b> Composite PMI stood at <b>${cur.pmi?.toFixed(1)??"N/A"}</b>, indicating that activity <b>${dir(cur.pmi)}</b> ${d>=0?"and improved":"and weakened"} by <b>${Math.abs(d).toFixed(1)} points</b> month-on-month.</li>
+ <li><b>Sector signal:</b> ${strongest?strongest[0]+" led with "+strongest[1].toFixed(1)+" points.":""} Industry ${cur.industry?.toFixed(1)??"N/A"}, Services ${cur.services?.toFixed(1)??"N/A"}, Agriculture ${cur.agriculture?.toFixed(1)??"N/A"}.</li>
+ <li><b>Demand/output:</b> New Orders ${cur.orders?.toFixed(1)??"N/A"}; Output ${cur.output?.toFixed(1)??"N/A"}. The stronger component was <b>${comps[0]?.[0]??"N/A"}</b>.</li>
+ <li><b>Supply/labour:</b> The weakest component was <b>${weak?.[0]??"N/A"} (${weak?.[1]?.toFixed(1)??"N/A"})</b>. This should be monitored for persistence.</li>
+ <li><b>Geographic breadth:</b> ${exp} of ${sa.length} states with usable observations were above 50, while ${con} were below 50.</li>
+ <li><b>Price pressure:</b> Input price ${cur.inputPrice?.toFixed(1)??"N/A"} versus output price ${cur.outputPrice?.toFixed(1)??"N/A"}; gap ${cur.priceGap?.toFixed(1)??"N/A"} points. A positive gap indicates cost absorption.</li><li><b>Auxiliary indicators:</b> Export Orders ${cur.exportOrder?.toFixed(1)??"N/A"}; Import Orders ${cur.importOrder?.toFixed(1)??"N/A"}; Quantity Purchased ${cur.quantity?.toFixed(1)??"N/A"}; Outstanding Business ${cur.outstanding?.toFixed(1)??"N/A"}; Finished Goods ${cur.finished?.toFixed(1)??"N/A"}.</li><li><b>Policy watch:</b> Track demand, employment, input availability, supplier efficiency and price transmission alongside inflation and other high-frequency indicators.</li>
+ </ul>`;
+}
+function table(a){document.getElementById("table").innerHTML=`<table><thead><tr><th>Month</th><th>Composite</th><th>Industry</th><th>Services</th><th>Agriculture</th><th>Output</th><th>Orders</th><th>Employment</th><th>Inventory</th><th>Supplier</th><th>Input Price</th><th>Output Price</th><th>Price Gap</th><th>Export Order</th><th>Import Order</th><th>Quantity</th><th>Outstanding</th><th>Finished Goods</th></tr></thead><tbody>${a.slice().reverse().map(x=>`<tr><td>${ml(x.month)}</td><td>${x.pmi?.toFixed(1)??"—"}</td><td>${x.industry?.toFixed(1)??"—"}</td><td>${x.services?.toFixed(1)??"—"}</td><td>${x.agriculture?.toFixed(1)??"—"}</td><td>${x.output?.toFixed(1)??"—"}</td><td>${x.orders?.toFixed(1)??"—"}</td><td>${x.employment?.toFixed(1)??"—"}</td><td>${x.inventory?.toFixed(1)??"—"}</td><td>${x.supplier?.toFixed(1)??"—"}</td><td>${x.inputPrice==null?"—":x.inputPrice.toFixed(1)+"%"}</td><td>${x.outputPrice==null?"—":x.outputPrice.toFixed(1)+"%"}</td><td>${x.priceGap?.toFixed(1)??"—"}</td><td>${x.exportOrder?.toFixed(1)??"—"}</td><td>${x.importOrder?.toFixed(1)??"—"}</td><td>${x.quantity?.toFixed(1)??"—"}</td><td>${x.outstanding?.toFixed(1)??"—"}</td><td>${x.finished?.toFixed(1)??"—"}</td></tr>`).join("")}</tbody></table>`}
+function auxCharts(a,cur,prev){
+ const ks=["exportOrder","importOrder","quantity","outstanding","finished"], labels=["New Export Order","New Import Order","Quantity Purchased","Outstanding Business","Finished Goods"];
+ document.getElementById("auxCards").innerHTML=ks.map((k,i)=>`<div class="sector"><strong>${labels[i]}</strong><div class="big">${cur[k]==null?"—":cur[k].toFixed(1)}</div><small>${cur[k]==null?"No data":cur[k]>50?"Above neutral":"Below neutral"}</small></div>`).join("");
+ Plotly.react("auxChart",[{x:labels,y:ks.map(k=>cur[k]),type:"bar",text:ks.map(k=>cur[k]==null?"—":cur[k].toFixed(1)),textposition:"auto"}],{...L,yaxis:{range:[0,100],gridcolor:"#e5e7eb"}},{responsive:true,displayModeBar:false});
+ Plotly.react("passChart",[{x:["New Orders","Input Price","Output Price"],y:[cur.orders,cur.inputPrice,cur.outputPrice],type:"bar",text:[cur.orders,cur.inputPrice,cur.outputPrice].map(v=>v==null?"—":v.toFixed(1)),textposition:"auto"}],{...L,yaxis:{range:[0,100],gridcolor:"#e5e7eb"}},{responsive:true,displayModeBar:false});
+}
+
+function priceCharts(a,cur,prev){
+ let labels=a.map(x=>ml(x.month));
+ Plotly.react("prices",[
+  {x:labels,y:a.map(x=>x.inputPrice),name:"Average Input Price (%)",mode:"lines+markers",line:{width:3}},
+  {x:labels,y:a.map(x=>x.outputPrice),name:"Average Output Price (%)",mode:"lines+markers",line:{width:3}}
+ ],{...L,yaxis:{range:[0,100],title:"Diffusion (%)",gridcolor:"#e5e7eb"},legend:{orientation:"h",y:1.12}},{responsive:true,displayModeBar:false});
+ Plotly.react("gap",[
+  {x:labels,y:a.map(x=>x.priceGap),name:"Input − Output",type:"bar",
+   text:a.map(x=>x.priceGap==null?"—":x.priceGap.toFixed(1)+" pp"),textposition:"auto"}
+ ],{...L,yaxis:{title:"Percentage points",zeroline:true,gridcolor:"#e5e7eb"}},{responsive:true,displayModeBar:false});
+ let gap=cur.priceGap, inp=cur.inputPrice, outp=cur.outputPrice;
+ let di=inp!=null&&prev.inputPrice!=null?inp-prev.inputPrice:null;
+ let do_=outp!=null&&prev.outputPrice!=null?outp-prev.outputPrice:null;
+ let interpretation=gap==null?"Insufficient price-response data for a pass-through diagnostic.":
+  gap>0?`Input-price pressure exceeds output-price pressure by ${gap.toFixed(1)} percentage points, indicating cost absorption and potential future pass-through risk.`:
+  gap<0?`Output-price pressure exceeds input-price pressure by ${Math.abs(gap).toFixed(1)} percentage points, indicating stronger current pass-through relative to input-cost pressure.`:
+  "Input- and output-price pressure are equal.";
+ let momentum=(di!=null&&di>0&&do_!=null&&do_>0)?"Both price indices are rising, strengthening the inflationary-pressure signal.":
+  (di!=null&&di>0&&do_!=null&&do_<=0)?"Input-price pressure is increasing without a corresponding increase in output-price pressure, indicating greater cost absorption.":
+  (di!=null&&di<=0&&do_!=null&&do_>0)?"Output-price pressure is increasing while input-price pressure is stable/lower, indicating stronger current pass-through.":
+  "Price momentum is mixed or insufficient to classify.";
+ document.getElementById("pressure").innerHTML=`<h2>Price Transmission Signal — ${ml(cur.month)}</h2>
+ <ul><li><b>Input Price:</b> ${inp==null?"N/A":inp.toFixed(1)+"%"} ${di==null?"":`(${di>=0?"+":""}${di.toFixed(1)} pp MoM)`}</li>
+ <li><b>Output Price:</b> ${outp==null?"N/A":outp.toFixed(1)+"%"} ${do_==null?"":`(${do_>=0?"+":""}${do_.toFixed(1)} pp MoM)`}</li>
+ <li><b>New Orders:</b> ${cur.orders==null?"N/A":cur.orders.toFixed(1)+"%"}</li>
+ <li><b>Input–Output gap:</b> ${gap==null?"N/A":gap.toFixed(1)+" percentage points"}.</li>
+ <li><b>Assessment:</b> ${interpretation}</li><li><b>Momentum:</b> ${momentum}</li></ul>`;
+}
+function render(){
+ let rows=filtered(),a=aggs(rows);if(!a.length)return;let cur=a.at(-1),prev=a.at(-2)||{};
+ set("pmi",cur.pmi,prev.pmi);document.getElementById("pmis").innerHTML=status(cur.pmi);
+ set("out",cur.output,prev.output);set("ord",cur.orders,prev.orders);set("em",cur.employment,prev.employment);set("inv",cur.inventory,prev.inventory);set("sup",cur.supplier,prev.supplier);
+ charts(a,cur,prev,rows);auxCharts(a,cur,prev);stateMap(rows,cur);brief(cur,prev,rows);priceCharts(a,cur,prev);table(a);
+}
+function fill(id,vals){let e=document.getElementById(id),old=e.value,uniq=[...new Set(vals.filter(v=>v!==null&&v!==undefined&&String(v).trim()!=="").map(v=>String(v).trim()))].sort((a,b)=>a.localeCompare(b));e.innerHTML='<option value="ALL">ALL</option>'+uniq.map(x=>`<option value="${x.replace(/"/g,"&quot;")}">${x.replace(/</g,"&lt;")}</option>`).join("");if(uniq.includes(old))e.value=old}
+function populate(){fill("state",data.map(x=>x._state));fill("sector",data.map(x=>x._sector));fill("sub",data.map(x=>x._sub));fill("biz",data.map(x=>x._biz));fill("emp",data.map(x=>x._emp));let ds=data.map(x=>x._date).filter(Boolean).sort((a,b)=>a-b);if(ds.length){document.getElementById("from").min=ds[0].toISOString().slice(0,10);document.getElementById("to").max=ds.at(-1).toISOString().slice(0,10)}}
+function resetAll(){["state","sector","sub","biz","emp","period","sectorView"].forEach(x=>document.getElementById(x).value="ALL");document.getElementById("from").value="";document.getElementById("to").value="";render()}
+["state","sector","sub","biz","emp","from","to","period","mapMetric","sectorView"].forEach(x=>document.getElementById(x).addEventListener("change",render));
+document.getElementById("file").addEventListener("change",e=>{let f=e.target.files[0];if(!f)return;document.getElementById("fn").textContent=f.name;let rd=new FileReader();rd.onload=z=>{try{let wb=XLSX.read(z.target.result,{type:"array",cellDates:true}),ws=wb.Sheets[wb.SheetNames[0]],r=XLSX.utils.sheet_to_json(ws,{defval:""});detect(Object.keys(r[0]));let miss=["date","state","sector","output","orders","employment","inventory","supplier","exportOrder","importOrder","outputPrice","inputPrice","quantity","outstanding","finished"].filter(k=>!C[k]);if(miss.length)throw Error("Missing required columns: "+miss.join(", "));data=prep(r);populate();render()}catch(err){alert(err.message)}};rd.readAsArrayBuffer(f)});
+
+// Demo data generator natively outputs string responses: "Higher", "Lower", "Same", "Faster", "Slower"
+function demo(){
+ let out=[],subs={Industry:["Food & Beverage","Cement","Chemicals","Textiles","Metal Products"],Services:["Trade","Transport","Finance","ICT","Professional Services"],Agriculture:["Crop Production","Livestock","Fisheries","Forestry"]};
+ for(let m=0;m<24;m++){let dt=new Date(2024,m,15);STATES.forEach((st,si)=>["Industry","Services","Agriculture"].forEach((sec,qi)=>{for(let j=0;j<3;j++){let b=49.2+m*.22+Math.sin(m/2)*1.4+(si%5)*.28+(qi-1)*.7+(Math.random()-.5)*6;let v=mu=>b+mu+(Math.random()-.5)*9;let s=x=>x>53?"Higher":x<47?"Lower":"Same";let sp=x=>x>53?"Slower":x<47?"Faster":"Same";out.push({Date:dt,State:st,Sector:sec,"Sub-Sector":subs[sec][(si+j)%subs[sec].length],"Business type":j===0?"Large":j===1?"Medium":"Small","Employment size":j===0?"200+":j===1?"50-199":"1-49",Output:s(v(.3)),"New Order":s(v(.6)),"Level of employment":s(v(-.4)),"Raw Material/Inventory":s(v(.1)),"Supplier Delivery Time":sp(v(-.2)),"New export order":s(v(-.5)),"New import order":s(v(-.3)),"Average output price":s(v(1.2)),"Average input price":s(v(2.1)),"Quantity Purchased":s(v(.4)),"Level of outstanding business":s(v(-.1)),"Stock of finished goods":s(v(-.3))})}}))}
+ return out;
+}
+data=prep(demo());
+detect(Object.keys(data[0]||{}));
+populate();
+render();
+</script>
+</body>
+</html>

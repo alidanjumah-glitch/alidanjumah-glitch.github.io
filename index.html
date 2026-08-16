@@ -1,174 +1,19 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Caliphate Data Analytics — data analytics, dashboards, survey analytics, AI solutions and professional training.">
-<meta property="og:title" content="Caliphate Data Analytics">
-<meta property="og:description" content="Turn data into insights. Insights into impact.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://alidanjumah-glitch.github.io/">
-<title>Caliphate Data Analytics | Data • Insights • Impact</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Caliphate Data Analytics</title>
 <style>
-:root{--navy:#061525;--navy2:#0b2138;--green:#12c76a;--green2:#0aa957;--purple:#7652e8;--cyan:#27c5e9;--text:#eef6ff;--muted:#9fb0c3;--line:rgba(255,255,255,.11);--card:rgba(10,30,50,.78)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#04111f,#071b2d 55%,#03101d);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.55}.container{width:min(1180px,92%);margin:auto}a{text-decoration:none;color:inherit}.topbar{position:sticky;top:0;z-index:50;background:rgba(3,14,26,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}nav{height:74px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:10px;font-weight:800}.brand-mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--green),#0877d1);display:grid;place-items:center;font-weight:900;color:#03101d}.brand small{display:block;color:var(--green);font-size:11px;letter-spacing:1.2px}.links{display:flex;gap:24px;font-size:14px;color:#c7d4e2}.links a:hover{color:var(--green)}.navbtn{background:var(--green);color:#02150c;padding:11px 16px;border-radius:10px;font-weight:800;font-size:13px}.hero{min-height:650px;display:grid;grid-template-columns:1fr 1.18fr;align-items:center;gap:30px;padding:56px 0 35px;position:relative}.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 65% 25%,rgba(18,199,106,.14),transparent 35%),radial-gradient(circle at 85% 60%,rgba(118,82,232,.12),transparent 28%);pointer-events:none}.hero-copy{position:relative;z-index:1}.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(18,199,106,.3);background:rgba(18,199,106,.08);color:#79efad;padding:7px 12px;border-radius:999px;font-size:12px;font-weight:700}.hero h1{font-size:clamp(42px,6vw,72px);line-height:1.02;margin:18px 0}.hero h1 span{color:var(--green)}.hero p{font-size:18px;color:#b9c7d7;max-width:610px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0}.btn{display:inline-flex;align-items:center;gap:9px;padding:13px 18px;border-radius:11px;font-weight:800;border:1px solid var(--line);cursor:pointer}.btn.primary{background:var(--green);color:#03150c}.btn.secondary{background:rgba(255,255,255,.04)}.hero-media{position:relative;z-index:1}.hero-media img{width:100%;height:480px;object-fit:cover;border-radius:24px;border:1px solid rgba(255,255,255,.15);box-shadow:0 30px 80px rgba(0,0,0,.45)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.stat{padding:15px;border:1px solid var(--line);border-radius:14px;background:rgba(7,25,42,.75)}.stat b{display:block;font-size:24px}.stat span{font-size:11px;color:var(--muted)}section{padding:70px 0}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:25px}.section-head h2{font-size:32px;margin:0}.section-head p{color:var(--muted);max-width:600px;margin:0}.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:23px}.service i{font-size:28px;color:var(--green);margin-bottom:20px}.service h3{margin:0 0 8px}.service p{font-size:13px;color:var(--muted)}.training{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center}.training img{width:100%;height:410px;object-fit:cover;border-radius:20px;border:1px solid var(--line)}.ticks{padding:0;margin:20px 0;list-style:none}.ticks li{margin:10px 0;color:#c9d7e4}.ticks i{color:var(--green);margin-right:9px}.dark-panel{background:linear-gradient(135deg,#0a2743,#0b1730);border:1px solid rgba(39,197,233,.2);border-radius:22px;padding:30px}.flyers{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.flyer{overflow:hidden;padding:0}.flyer img{width:100%;height:280px;object-fit:cover;display:block;background:#fff}.flyer-body{padding:15px}.flyer-actions{display:flex;gap:7px;flex-wrap:wrap}.mini{padding:8px 10px;border-radius:8px;border:1px solid var(--line);font-size:12px;cursor:pointer;background:#0b2138;color:#fff}.mini.green{background:var(--green);color:#03150c}.contact{display:grid;grid-template-columns:1fr 1fr;gap:22px}.contact-box a{display:block;padding:10px 0;color:#d9e5ef}.footer{border-top:1px solid var(--line);padding:35px 0;color:var(--muted);font-size:13px}.sharebar{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.sharebar button{border:0;color:#fff;border-radius:9px;padding:10px 13px;cursor:pointer;font-weight:700}.wa{background:#16a34a}.li{background:#0a66c2}.fb{background:#1877f2}.mail{background:#7652e8}.copy{background:#334155}.chat-launch{position:fixed;right:22px;bottom:22px;z-index:100;background:linear-gradient(135deg,var(--purple),#4c2bb5);color:#fff;border:0;border-radius:999px;padding:15px 20px;box-shadow:0 15px 40px rgba(0,0,0,.45);font-weight:800;cursor:pointer}.chat{position:fixed;right:22px;bottom:82px;width:min(390px,calc(100vw - 30px));height:600px;z-index:101;background:#f6f8fb;color:#122033;border-radius:20px;box-shadow:0 25px 70px rgba(0,0,0,.5);display:none;overflow:hidden;border:1px solid #d7dee8}.chat.open{display:flex;flex-direction:column}.chat-head{background:linear-gradient(135deg,#5427c9,#7b52e8);color:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center}.chat-head b{display:block}.online{font-size:11px;color:#b9ffd2}.chat-close{border:0;background:transparent;color:#fff;font-size:18px;cursor:pointer}.messages{flex:1;overflow:auto;padding:15px;background:#f5f7fb}.msg{max-width:85%;padding:10px 12px;border-radius:14px;margin:8px 0;font-size:13px;white-space:pre-wrap}.bot{background:#fff;border:1px solid #e3e8ef}.user{background:#e6ddff;margin-left:auto}.chat-chart{background:#fff;border-radius:12px;padding:8px;margin-top:8px}.chat-chart canvas{max-height:190px}.chat-input{padding:10px;background:#fff;border-top:1px solid #e2e8f0;display:flex;gap:8px}.chat-input input{flex:1;border:1px solid #d7dee8;border-radius:12px;padding:11px;outline:none}.chat-input button{border:0;border-radius:12px;background:#6b46d8;color:#fff;width:44px;cursor:pointer}.chat-tools{padding:7px 10px;background:#fff;display:flex;gap:7px}.chat-tools button{font-size:11px;border:1px solid #d9dfe8;background:#f7f9fc;padding:7px 9px;border-radius:8px;cursor:pointer}.notice{font-size:11px;color:#66768a;padding:0 12px 9px;background:#fff}.hidden{display:none!important}
-@media(max-width:950px){.links{display:none}.hero,.training,.contact{grid-template-columns:1fr}.grid5{grid-template-columns:repeat(2,1fr)}.flyers{grid-template-columns:repeat(2,1fr)}.hero-media img{height:360px}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.container{width:94%}.hero{padding-top:35px}.hero h1{font-size:45px}.grid5,.flyers{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.chat{right:10px;bottom:78px;height:70vh}.chat-launch{right:12px;bottom:12px}}
-</style>
-</head>
-<body>
-<header class="topbar"><nav class="container"><a class="brand" href="#home"><span class="brand-mark">CDA</span><span>CALIPHATE<br><small>DATA ANALYTICS</small></span></a><div class="links"><a href="#services">Services</a><a href="#training">Training</a><a href="#flyers">Flyers</a><a href="#chat">AI Assistant</a><a href="#contact">Contact</a></div><a class="navbtn" href="#contact">Get in Touch</a></nav></header>
-<main>
-<section id="home" class="container hero"><div class="hero-copy"><span class="eyebrow"><i class="fa-solid fa-sparkles"></i> DATA • INSIGHTS • IMPACT</span><h1>Turn Data Into <span>Insights.</span><br>Insights Into <span>Impact.</span></h1><p>Caliphate Data Analytics delivers professional data analytics training, interactive dashboards, survey analytics, business intelligence and AI-enabled solutions.</p><div class="actions"><a class="btn primary" href="#services">Explore Services <i class="fa-solid fa-arrow-right"></i></a><button class="btn secondary" onclick="openChat()">Chat with Caliphate Analytics <i class="fa-solid fa-robot"></i></button></div><div class="stats"><div class="stat"><b>10+</b><span>Years of experience</span></div><div class="stat"><b>500+</b><span>Professionals trained</span></div><div class="stat"><b>100+</b><span>Analytics projects</span></div><div class="stat"><b>24/7</b><span>Digital access</span></div></div><div class="sharebar"><button class="wa" onclick="shareWhatsApp()"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button><button class="li" onclick="shareLinkedIn()"><i class="fa-brands fa-linkedin"></i> LinkedIn</button><button class="fb" onclick="shareFacebook()"><i class="fa-brands fa-facebook"></i> Facebook</button><button class="mail" onclick="emailPage()"><i class="fa-solid fa-envelope"></i> Email</button><button class="copy" onclick="copyLink()"><i class="fa-solid fa-link"></i> Copy Link</button></div></div><div class="hero-media"><img src="assets/professional-data-analytics-class.png" alt="Professional data analytics training class"></div></section>
-<section id="services"><div class="container"><div class="section-head"><div><h2>Our Core Services</h2><p>From data collection and cleaning to modelling, visualization and decision support.</p></div></div><div class="grid5"><div class="card service"><i class="fa-solid fa-chart-line"></i><h3>Data Analytics</h3><p>Transform raw data into actionable insights, diagnostics and recommendations.</p></div><div class="card service"><i class="fa-solid fa-gauge-high"></i><h3>Dashboard Development</h3><p>Professional Power BI, Excel and web dashboards for monitoring performance.</p></div><div class="card service"><i class="fa-solid fa-brain"></i><h3>AI & Machine Learning</h3><p>AI-assisted analysis, forecasting, text analytics and intelligent automation.</p></div><div class="card service"><i class="fa-solid fa-graduation-cap"></i><h3>Training</h3><p>Hands-on programmes in Excel, Power BI, SQL, Python and data analytics.</p></div><div class="card service"><i class="fa-solid fa-compass-drafting"></i><h3>Data Consulting</h3><p>End-to-end data strategy, survey analytics, reporting and decision support.</p></div></div></div></section>
-<section id="training"><div class="container training"><img src="assets/professional-data-analytics-class.png" alt="Caliphate Data Analytics professional classroom training"><div><span class="eyebrow">LEARN • PRACTICE • APPLY</span><h2>Professional Data Analytics Training</h2><p>Practical, project-based training designed for beginners, professionals and organizations.</p><ul class="ticks"><li><i class="fa-solid fa-circle-check"></i>Excel for Data Analysis</li><li><i class="fa-solid fa-circle-check"></i>Power BI & Dashboard Design</li><li><i class="fa-solid fa-circle-check"></i>SQL for Data Management</li><li><i class="fa-solid fa-circle-check"></i>Python for Data Science</li><li><i class="fa-solid fa-circle-check"></i>Survey & Text Analytics</li><li><i class="fa-solid fa-circle-check"></i>AI & Machine Learning Essentials</li></ul><a class="btn primary" href="#flyers">View Training Flyers <i class="fa-solid fa-arrow-right"></i></a></div></div></section>
-<section id="flyers"><div class="container"><div class="section-head"><div><h2>Flyers & Learning Resources</h2><p>Explore the training and analytics materials. Each item can be viewed, downloaded or shared.</p></div></div><div class="flyers"><article class="card flyer"><img src="assets/1786803601693.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>2026 Basics of Data Analytics Class</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601693.jpg')">View</button><a class="mini" href="assets/1786803601693.jpg" download>Download</a><button class="mini" onclick="shareFlyer('2026 Basics of Data Analytics Class')">Share</button></div></div></article><article class="card flyer"><img src="assets/1786803601708.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>Hands-on Training Questions</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601708.jpg')">View</button><a class="mini" href="assets/1786803601708.jpg" download>Download</a><button class="mini" onclick="shareFlyer('Hands-on Training Questions')">Share</button></div></div></article><article class="card flyer"><img src="assets/1786803601825.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>Excel Functions & Data Cleansing</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601825.jpg')">View</button><a class="mini" href="assets/1786803601825.jpg" download>Download</a><button class="mini" onclick="shareFlyer('Excel Functions & Data Cleansing')">Share</button></div></div></article><article class="card flyer"><img src="assets/1786803601677.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>Mastering Microsoft Forms</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601677.jpg')">View</button><a class="mini" href="assets/1786803601677.jpg" download>Download</a><button class="mini" onclick="shareFlyer('Mastering Microsoft Forms')">Share</button></div></div></article><article class="card flyer"><img src="assets/1786803601738.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>Hands-on Training Material</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601738.jpg')">View</button><a class="mini" href="assets/1786803601738.jpg" download>Download</a><button class="mini" onclick="shareFlyer('Hands-on Training Material')">Share</button></div></div></article><article class="card flyer"><img src="assets/1786803601853.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>Data Analytics Lifecycle</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601853.jpg')">View</button><a class="mini" href="assets/1786803601853.jpg" download>Download</a><button class="mini" onclick="shareFlyer('Data Analytics Lifecycle')">Share</button></div></div></article><article class="card flyer"><img src="assets/1786803601753.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>Sales Performance Dashboard</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601753.jpg')">View</button><a class="mini" href="assets/1786803601753.jpg" download>Download</a><button class="mini" onclick="shareFlyer('Sales Performance Dashboard')">Share</button></div></div></article><article class="card flyer"><img src="assets/1786803601766.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>Employee & Location Dashboard</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601766.jpg')">View</button><a class="mini" href="assets/1786803601766.jpg" download>Download</a><button class="mini" onclick="shareFlyer('Employee & Location Dashboard')">Share</button></div></div></article><article class="card flyer"><img src="assets/1786803601794.jpg" alt="Caliphate Data Analytics flyer"><div class="flyer-body"><b>More Excel Data Cleansing Tools</b><div class="flyer-actions"><button class="mini green" onclick="viewImage('assets/1786803601794.jpg')">View</button><a class="mini" href="assets/1786803601794.jpg" download>Download</a><button class="mini" onclick="shareFlyer('More Excel Data Cleansing Tools')">Share</button></div></div></article></div></div></section>
-<section id="chat"><div class="container"><div class="dark-panel"><div class="section-head"><div><h2>Chat with Caliphate Analytics</h2><p>Ask about our services, training, dashboards, survey analytics or request a sample chart. The assistant can prepare a chart and send an update to the Caliphate Analytics email once the secure AI/email backend is connected.</p></div><button class="btn primary" onclick="openChat()"><i class="fa-solid fa-robot"></i> Open AI Assistant</button></div><div style="color:#9fb0c3;font-size:13px">Secure architecture: the website never stores an OpenAI API key. AI requests are routed through your backend endpoint.</div></div></div></section>
-<section id="contact"><div class="container contact"><div class="card contact-box"><h2>Contact Caliphate Data Analytics</h2><a href="mailto:alidanjumah@gamail.com"><i class="fa-solid fa-envelope"></i> alidanjumah@gamail.com</a><a href="tel:+2348134042317"><i class="fa-solid fa-phone"></i> +234 813 404 2317</a><a href="https://wa.me/2348134042317" target="_blank"><i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp</a><p style="color:var(--muted)">Nigeria • Data Analytics • Business Intelligence • Training • AI Solutions</p></div><div class="card"><h2>Share the Website</h2><p style="color:var(--muted)">Use the buttons below to share the live website—not the HTML source.</p><div class="sharebar"><button class="wa" onclick="shareWhatsApp()">WhatsApp</button><button class="li" onclick="shareLinkedIn()">LinkedIn</button><button class="fb" onclick="shareFacebook()">Facebook</button><button class="mail" onclick="emailPage()">Email</button><button class="copy" onclick="copyLink()">Copy Link</button></div></div></div></section>
-</main>
-<footer class="footer"><div class="container">© 2026 Caliphate Data Analytics. All rights reserved. <span style="float:right">Data • Insights • Impact</span></div></footer>
-<div id="imageModal" class="chat" style="display:none;background:rgba(0,0,0,.9);width:min(900px,95vw);height:min(90vh,850px);right:50%;bottom:50%;transform:translate(50%,50%);padding:15px"><button class="chat-close" style="position:absolute;right:20px;top:12px;z-index:2" onclick="closeImage()">×</button><img id="modalImage" style="width:100%;height:100%;object-fit:contain" alt="Flyer preview"></div>
-<button class="chat-launch" onclick="openChat()"><i class="fa-solid fa-robot"></i> Chat with Caliphate Analytics</button>
-<div id="chatBox" class="chat" aria-label="Chat with Caliphate Analytics"><div class="chat-head"><div><b><i class="fa-solid fa-robot"></i> Chat with Caliphate Analytics</b><span class="online">● AI Assistant</span></div><button class="chat-close" onclick="closeChat()">×</button></div><div id="messages" class="messages"><div class="msg bot">Hello! I'm Caliphate Analytics AI. I can answer questions about our analytics services and training, and I can prepare a sample chart for you.</div></div><div class="chat-tools"><button onclick="quick('Show me a sample sales trend chart')">📈 Sales chart</button><button onclick="quick('Tell me about Power BI training')">🎓 Training</button><button onclick="sendEmailUpdate()">✉ Email update</button></div><div class="notice">For live AI responses and automatic email delivery, connect the secure backend described in SETUP.md.</div><div class="chat-input"><input id="chatInput" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button></div></div>
+body{margin:0;font-family:Arial,sans-serif;background:#061525;color:#eef6ff}header{padding:18px 5%;background:#071a2b;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}a{color:inherit;text-decoration:none}.btn{display:inline-block;padding:12px 16px;border-radius:10px;background:#12c76a;color:#03150c;font-weight:800;border:0;cursor:pointer}.hero{max-width:1180px;margin:auto;padding:70px 5%;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}.hero h1{font-size:clamp(42px,6vw,72px);line-height:1}.hero h1 span{color:#12c76a}.hero p{color:#b9c7d7;font-size:18px}.hero img{width:100%;height:450px;object-fit:cover;border-radius:24px}.cards{max-width:1180px;margin:auto;padding:50px 5%;display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.card{padding:22px;background:#0a1e32;border:1px solid #ffffff1c;border-radius:16px}.card p{color:#9fb0c3;font-size:13px}.contact{max-width:1180px;margin:auto;padding:50px 5%}.share{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.share button{border:0;border-radius:8px;padding:10px 13px;color:white;font-weight:700;cursor:pointer}.wa{background:#16a34a}.li{background:#0a66c2}.fb{background:#1877f2}.mail{background:#7652e8}.copy{background:#334155}.chat{position:fixed;right:20px;bottom:20px;background:#7652e8;color:#fff;border:0;border-radius:30px;padding:15px 20px;font-weight:800;cursor:pointer}@media(max-width:800px){.hero{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}}@media(max-width:500px){.cards{grid-template-columns:1fr}}
+</style></head><body>
+<header><b>CALIPHATE DATA ANALYTICS</b><a class="btn" href="dashboard.html">Take a Dashboard Tour</a></header>
+<section class="hero"><div><small>DATA • INSIGHTS • IMPACT</small><h1>Turn Data Into <span>Insights.</span><br>Insights Into <span>Impact.</span></h1><p>Professional data analytics, dashboards, survey analytics, AI solutions and practical training.</p><a class="btn" href="dashboard.html">Explore Sample Sales Dashboard →</a><div class="share"><button class="wa" onclick="shareWhatsApp()">WhatsApp</button><button class="li" onclick="shareLinkedIn()">LinkedIn</button><button class="fb" onclick="shareFacebook()">Facebook</button><button class="mail" onclick="emailPage()">Email</button><button class="copy" onclick="copyLink()">Copy Live Link</button></div></div>
+<img src="assets/professional-data-analytics-class.png" onerror="this.src='https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85'" alt="Professional data analytics class"></section>
+<section class="cards"><div class="card"><h3>Data Analytics</h3><p>Actionable analysis and decision support.</p></div><div class="card"><h3>Dashboards</h3><p>Power BI, Excel and web dashboards.</p></div><div class="card"><h3>AI & ML</h3><p>AI-assisted analytics and forecasting.</p></div><div class="card"><h3>Training</h3><p>Excel, Power BI, SQL, Python and analytics.</p></div><div class="card"><h3>Consulting</h3><p>Survey analytics, reporting and data strategy.</p></div></section>
+<section class="contact"><div class="card"><h2>Contact</h2><p><a href="mailto:alidanjumah@gamail.com">alidanjumah@gamail.com</a></p><p><a href="tel:+2348134042317">+234 813 404 2317</a></p><p><a href="https://wa.me/2348134042317" target="_blank">Chat on WhatsApp</a></p></div><div class="card"><h2>Dashboard Tour</h2><p>Upload Excel/CSV data, use filters, analyse five KPIs and five visuals, and export the filtered analysis to Excel, CSV or PDF.</p><a class="btn" href="dashboard.html">Open Dashboard</a></div></section>
+<button class="chat" onclick="openChat()">🤖 Chat with Caliphate Analytics</button>
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQuVyO4wCTofQFgC42wmIkPb10p7hBIJYkoBcSg4IOMSOc4HsbXhxUeNyWVXERJbVB/exec";
-const SITE_URL='https://alidanjumah-glitch.github.io/';
-// Set this after deploying the secure backend. Example: https://script.google.com/macros/s/DEPLOYMENT_ID/exec
-const AI_ENDPOINT='';
-const CONTACT_EMAIL='alidanjumah@gamail.com';
-let chartInstance=null;
-function shareWhatsApp(){window.open('https://wa.me/?text='+encodeURIComponent('Caliphate Data Analytics — '+SITE_URL),'_blank')}
-function shareLinkedIn(){window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(SITE_URL),'_blank')}
-function shareFacebook(){window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(SITE_URL),'_blank')}
-function emailPage(){location.href='mailto:?subject='+encodeURIComponent('Caliphate Data Analytics')+'&body='+encodeURIComponent('Explore Caliphate Data Analytics: '+SITE_URL)}
-async function copyLink(){try{await navigator.clipboard.writeText(SITE_URL);alert('Live website link copied: '+SITE_URL)}catch(e){prompt('Copy this live website link:',SITE_URL)}}
-function shareFlyer(title){const text='Caliphate Data Analytics — '+title+'
-'+SITE_URL; if(navigator.share){navigator.share({title,text,url:SITE_URL}).catch(()=>{})}else{window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank')}}
-function viewImage(src){document.getElementById('modalImage').src=src;document.getElementById('imageModal').style.display='flex'}
-function closeImage(){document.getElementById('imageModal').style.display='none'}
-function openChat(){document.getElementById('chatBox').classList.add('open')}
-function closeChat(){document.getElementById('chatBox').classList.remove('open')}
-function addMsg(text,who='bot',chartData=null){const wrap=document.getElementById('messages');const m=document.createElement('div');m.className='msg '+who;m.textContent=text;wrap.appendChild(m);if(chartData){const box=document.createElement('div');box.className='chat-chart';const c=document.createElement('canvas');box.appendChild(c);wrap.appendChild(box);renderChart(c,chartData)}wrap.scrollTop=wrap.scrollHeight}
-function quick(t){document.getElementById('chatInput').value=t;sendChat()}
-function localAssistant(text){const t=text.toLowerCase();if(t.includes('sales')||t.includes('chart')||t.includes('trend')){return {text:'I prepared a sample monthly sales trend chart. You can use the Email update button to send the chart summary to Caliphate Analytics.',chart:{labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],values:[52,61,58,73,69,82,91,86,104,98,118,127]}}}if(t.includes('power bi'))return {text:'Our Power BI training covers data modelling, Power Query, DAX, interactive dashboards, KPI design and professional report layouts.'};if(t.includes('excel'))return {text:'Excel training covers data cleaning, functions, PivotTables, charts, Power Query, dashboards and practical analytics workflows.'};if(t.includes('survey'))return {text:'We support survey analytics including frequency distributions, cross-tabs, diffusion indices, thematic analysis, sentiment analysis and auditable reporting.'};if(t.includes('contact')||t.includes('email'))return {text:'You can contact Caliphate Data Analytics at '+CONTACT_EMAIL+' or +234 813 404 2317.'};return {text:'I can help with Caliphate Data Analytics services, Excel, Power BI, SQL, Python, survey analytics, dashboards and sample charts. Ask me what you need.'}}
-function renderChart(canvas,d){if(chartInstance)chartInstance.destroy();chartInstance=new Chart(canvas,{type:'line',data:{labels:d.labels,datasets:[{label:'Sales',data:d.values,borderWidth:3,tension:.35,fill:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});}
-async function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;input.value='';addMsg(text,'user');if(AI_ENDPOINT){try{const r=await fetch(AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chat',message:text,site:location.href})});const j=await r.json();addMsg(j.reply||'I could not produce a response.', 'bot', j.chart||null);return}catch(e){addMsg('The live AI service is temporarily unavailable. I will use the local Caliphate Analytics assistant instead.','bot')}}const result=localAssistant(text);addMsg(result.text,'bot',result.chart||null)}
-async function sendEmailUpdate(){const summary='Caliphate Analytics website chat update requested. Website: '+SITE_URL+'
-A visitor requested an analytics/chart update from the AI assistant.';if(AI_ENDPOINT){try{let img='';if(chartInstance)img=chartInstance.toBase64Image();const r=await fetch(AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'email',to:CONTACT_EMAIL,subject:'Caliphate Analytics — Chart/Chat Update',body:summary,chartImage:img})});const j=await r.json();addMsg(j.message||'Email update request submitted.','bot');return}catch(e){}}location.href='mailto:'+CONTACT_EMAIL+'?subject='+encodeURIComponent('Caliphate Analytics — Chart/Chat Update')+'&body='+encodeURIComponent(summary)}
-</script>
-
-<style>
-#cda-chat-launcher{position:fixed;right:22px;bottom:22px;z-index:9999;border:0;border-radius:999px;
-padding:14px 18px;background:#10b981;color:#03130d;font-weight:900;box-shadow:0 12px 35px rgba(0,0,0,.35);cursor:pointer}
-#cda-chat{position:fixed;right:22px;bottom:82px;width:min(390px,calc(100vw - 30px));height:540px;z-index:9998;
-background:#081522;border:1px solid #29435c;border-radius:18px;box-shadow:0 25px 70px rgba(0,0,0,.55);display:none;overflow:hidden}
-#cda-chat.open{display:flex;flex-direction:column}
-#cda-chat-head{padding:15px;background:#0d2539;border-bottom:1px solid #29435c;display:flex;justify-content:space-between;align-items:center}
-#cda-chat-title{font-weight:900;color:#fff}
-#cda-chat-sub{font-size:11px;color:#9fb0c0;margin-top:3px}
-#cda-chat-close{background:transparent;color:#fff;border:0;font-size:20px;cursor:pointer}
-#cda-chat-log{flex:1;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:10px}
-.cda-msg{max-width:88%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.45;white-space:pre-wrap}
-.cda-user{align-self:flex-end;background:#0e6b52;color:#fff}
-.cda-ai{align-self:flex-start;background:#14283b;color:#e8f1f8}
-#cda-chat-form{display:flex;gap:7px;padding:10px;border-top:1px solid #29435c}
-#cda-chat-input{flex:1;background:#07121d;color:#fff;border:1px solid #29435c;border-radius:9px;padding:10px;outline:0}
-#cda-chat-send{background:#10b981;color:#03130d;border:0;border-radius:9px;padding:0 14px;font-weight:900;cursor:pointer}
-#cda-chat-send:disabled{opacity:.5}
-</style>
-
-<button id="cda-chat-launcher" type="button">🤖 Chat with Caliphate Analytics</button>
-
-<div id="cda-chat" aria-label="Chat with Caliphate Analytics">
-  <div id="cda-chat-head">
-    <div>
-      <div id="cda-chat-title">Chat with Caliphate Analytics</div>
-      <div id="cda-chat-sub">AI-powered data analytics assistant</div>
-    </div>
-    <button id="cda-chat-close" type="button">×</button>
-  </div>
-  <div id="cda-chat-log">
-    <div class="cda-msg cda-ai">Hello! I’m the Caliphate Analytics AI assistant. Ask me about data analytics, Excel, Power BI, dashboards, survey analytics, training, or business intelligence.</div>
-  </div>
-  <form id="cda-chat-form">
-    <input id="cda-chat-input" autocomplete="off" placeholder="Ask a data analytics question…">
-    <button id="cda-chat-send" type="submit">Send</button>
-  </form>
-</div>
-
-<script>
-(function(){
-  const API_URL = APPS_SCRIPT_URL;
-  const launcher = document.getElementById("cda-chat-launcher");
-  const panel = document.getElementById("cda-chat");
-  const close = document.getElementById("cda-chat-close");
-  const form = document.getElementById("cda-chat-form");
-  const input = document.getElementById("cda-chat-input");
-  const send = document.getElementById("cda-chat-send");
-  const log = document.getElementById("cda-chat-log");
-
-  launcher.addEventListener("click",()=>{panel.classList.add("open");input.focus();});
-  close.addEventListener("click",()=>panel.classList.remove("open"));
-
-  function add(text, cls){
-    const el=document.createElement("div");
-    el.className="cda-msg "+cls;
-    el.textContent=text;
-    log.appendChild(el);
-    log.scrollTop=log.scrollHeight;
-    return el;
-  }
-
-  form.addEventListener("submit", async function(e){
-    e.preventDefault();
-    const message=input.value.trim();
-    if(!message) return;
-    add(message,"cda-user");
-    input.value="";
-    send.disabled=true;
-    const waiting=add("Caliphate Analytics is thinking…","cda-ai");
-
-    try{
-      const r=await fetch(API_URL,{
-        method:"POST",
-        headers:{"Content-Type":"text/plain;charset=utf-8"},
-        body:JSON.stringify({action:"chat",message:message})
-      });
-      const data=await r.json();
-      if(!data.success) throw new Error(data.error||"AI service error");
-      waiting.textContent=data.answer;
-    }catch(err){
-      console.error(err);
-      waiting.textContent="I’m unable to connect to the AI assistant right now. Please contact +234 813 404 2317 or alidanjumah@gamail.com.";
-    }finally{
-      send.disabled=false;
-      input.focus();
-    }
-  });
-})();
-</script>
-
-
-<script>
-window.sendCaliphateChartUpdate = async function(subject, message, chartImage){
-  const r = await fetch(APPS_SCRIPT_URL,{
-    method:"POST",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify({
-      action:"sendChartEmail",
-      subject:subject || "Caliphate Analytics — Chart Update",
-      message:message || "Latest analytics update.",
-      chartImage:chartImage || ""
-    })
-  });
-  const data=await r.json();
-  if(!data.success) throw new Error(data.error || "Email failed");
-  return data;
-};
-</script>
-
-</body></html>
+const SITE_URL="https://alidanjumah-glitch.github.io/";
+function shareWhatsApp(){window.open("https://wa.me/?text="+encodeURIComponent("Caliphate Data Analytics — "+SITE_URL),"_blank")}
+function shareLinkedIn(){window.open("https://www.linkedin.com/sharing/share-offsite/?url="+encodeURIComponent(SITE_URL),"_blank")}
+function shareFacebook(){window.open("https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(SITE_URL),"_blank")}
+function emailPage(){location.href="mailto:?subject=Caliphate Data Analytics&body="+encodeURIComponent(SITE_URL)}
+async function copyLink(){try{await navigator.clipboard.writeText(SITE_URL);alert("Live website link copied: "+SITE_URL)}catch(e){prompt("Copy this live website link:",SITE_URL)}}
+function openChat(){alert("Caliphate Analytics AI is configured to use your Google Apps Script backend.")}
+</script></body></html>

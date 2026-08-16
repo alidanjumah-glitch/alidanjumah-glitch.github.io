@@ -1,103 +1,35 @@
-<!doctype html>
-<html lang="en">
-<head>
+<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Caliphate Data Analytics — professional data analytics, business intelligence, survey analytics, dashboards, AI solutions and training.">
-<meta property="og:title" content="Caliphate Data Analytics">
-<meta property="og:description" content="Turn data into insights. Insights into impact.">
-<meta property="og:url" content="https://alidanjumah-glitch.github.io/">
 <title>Caliphate Data Analytics | Data • Insights • Impact</title>
 <style>
-:root{--navy:#061525;--navy2:#0d2943;--green:#11c86b;--purple:#7652e8;--cyan:#28c4e8;--text:#eef6ff;--muted:#9fb0c3;--line:#24415b;--card:#0d2238;--gold:#e8b23a}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#04111f,#071b2d 58%,#030d18);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.6}
-a{text-decoration:none;color:inherit}.container{width:min(1180px,92%);margin:auto}
-header{position:sticky;top:0;z-index:40;background:rgba(3,12,22,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-nav{height:72px;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;gap:10px;align-items:center;font-weight:900}.logo{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--green),#0877d1);display:grid;place-items:center;color:#03120b}
-.navlinks{display:flex;gap:22px;font-size:14px;color:#c7d5e2}.navlinks a:hover{color:var(--green)}
-.nav-tour{background:var(--green);color:#03140c;padding:10px 14px;border-radius:9px;font-weight:900}
-.hero{padding:70px 0 50px;display:grid;grid-template-columns:1.03fr .97fr;gap:38px;align-items:center}.eyebrow{display:inline-block;background:#0a3b2a;border:1px solid #1e7656;color:#77efab;padding:7px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:1.2px}
-h1{font-size:clamp(42px,6vw,70px);line-height:1.03;margin:18px 0}.accent{color:var(--green)}.hero p{font-size:18px;color:#b9c7d7;max-width:650px}
-.cta{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:10px;border:1px solid var(--line);font-weight:850;cursor:pointer}.primary{background:var(--green);color:#03140c}.secondary{background:#10283f}
-.hero img{width:100%;height:460px;object-fit:cover;border-radius:24px;border:1px solid #ffffff22;box-shadow:0 25px 70px #0008}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}.stat{background:#0a1f33;border:1px solid var(--line);border-radius:12px;padding:13px}.stat b{display:block;font-size:23px}.stat span{font-size:11px;color:var(--muted)}
-section{padding:65px 0}.section-title{font-size:31px;margin:0 0 8px}.section-sub{color:var(--muted);max-width:760px;margin:0 0 25px}
-.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}.card{background:linear-gradient(145deg,#0d2238,#091a2b);border:1px solid var(--line);border-radius:16px;padding:21px}.card h3{margin:0 0 8px}.card p{color:var(--muted);font-size:13px;margin:0}.icon{font-size:27px;color:var(--green);margin-bottom:13px}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}.split img{width:100%;height:340px;object-fit:cover;border-radius:18px;border:1px solid var(--line)}
-.pills{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.pill{padding:8px 10px;border-radius:999px;background:#0b2b42;border:1px solid var(--line);color:#cfe0ef;font-size:12px}
-.flyers{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.flyer{overflow:hidden}.flyer img{width:100%;height:300px;object-fit:cover;background:#fff;display:block}.flyer-body{padding:14px}.mini{padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:#102a42;color:#fff;font-size:11px;font-weight:800;cursor:pointer}.flyer-actions{display:flex;gap:7px;margin-top:10px}
-.contact{display:grid;grid-template-columns:1fr 1fr;gap:18px}.contact a{display:block;padding:7px 0;color:#d7e4ef}.contact a:hover{color:var(--green)}
-.footer{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:12px}
-.share{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.share button{border:0;border-radius:8px;padding:9px 12px;color:white;cursor:pointer;font-weight:800}.wa{background:#16a34a}.li{background:#0a66c2}.fb{background:#1877f2}.mail{background:#7652e8}.copy{background:#334155}
-.chat-launch{position:fixed;right:20px;bottom:20px;z-index:90;background:linear-gradient(135deg,#7652e8,#4c2bb5);border:0;border-radius:999px;color:#fff;padding:14px 18px;font-weight:900;cursor:pointer;box-shadow:0 16px 45px #0008}
-.chat{position:fixed;right:20px;bottom:75px;width:min(400px,calc(100vw - 28px));height:560px;z-index:91;display:none;flex-direction:column;background:#f6f8fb;color:#162335;border-radius:18px;overflow:hidden;box-shadow:0 25px 70px #0009}.chat.open{display:flex}.chat-head{background:linear-gradient(135deg,#5427c9,#7b52e8);color:#fff;padding:14px 16px;display:flex;justify-content:space-between}.chat-close{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer}.chat-body{flex:1;overflow:auto;padding:12px;background:#f5f7fb}.bubble{max-width:86%;padding:10px 12px;border-radius:13px;margin:8px 0;font-size:13px;white-space:pre-wrap}.bot{background:#fff;border:1px solid #dce3eb}.user{background:#e8ddff;margin-left:auto}.chat-foot{background:#fff;border-top:1px solid #dce3eb;padding:9px;display:flex;gap:7px}.chat-foot input{flex:1;border:1px solid #ccd5e1;border-radius:10px;padding:10px}.chat-foot button{background:#6d45d3;color:#fff;border:0;border-radius:10px;width:45px;cursor:pointer}
-@media(max-width:950px){.navlinks{display:none}.hero,.split,.contact{grid-template-columns:1fr}.grid5{grid-template-columns:repeat(2,1fr)}.flyers{grid-template-columns:repeat(2,1fr)}.hero img{height:340px}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.grid5,.flyers{grid-template-columns:1fr}.hero{padding-top:45px}h1{font-size:44px}.nav-tour{font-size:11px;padding:8px 10px}}
-</style>
-</head>
-<body>
-<header><nav class="container">
-<a class="brand" href="index.html"><span class="logo">CDA</span><span>CALIPHATE<br><small style="color:var(--green);letter-spacing:1px">DATA ANALYTICS</small></span></a>
-<div class="navlinks"><a href="#services">Services</a><a href="#training">Training</a><a href="#resources">Resources</a><a href="#contact">Contact</a></div>
-<a class="nav-tour" href="dashboard.html">Take Dashboard Tour</a>
-</nav></header>
-
+:root{--bg:#061525;--bg2:#0b2138;--g:#12c76a;--p:#7652e8;--t:#eef6ff;--m:#9fb0c3;--line:#24415b}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#071b2d);color:var(--t);line-height:1.6}
+.wrap{width:min(1180px,92%);margin:auto}a{text-decoration:none;color:inherit}
+header{position:sticky;top:0;z-index:50;background:#03101df2;border-bottom:1px solid var(--line)}nav{height:70px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:900}.brand span{color:var(--g)}.tour{background:var(--g);color:#04130b;padding:10px 14px;border-radius:9px;font-weight:900}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:38px;align-items:center;padding:70px 0}.hero h1{font-size:clamp(42px,6vw,70px);line-height:1.02}.hero h1 span{color:var(--g)}.hero p{font-size:18px;color:#b9c7d7}
+.hero img{width:100%;height:430px;object-fit:cover;border-radius:22px;border:1px solid #ffffff22}.btn{display:inline-block;padding:12px 16px;border-radius:9px;background:var(--g);color:#03130b;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.card{background:#0d2238;border:1px solid var(--line);border-radius:15px;padding:20px}.card p{color:var(--m);font-size:13px}
+section{padding:55px 0}.resources{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.resources img{width:100%;height:270px;object-fit:cover;border-radius:12px}
+.share{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px}.share button{border:0;border-radius:8px;padding:9px 12px;color:#fff;font-weight:800;cursor:pointer}.wa{background:#16a34a}.li{background:#0a66c2}.fb{background:#1877f2}.mail{background:#7652e8}.copy{background:#334155}
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:18px}.footer{text-align:center;padding:30px;color:#8aa0b5;border-top:1px solid var(--line)}
+.chat-launch{position:fixed;right:18px;bottom:18px;background:linear-gradient(135deg,#7652e8,#4c2bb5);color:#fff;border:0;border-radius:999px;padding:14px 18px;font-weight:900;cursor:pointer;z-index:90}.chat{position:fixed;right:18px;bottom:70px;width:min(400px,calc(100vw - 28px));height:560px;display:none;flex-direction:column;background:#f5f7fb;color:#162335;border-radius:18px;overflow:hidden;box-shadow:0 24px 70px #0009;z-index:91}.chat.open{display:flex}.chat h3{margin:0;color:#fff}.chat-head{background:linear-gradient(135deg,#5427c9,#7b52e8);padding:14px;color:#fff;display:flex;justify-content:space-between}.chat-head button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer}.chat-body{flex:1;overflow:auto;padding:12px}.bubble{max-width:86%;padding:10px 12px;border-radius:13px;margin:8px 0;font-size:13px;white-space:pre-wrap}.bot{background:#fff;border:1px solid #dce3eb}.user{background:#e8ddff;margin-left:auto}.chat-foot{background:#fff;padding:9px;display:flex;gap:7px;border-top:1px solid #dce3eb}.chat-foot input{flex:1;padding:10px;border:1px solid #ccd5e1;border-radius:10px}.chat-foot button{background:#6d45d3;color:#fff;border:0;border-radius:10px;width:45px;cursor:pointer}
+@media(max-width:850px){.hero,.contact{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.resources{grid-template-columns:1fr 1fr}}@media(max-width:550px){.grid,.resources{grid-template-columns:1fr}}
+</style></head><body>
+<header><nav class="wrap"><div class="brand">CALIPHATE <span>DATA ANALYTICS</span></div><a class="tour" href="dashboard.html">Take Dashboard Tour</a></nav></header>
 <main>
-<section class="container hero">
-<div>
-<span class="eyebrow">DATA • INSIGHTS • IMPACT</span>
-<h1>Turn Data Into <span class="accent">Strategic Power.</span></h1>
-<p>Caliphate Data Analytics helps organisations and professionals transform raw data into evidence, dashboards, intelligence and confident decisions. We combine practical analytics, business intelligence, survey analysis, AI and hands-on training.</p>
-<div class="cta"><a class="btn primary" href="#services">Explore Our Services →</a><a class="btn secondary" href="dashboard.html">See the Sample Dashboard →</a></div>
-<div class="stats"><div class="stat"><b>10+</b><span>Years analytics experience</span></div><div class="stat"><b>500+</b><span>Professionals targeted by our training programmes</span></div><div class="stat"><b>100+</b><span>Dashboard / analytics concepts</span></div><div class="stat"><b>24/7</b><span>Digital access to resources</span></div></div>
-<div class="share"><button class="wa" onclick="shareWhatsApp()">WhatsApp</button><button class="li" onclick="shareLinkedIn()">LinkedIn</button><button class="fb" onclick="shareFacebook()">Facebook</button><button class="mail" onclick="emailPage()">Email</button><button class="copy" onclick="copyLink()">Copy Live Link</button></div>
-</div>
-<div><img src="assets/professional-data-analytics-class.png" alt="Professional data analytics class" onerror="this.src='https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85'"></div>
-</section>
-
-<section id="services"><div class="container"><h2 class="section-title">What We Do</h2><p class="section-sub">From data preparation to executive insight, our solutions are designed around real operational and decision-making needs.</p>
-<div class="grid5"><div class="card"><div class="icon">◈</div><h3>Data Analytics</h3><p>Data cleaning, descriptive analytics, diagnostics, trend analysis and actionable insight.</p></div>
-<div class="card"><div class="icon">▦</div><h3>Business Intelligence</h3><p>Interactive dashboards, KPI frameworks and management reporting using Excel, Power BI and web technologies.</p></div>
-<div class="card"><div class="icon">◎</div><h3>Survey Analytics</h3><p>PMI, BES and other survey analysis including cross-tabs, diffusion indices and text analytics.</p></div>
-<div class="card"><div class="icon">◆</div><h3>AI Solutions</h3><p>AI-assisted analysis, intelligent assistants, automation, forecasting and decision support.</p></div>
-<div class="card"><div class="icon">🎓</div><h3>Professional Training</h3><p>Practical Excel, Power BI, SQL, Python, data literacy and analytics programmes for individuals and teams.</p></div></div></div></section>
-
-<section id="training"><div class="container split"><div><h2 class="section-title">Build Practical Data Skills</h2><p class="section-sub">Our approach combines concepts, hands-on exercises, real datasets and decision-oriented projects so learners can apply what they learn immediately.</p>
-<div class="pills"><span class="pill">Excel & Power Query</span><span class="pill">Power BI & DAX</span><span class="pill">SQL</span><span class="pill">Python</span><span class="pill">Survey Analytics</span><span class="pill">Text Analytics</span><span class="pill">AI & ML</span><span class="pill">Dashboard Design</span></div>
-<p style="color:var(--muted)">Typical deliverables include analytical dashboards, cleaned datasets, management reports, survey summaries, training exercises and reusable analytical tools.</p></div>
-<div><img src="assets/flyer-03.jpg" alt="Caliphate Data Analytics training flyer"></div></div></section>
-
-<section id="resources"><div class="container"><h2 class="section-title">Training & Analytics Resources</h2><p class="section-sub">A growing collection of training materials, data collection guidance, Excel resources, dashboards and practical analytics examples.</p>
-<div class="flyers">
-<div class="card flyer"><img src="assets/flyer-03.jpg" alt="Basics of Data Analytics"><div class="flyer-body"><b>2026 Basics of Data Analytics</b><p>Foundation programme and practical analytics learning.</p><div class="flyer-actions"><a class="mini" href="assets/flyer-03.jpg" target="_blank">View</a><a class="mini" href="assets/flyer-03.jpg" download>Download</a></div></div></div>
-<div class="card flyer"><img src="assets/flyer-02.jpg" alt="Microsoft Forms"><div class="flyer-body"><b>Microsoft Forms & Data Collection</b><p>Digital data collection and structured survey workflows.</p><div class="flyer-actions"><a class="mini" href="assets/flyer-02.jpg" target="_blank">View</a><a class="mini" href="assets/flyer-02.jpg" download>Download</a></div></div></div>
-<div class="card flyer"><img src="assets/flyer-10.jpg" alt="Excel Data Cleansing"><div class="flyer-body"><b>Excel Data Cleansing</b><p>Functions and tools for data quality and transformation.</p><div class="flyer-actions"><a class="mini" href="assets/flyer-10.jpg" target="_blank">View</a><a class="mini" href="assets/flyer-10.jpg" download>Download</a></div></div></div>
-<div class="card flyer"><img src="assets/flyer-07.jpg" alt="Dashboard example"><div class="flyer-body"><b>Dashboard & Performance Analytics</b><p>Examples of employee, regional and sales performance analytics.</p><div class="flyer-actions"><a class="mini" href="assets/flyer-07.jpg" target="_blank">View</a><a class="mini" href="assets/flyer-07.jpg" download>Download</a></div></div></div>
-<div class="card flyer"><img src="assets/flyer-06.jpg" alt="Excel data capture"><div class="flyer-body"><b>Data Capture & Sales Analytics</b><p>Practical Excel data capture and analysis workflows.</p><div class="flyer-actions"><a class="mini" href="assets/flyer-06.jpg" target="_blank">View</a><a class="mini" href="assets/flyer-06.jpg" download>Download</a></div></div></div>
-<div class="card flyer"><img src="assets/flyer-11.jpg" alt="Data Analytics Lifecycle"><div class="flyer-body"><b>Data Analytics Lifecycle</b><p>From problem definition through insight and action.</p><div class="flyer-actions"><a class="mini" href="assets/flyer-11.jpg" target="_blank">View</a><a class="mini" href="assets/flyer-11.jpg" download>Download</a></div></div></div>
-</div></div></section>
-
-<section id="contact"><div class="container contact"><div class="card"><h2>Contact Caliphate Data Analytics</h2><p><a href="mailto:alidanjumah@gamail.com">✉ alidanjumah@gamail.com</a><a href="tel:+2348134042317">☎ +234 813 404 2317</a><a href="https://wa.me/2348134042317" target="_blank">◉ WhatsApp Chat</a></p><p style="color:var(--muted)">Nigeria • Data Analytics • Business Intelligence • Survey Analytics • AI • Training</p></div>
-<div class="card"><h2>Experience Our Sample Analytics</h2><p style="color:var(--muted)">Take the interactive sales dashboard tour, upload an Excel/CSV dataset, apply filters, inspect KPIs and visuals, and export the analysis to Excel, CSV or PDF.</p><a class="btn primary" href="dashboard.html">Open Dashboard Tour</a></div></div></section>
-</main>
-<footer class="footer"><div class="container">© 2026 Caliphate Data Analytics. All rights reserved. • <a href="mailto:alidanjumah@gamail.com">alidanjumah@gamail.com</a> • +234 813 404 2317</div></footer>
-
+<section class="wrap hero"><div><small>DATA • INSIGHTS • IMPACT</small><h1>Turn Data Into <span>Strategic Power.</span></h1><p>Professional data analytics, dashboards, survey analytics, AI solutions and practical training for individuals, teams and organisations.</p><a class="btn" href="dashboard.html">Explore the Sample Sales Dashboard →</a><div class="share"><button class="wa" onclick="shareWhatsApp()">WhatsApp</button><button class="li" onclick="shareLinkedIn()">LinkedIn</button><button class="fb" onclick="shareFacebook()">Facebook</button><button class="mail" onclick="emailPage()">Email</button><button class="copy" onclick="copyLink()">Copy Live Link</button></div></div>
+<img src="assets/professional-data-analytics-class.png" onerror="this.src='https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85'" alt="Professional data analytics class"></section>
+<section class="wrap"><h2>What We Do</h2><div class="grid"><div class="card"><h3>Data Analytics</h3><p>Cleaning, diagnostics, trends and actionable insight.</p></div><div class="card"><h3>Business Intelligence</h3><p>Interactive dashboards and KPI reporting.</p></div><div class="card"><h3>Survey Analytics</h3><p>PMI, BES, cross-tabs, indices and text analytics.</p></div><div class="card"><h3>AI Solutions</h3><p>AI-assisted analysis, automation and forecasting.</p></div><div class="card"><h3>Training</h3><p>Excel, Power BI, SQL, Python and analytics programmes.</p></div></div></section>
+<section class="wrap"><h2>Training & Resources</h2><div class="resources"><div class="card"><img src="assets/flyer-03.jpg" onerror="this.style.display='none'"><h3>Data Analytics Training</h3><p>Foundation and practical analytics learning.</p></div><div class="card"><img src="assets/flyer-02.jpg" onerror="this.style.display='none'"><h3>Digital Data Collection</h3><p>Forms and structured collection workflows.</p></div><div class="card"><img src="assets/flyer-10.jpg" onerror="this.style.display='none'"><h3>Excel Data Cleansing</h3><p>Functions and tools for cleaner analysis.</p></div></div></section>
+<section class="wrap contact"><div class="card"><h2>Contact</h2><p><a href="mailto:alidanjumah@gamail.com">alidanjumah@gamail.com</a></p><p><a href="tel:+2348134042317">+234 813 404 2317</a></p><p><a href="https://wa.me/2348134042317" target="_blank">WhatsApp</a></p></div><div class="card"><h2>Dashboard</h2><p>Use the supplied demo data or download the template, enter your own sales data and run the analysis.</p><a class="btn" href="dashboard.html">Open Dashboard</a></div></section></main>
+<footer class="footer">© 2026 Caliphate Data Analytics • alidanjumah@gamail.com • +234 813 404 2317</footer>
 <button class="chat-launch" onclick="openChat()">🤖 Chat with Caliphate Analytics</button>
-<div id="chat" class="chat"><div class="chat-head"><div><b>Chat with Caliphate Analytics</b><div style="font-size:11px;color:#c4ffd8">AI-powered assistant</div></div><button class="chat-close" onclick="closeChat()">×</button></div>
-<div id="chatBody" class="chat-body"><div class="bubble bot">Hello. I’m the Caliphate Analytics AI assistant. Ask me about data analytics, Excel, Power BI, dashboards, survey analytics or training.</div></div>
-<div class="chat-foot"><input id="chatInput" placeholder="Ask a question..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">➤</button></div></div>
-
+<div id="chat" class="chat"><div class="chat-head"><div><h3>Chat with Caliphate Analytics</h3><small>AI-powered assistant</small></div><button onclick="closeChat()">×</button></div><div id="chatBody" class="chat-body"><div class="bubble bot">Hello. I’m the Caliphate Analytics assistant. Ask me about Excel, Power BI, dashboards, survey analytics or training.</div></div><div class="chat-foot"><input id="chatInput" placeholder="Ask a question..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">➤</button></div></div>
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbzQuVyO4wCTofQFgC42wmIkPb10p7hBIJYkoBcSg4IOMSOc4HsbXhxUeNyWVXERJbVB/exec";
-const SITE_URL="https://alidanjumah-glitch.github.io/";
-function shareWhatsApp(){window.open("https://wa.me/?text="+encodeURIComponent("Caliphate Data Analytics — "+SITE_URL),"_blank")}
-function shareLinkedIn(){window.open("https://www.linkedin.com/sharing/share-offsite/?url="+encodeURIComponent(SITE_URL),"_blank")}
-function shareFacebook(){window.open("https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(SITE_URL),"_blank")}
-function emailPage(){location.href="mailto:?subject="+encodeURIComponent("Caliphate Data Analytics")+"&body="+encodeURIComponent("Explore: "+SITE_URL)}
-async function copyLink(){try{await navigator.clipboard.writeText(SITE_URL);alert("Live website link copied: "+SITE_URL)}catch(e){prompt("Copy this link:",SITE_URL)}}
-function openChat(){document.getElementById("chat").classList.add("open");document.getElementById("chatInput").focus()}
-function closeChat(){document.getElementById("chat").classList.remove("open")}
-function bubble(text,cls){const d=document.createElement("div");d.className="bubble "+cls;d.textContent=text;document.getElementById("chatBody").appendChild(d);document.getElementById("chatBody").scrollTop=99999;return d}
-async function sendChat(){const input=document.getElementById("chatInput"),msg=input.value.trim();if(!msg)return;input.value="";bubble(msg,"user");const waiting=bubble("Caliphate Analytics is thinking...","bot");
-try{const res=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"chat",message:msg})});const data=await res.json();if(!data.success)throw new Error(data.error||"Backend error");waiting.textContent=data.answer||"No response returned."}
-catch(err){waiting.textContent="The AI service could not be reached. Please try again or contact alidanjumah@gamail.com / +234 813 404 2317.";console.error(err)}}
-</script>
-</body></html>
+const API_URL="https://script.google.com/macros/s/AKfycbzQuVyO4wCTofQFgC42wmIkPb10p7hBIJYkoBcSg4IOMSOc4HsbXhxUeNyWVXERJbVB/exec",SITE_URL="https://alidanjumah-glitch.github.io/";
+function shareWhatsApp(){window.open("https://wa.me/?text="+encodeURIComponent("Caliphate Data Analytics — "+SITE_URL),"_blank")}function shareLinkedIn(){window.open("https://www.linkedin.com/sharing/share-offsite/?url="+encodeURIComponent(SITE_URL),"_blank")}function shareFacebook(){window.open("https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(SITE_URL),"_blank")}function emailPage(){location.href="mailto:?subject=Caliphate Data Analytics&body="+encodeURIComponent(SITE_URL)}async function copyLink(){try{await navigator.clipboard.writeText(SITE_URL);alert("Live link copied.")}catch(e){prompt("Copy this link:",SITE_URL)}}
+function openChat(){document.getElementById("chat").classList.add("open");document.getElementById("chatInput").focus()}function closeChat(){document.getElementById("chat").classList.remove("open")}function bubble(t,c){const d=document.createElement("div");d.className="bubble "+c;d.textContent=t;document.getElementById("chatBody").appendChild(d);document.getElementById("chatBody").scrollTop=99999;return d}
+function localAnswer(t){const q=t.toLowerCase();if(q.includes("power bi"))return"Power BI training covers Power Query, data modelling, DAX, KPI design and interactive dashboards.";if(q.includes("excel"))return"Excel training covers data cleaning, functions, PivotTables, Power Query, charts and dashboards.";if(q.includes("survey"))return"We support PMI, BES and other survey analytics including cross-tabs, diffusion indices and text analytics.";if(q.includes("dashboard"))return"Take the interactive sales dashboard tour at https://alidanjumah-glitch.github.io/dashboard.html";if(q.includes("contact")||q.includes("email"))return"Contact us at alidanjumah@gamail.com or +234 813 404 2317.";return"I can help with data analytics, Excel, Power BI, survey analytics, dashboards, AI solutions and training. What would you like to know?"}
+async function sendChat(){const input=document.getElementById("chatInput"),text=input.value.trim();if(!text)return;input.value="";bubble(text,"user");const w=bubble("Thinking...","bot");try{const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"chat",message:text})});const j=await r.json();if(j.success&&j.answer){w.textContent=j.answer;return}}catch(e){console.warn(e)}w.textContent=localAnswer(text)}
+</script></body></html>

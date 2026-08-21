@@ -1,35 +1,813 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Caliphate Data Analytics | Data • Insights • Impact</title>
-<style>
-:root{--bg:#061525;--bg2:#0b2138;--g:#12c76a;--p:#7652e8;--t:#eef6ff;--m:#9fb0c3;--line:#24415b}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#071b2d);color:var(--t);line-height:1.6}
-.wrap{width:min(1180px,92%);margin:auto}a{text-decoration:none;color:inherit}
-header{position:sticky;top:0;z-index:50;background:#03101df2;border-bottom:1px solid var(--line)}nav{height:70px;display:flex;align-items:center;justify-content:space-between}
-.brand{font-weight:900}.brand span{color:var(--g)}.tour{background:var(--g);color:#04130b;padding:10px 14px;border-radius:9px;font-weight:900}
-.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:38px;align-items:center;padding:70px 0}.hero h1{font-size:clamp(42px,6vw,70px);line-height:1.02}.hero h1 span{color:var(--g)}.hero p{font-size:18px;color:#b9c7d7}
-.hero img{width:100%;height:430px;object-fit:cover;border-radius:22px;border:1px solid #ffffff22}.btn{display:inline-block;padding:12px 16px;border-radius:9px;background:var(--g);color:#03130b;font-weight:900}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.card{background:#0d2238;border:1px solid var(--line);border-radius:15px;padding:20px}.card p{color:var(--m);font-size:13px}
-section{padding:55px 0}.resources{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.resources img{width:100%;height:270px;object-fit:cover;border-radius:12px}
-.share{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px}.share button{border:0;border-radius:8px;padding:9px 12px;color:#fff;font-weight:800;cursor:pointer}.wa{background:#16a34a}.li{background:#0a66c2}.fb{background:#1877f2}.mail{background:#7652e8}.copy{background:#334155}
-.contact{display:grid;grid-template-columns:1fr 1fr;gap:18px}.footer{text-align:center;padding:30px;color:#8aa0b5;border-top:1px solid var(--line)}
-.chat-launch{position:fixed;right:18px;bottom:18px;background:linear-gradient(135deg,#7652e8,#4c2bb5);color:#fff;border:0;border-radius:999px;padding:14px 18px;font-weight:900;cursor:pointer;z-index:90}.chat{position:fixed;right:18px;bottom:70px;width:min(400px,calc(100vw - 28px));height:560px;display:none;flex-direction:column;background:#f5f7fb;color:#162335;border-radius:18px;overflow:hidden;box-shadow:0 24px 70px #0009;z-index:91}.chat.open{display:flex}.chat h3{margin:0;color:#fff}.chat-head{background:linear-gradient(135deg,#5427c9,#7b52e8);padding:14px;color:#fff;display:flex;justify-content:space-between}.chat-head button{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer}.chat-body{flex:1;overflow:auto;padding:12px}.bubble{max-width:86%;padding:10px 12px;border-radius:13px;margin:8px 0;font-size:13px;white-space:pre-wrap}.bot{background:#fff;border:1px solid #dce3eb}.user{background:#e8ddff;margin-left:auto}.chat-foot{background:#fff;padding:9px;display:flex;gap:7px;border-top:1px solid #dce3eb}.chat-foot input{flex:1;padding:10px;border:1px solid #ccd5e1;border-radius:10px}.chat-foot button{background:#6d45d3;color:#fff;border:0;border-radius:10px;width:45px;cursor:pointer}
-@media(max-width:850px){.hero,.contact{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.resources{grid-template-columns:1fr 1fr}}@media(max-width:550px){.grid,.resources{grid-template-columns:1fr}}
-</style></head><body>
-<header><nav class="wrap"><div class="brand">CALIPHATE <span>DATA ANALYTICS</span></div><a class="tour" href="freetext.html"> Tour Our Free Text Analytic Engine</a></nav></header>
-<main>
-<section class="wrap hero"><div><small>DATA • INSIGHTS • IMPACT</small><h1>Turn Data Into <span>Strategic Power.</span></h1><p>Professional data analytics, dashboards, survey analytics, AI solutions and practical training for individuals, teams and organisations. We unlock growth through data insight and practical training.</p><a class="btn" href="dashboard.html">Explore the Sample Sales Dashboard →</a><div class="share"><button class="wa" onclick="shareWhatsApp()">WhatsApp</button><button class="li" onclick="shareLinkedIn()">LinkedIn</button><button class="fb" onclick="shareFacebook()">Facebook</button><button class="mail" onclick="emailPage()">Email</button><button class="copy" onclick="copyLink()">Copy Live Link</button></div></div>
-<img src="assets/professional-data-analytics-class.png" onerror="this.src='https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85'" alt="Professional data analytics class"></section>
-<section class="wrap"><h2>What We Do</h2><div class="grid"><div class="card"><h3>Data Analytics</h3><p>Cleaning, diagnostics, trends and actionable insight.</p></div><div class="card"><h3>Business Intelligence</h3><p>Interactive dashboards and KPI reporting.</p></div><div class="card"><h3>Survey Analytics</h3><p>PMI, BES, cross-tabs, indices and text analytics.</p></div><div class="card"><h3>AI Solutions</h3><p>AI-assisted analysis, automation and forecasting.</p></div><div class="card"><h3>Training</h3><p>Excel, Power BI, SQL, Python and analytics programmes.</p></div></div></section>
-<section class="wrap"><h2>Training & Resources</h2><div class="resources"><div class="card"><img src="assets/flyer-03.jpg" onerror="this.style.display='none'"><h3>Data Analytics Training</h3><p>Foundation and practical analytics learning.</p></div><div class="card"><img src="assets/flyer-02.jpg" onerror="this.style.display='none'"><h3>Digital Data Collection</h3><p>Forms and structured collection workflows.</p></div><div class="card"><img src="assets/flyer-10.jpg" onerror="this.style.display='none'"><h3>Excel Data Cleansing</h3><p>Functions and tools for cleaner analysis.</p></div></div></section>
-<section class="wrap contact"><div class="card"><h2>Contact</h2><p><a href="mailto:alidanjumah@gmail.com">alidanjumah@gmail.com</a></p><p><a href="tel:+2348134042317">+234 813 404 2317</a></p><p><a href="https://wa.me/2348134042317" target="_blank">WhatsApp</a></p></div><div class="card"><h2>Dashboard</h2><p>Use the supplied demo data or download the template, enter your own sales data and run the analysis.</p><a class="btn" href="dashboard.html">Open Dashboard</a></div></section></main>
-<footer class="footer">© 2026 Caliphate Data Analytics • alidanjumah@gmail.com • +234 813 404 2317</footer>
-<button class="chat-launch" onclick="openChat()">🤖 Chat with Caliphate Analytics</button>
-<div id="chat" class="chat"><div class="chat-head"><div><h3>Chat with Caliphate Analytics</h3><small>AI-powered assistant</small></div><button onclick="closeChat()">×</button></div><div id="chatBody" class="chat-body"><div class="bubble bot">Hello. I’m the Caliphate Analytics assistant. Ask me about Excel, Power BI, dashboards, survey analytics or training.</div></div><div class="chat-foot"><input id="chatInput" placeholder="Ask a question..." onkeydown="if(event.key==='Enter')sendChat()"><button onclick="sendChat()">➤</button></div></div>
-<script>
-const API_URL="https://script.google.com/macros/s/AKfycbzQuVyO4wCTofQFgC42wmIkPb10p7hBIJYkoBcSg4IOMSOc4HsbXhxUeNyWVXERJbVB/exec",SITE_URL="https://alidanjumah-glitch.github.io/";
-function shareWhatsApp(){window.open("https://wa.me/?text="+encodeURIComponent("Caliphate Data Analytics — "+SITE_URL),"_blank")}function shareLinkedIn(){window.open("https://www.linkedin.com/sharing/share-offsite/?url="+encodeURIComponent(SITE_URL),"_blank")}function shareFacebook(){window.open("https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(SITE_URL),"_blank")}function emailPage(){location.href="mailto:?subject=Caliphate Data Analytics&body="+encodeURIComponent(SITE_URL)}async function copyLink(){try{await navigator.clipboard.writeText(SITE_URL);alert("Live link copied.")}catch(e){prompt("Copy this link:",SITE_URL)}}
-function openChat(){document.getElementById("chat").classList.add("open");document.getElementById("chatInput").focus()}function closeChat(){document.getElementById("chat").classList.remove("open")}function bubble(t,c){const d=document.createElement("div");d.className="bubble "+c;d.textContent=t;document.getElementById("chatBody").appendChild(d);document.getElementById("chatBody").scrollTop=99999;return d}
-function localAnswer(t){const q=t.toLowerCase();if(q.includes("power bi"))return"Power BI training covers Power Query, data modelling, DAX, KPI design and interactive dashboards.";if(q.includes("excel"))return"Excel training covers data cleaning, functions, PivotTables, Power Query, charts and dashboards.";if(q.includes("survey"))return"We support PMI, BES and other survey analytics including cross-tabs, diffusion indices and text analytics.";if(q.includes("dashboard"))return"Take the interactive sales dashboard tour at https://alidanjumah-glitch.github.io/dashboard.html";if(q.includes("contact")||q.includes("email"))return"Contact us at alidanjumah@gmail.com or +234 813 404 2317.";return"I can help with data analytics, Excel, Power BI, survey analytics, dashboards, AI solutions and training. What would you like to know?"}
-async function sendChat(){const input=document.getElementById("chatInput"),text=input.value.trim();if(!text)return;input.value="";bubble(text,"user");const w=bubble("Thinking...","bot");try{const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"chat",message:text})});const j=await r.json();if(j.success&&j.answer){w.textContent=j.answer;return}}catch(e){console.warn(e)}w.textContent=localAnswer(text)}
-</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Ali Danjumah Umaru, PhD, FICA, NES | Founder, Caliphate Data Analytics</title>
+    <!-- Google Fonts & FontAwesome for Infographic Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0a2540;
+            --secondary: #20639b;
+            --accent: #f6d55c;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navigation Header */
+        header {
+            background: var(--white);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+            font-size: 0.85rem;
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--secondary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Main Content Wrapper / Multi-view simulation */
+        .page-section {
+            display: none;
+            padding: 9rem 2rem 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 90vh;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section Styling */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2.75rem;
+            color: var(--primary);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .badge {
+            background: #e0f2fe;
+            color: var(--secondary);
+            padding: 0.4rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .profile-card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .profile-img-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--secondary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: #f1f5f9;
+        }
+
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px -1px rgba(32, 99, 155, 0.2);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            margin-left: 1rem;
+        }
+
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: #ffffff;
+            margin-left: 0.5rem;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128c7e;
+        }
+
+        /* Infographic Grid Cards */
+        .section-title {
+            font-size: 2.25rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+            font-size: 1.05rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--white);
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.08);
+            border-color: var(--secondary);
+        }
+
+        .info-card i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.35rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .info-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Timeline & Publications Styles */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            border-left: 3px solid var(--secondary);
+        }
+
+        .timeline-item {
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.4rem;
+            top: 0.25rem;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--secondary);
+            border: 3px solid var(--white);
+        }
+
+        .timeline-date {
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .timeline-content {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+
+        /* Publications List */
+        .pub-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pub-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .pub-item h4 {
+            color: var(--primary);
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pub-item span {
+            color: var(--gray);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        /* Flyer Showcase */
+        .flyer-showcase {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .flyer-showcase img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-info-item i {
+            font-size: 1.25rem;
+            color: var(--secondary);
+            margin-top: 0.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 2.5rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-content p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .system-time {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-grid, .contact-grid, .flyer-showcase {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--white);
+                padding: 1.5rem;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+            }
+            nav ul.show {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="switchPage('home')">
+                <i class="fa-solid fa-chart-line" style="font-size: 1.8rem; color: var(--secondary);"></i>
+                <div>
+                    Dr. Ali Danjumah Umaru
+                    <span>PhD, FICA, NES • Founder, Caliphate Data Analytics</span>
+                </div>
+            </a>
+            <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+            <nav>
+                <ul id="nav-links">
+                    <li><a href="#" class="nav-link active" onclick="switchPage('home')">Home</a></li>
+                    <li><a href="#" class="nav-link" onclick="switchPage('about')">About & Experience</a></li>
+                    <li><a href="#" class="nav-link" onclick="switchPage('services')">Consultancy & Training</a></li>
+                    <li><a href="#" class="nav-link" onclick="switchPage('publications')">Publications</a></li>
+                    <li><a href="#" class="nav-link" onclick="switchPage('contact')">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= 1. HOME PAGE ================= -->
+    <section id="home" class="page-section active">
+        <div class="hero-grid">
+            <div class="hero-content">
+                <div class="hero-badges">
+                    <span class="badge"><i class="fa-solid fa-graduation-cap"></i> PhD in Economics</span>
+                    <span class="badge"><i class="fa-solid fa-building-columns"></i> CBN Internal Faculty</span>
+                    <span class="badge"><i class="fa-solid fa-briefcase"></i> Founder, Caliphate Data Analytics</span>
+                    <span class="badge"><i class="fa-solid fa-chalkboard-user"></i> CMD-Certified Trainer</span>
+                </div>
+                <h1>Transforming National Data Into Strategic Economic Intelligence</h1>
+                <p>Public servant, macroeconomic researcher, and Founder of Caliphate Data Analytics, dedicated to bridging complex economic datasets with executive foresight and enterprise-grade process automation.</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 1.5rem;">
+                    <button class="btn" onclick="switchPage('services')">Explore Services & Training</button>
+                    <a href="https://wa.me/2348134042317?text=Hello%20Dr.%20Umaru,%20I%20would%20like%20to%20discuss%20consultancy%20services." target="_blank" class="btn btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                </div>
+            </div>
+            <div class="profile-card">
+                <div class="profile-img-container">
+                    <!-- Fixed Profile Image mapping directly to the attached portrait picture filename -->
+                    <img src="1787320859966.jpg" alt="Dr. Ali Danjumah Umaru Portrait">
+                </div>
+                <h3 class="brand-font" style="margin-bottom: 0.2rem;">Dr. Ali Danjumah Umaru</h3>
+                <p style="color: var(--secondary); font-weight: 600; font-size: 0.9rem; margin-bottom: 1rem;">Founder, Caliphate Data Analytics / Manager, CBN</p>
+                <p style="font-size: 0.85rem; color: var(--gray);">Specialist in PMI/BES Dashboard Architecture, Survey Automation, and Macroeconomic Intelligence.</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 5rem;">
+            <h2 class="section-title">Core Competencies & Solutions</h2>
+            <p class="section-subtitle">Integrating rigorous public sector economic administration with advanced technical data engineering.</p>
+            <div class="grid-3">
+                <div class="info-card">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <h3>Macroeconomic Intelligence</h3>
+                    <p>Advanced econometric analysis, fiscal policy evaluation, and financial deepening studies utilizing E-views, Stata, and Microfit.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <h3>Custom Dashboard Development</h3>
+                    <p>Building Purchasing Managers' Index (PMI) & Business Expectation Survey (BES) dashboards, and State-Level Weekly Prices Intelligence Systems.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <h3>Field Survey Automation</h3>
+                    <p>Deploying Field Survey Analytic Automation using the 3Ps-Star Schema Approach and Automated Movement Schedule Templates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 2. ABOUT PAGE ================= -->
+    <section id="about" class="page-section">
+        <h2 class="section-title">Professional Background & Career Journey</h2>
+        <p class="section-subtitle">A distinguished track record spanning central banking operations, economic research, and executive consultancy.</p>
+        
+        <div style="background: var(--white); padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 3rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.5rem;">Executive Biography</h3>
+            <p style="color: var(--gray); margin-bottom: 1rem;">
+                Dr. Ali Danjumah Umaru holds a PhD, MSc, and BSc in Economics from Usmanu Danfodiyo University, Sokoto. As the Founder of <strong>Caliphate Data Analytics</strong>, he leads innovative solutions in data automation and business intelligence. Currently serving as a Manager and Data Analyst at the Abuja Branch Statistics Office of the Central Bank of Nigeria (CBN), his career encompasses broad leadership across branch statistics, currency control operations, payment systems, and administrative functions.
+            </p>
+            <p style="color: var(--gray);">
+                As a member of the CBN Internal Faculty, a Full Member of the Nigerian Economic Society (NES), and a Fellow of the National Institute of Credit Administration (FICA), Dr. Umaru combines public sector oversight with elite technical proficiency in Power BI, Excel, E-views, Stata, and Microfit.
+            </p>
+        </div>
+
+        <h3 style="color: var(--primary); margin-bottom: 2rem; text-align: center;" class="brand-font">Professional Experience Timeline</h3>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2026 – Present</div>
+                <div class="timeline-content">
+                    <h4>Manager, Data Analyst</h4>
+                    <p style="color: var(--secondary); font-weight: 500; font-size: 0.9rem;">Abuja Branch Statistics Office, Central Bank of Nigeria</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2024 – 2026</div>
+                <div class="timeline-content">
+                    <h4>Manager, Branch Statistics Office</h4>
+                    <p style="color: var(--secondary); font-weight: 500; font-size: 0.9rem;">Central Bank of Nigeria, Sokoto Branch</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2022 – Present</div>
+                <div class="timeline-content">
+                    <h4>Facilitator & Management Development Trainer</h4>
+                    <p style="color: var(--secondary); font-weight: 500; font-size: 0.9rem;">CBN’s Capacity Development Department & CMD Certified Trainer</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2012 – 2024</div>
+                <div class="timeline-content">
+                    <h4>Prior Central Bank & Academic Roles</h4>
+                    <p style="color: var(--secondary); font-weight: 500; font-size: 0.9rem;">Head of Currency Control Office, Deputy Manager (Payment/Admin), and Graduate Assistant at Sokoto State University</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 3. SERVICES & TRAINING PAGE ================= -->
+    <section id="services" class="page-section">
+        <h2 class="section-title">Consultancy Services & Training Portfolio</h2>
+        <p class="section-subtitle">Delivering elite advisory solutions, advanced data architectures, and certified professional development programs.</p>
+
+        <h3 style="color: var(--primary); margin-bottom: 1.5rem;" class="brand-font"><i class="fa-solid fa-briefcase"></i> Specialized Consultancy & Data Analytics Services</h3>
+        <div class="grid-3" style="margin-bottom: 4rem;">
+            <div class="info-card">
+                <i class="fa-solid fa-chart-column"></i>
+                <h3>PMI & BES Dashboard Architecture</h3>
+                <p>Development and deployment of comprehensive Purchasing Managers' Index (PMI) and Business Expectation Survey (BES) dashboards.</p>
+            </div>
+            <div class="info-card">
+                <i class="fa-solid fa-tags"></i>
+                <h3>State-Level Weekly Prices Intelligence</h3>
+                <p>Creation of dynamic State-Level Weekly Prices Intelligence Dashboards for accurate inflation tracking and market behavior analysis.</p>
+            </div>
+            <div class="info-card">
+                <i class="fa-solid fa-diagram-project"></i>
+                <h3>Field Survey Analytic Automation</h3>
+                <p>End-to-end survey workflow automation utilizing the 3Ps-Star Schema Approach and automated movement schedule templates.</p>
+            </div>
+        </div>
+
+        <h3 style="color: var(--primary); margin-bottom: 1.5rem;" class="brand-font"><i class="fa-solid fa-chalkboard-user"></i> Training Programs & Capacity Building</h3>
+        
+        <!-- Showcase Training Flyer extracted from attached image -->
+        <div class="flyer-showcase">
+            <div>
+                <h4 style="color: var(--primary); font-size: 1.4rem; margin-bottom: 1rem;">Mastering the Analytical Lifecycle</h4>
+                <p style="color: var(--gray); margin-bottom: 1rem;">
+                    Our professional training programs cover the entire data value chain—from <strong>Data Collection</strong> and <strong>Data Cleansing</strong> to advanced <strong>Data Transformation</strong>, <strong>Data Modelling</strong>, <strong>Data Analysis</strong>, and dynamic <strong>Visualization</strong>.
+                </p>
+                <p style="color: var(--secondary); font-weight: 600;">
+                    <i class="fa-solid fa-check-circle"></i> Certified CMD Trainers & Practical Hands-on Learning Frameworks.
+                </p>
+            </div>
+            <div>
+                <img src="flyer-11.jpg" alt="Data Analytics Lifecycle Training Flyer">
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="info-card">
+                <i class="fa-solid fa-table"></i>
+                <h3>Financial Analytics using Excel & Power BI</h3>
+                <p>Practical masterclasses on advanced Excel modeling, Power Query transformations, and interactive Power BI dashboard design.</p>
+            </div>
+            <div class="info-card">
+                <i class="fa-solid fa-truck-fast"></i>
+                <h3>Logistics & Fleet Management Training</h3>
+                <p>Specialized corporate training on customer service, operational fleet coordination, and relationship management.</p>
+            </div>
+            <div class="info-card">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h3>Branch Banking & Compliance Applications</h3>
+                <p>Instruction on basic account reconciliation, ERP payment module workflows, and regulatory tax compliance (Tax Pro-Max).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 4. PUBLICATIONS PAGE ================= -->
+    <section id="publications" class="page-section">
+        <h2 class="section-title">Selected Publications & Research</h2>
+        <p class="section-subtitle">Peer-reviewed contributions to macroeconomic policy discourse published in reputable domestic and international journals.</p>
+
+        <div class="pub-list">
+            <div class="pub-item">
+                <h4>Impact of financial deepening on Nigeria’s manufacturing sector (1981-2019)</h4>
+                <span>Umaru, A. D. & Aliero, H. M. (2022). CBN Bullion, 46(3), 42-49.</span>
+            </div>
+            <div class="pub-item">
+                <h4>Budget deficit and economic growth in Nigeria</h4>
+                <span>Umaru, A. D., Aliero, H.M., & Abubakar M. (2021). CBN Economic and Financial Review (EFR), 59(2), 23-41.</span>
+            </div>
+            <div class="pub-item">
+                <h4>Deficit financing, price and economic stability in Nigeria: a bound testing approach</h4>
+                <span>Umaru, A. D. (2017). CBN Bullion, 41(3), 20-27.</span>
+            </div>
+            <div class="pub-item">
+                <h4>Fiscal deficit and economic growth in Nigeria (1970-2011): a disaggregated approach</h4>
+                <span>Umaru, A. D., & Gatawa, A. U. (2014). Journal of Research in National Development (JORIND), 12(1).</span>
+            </div>
+            <div class="pub-item">
+                <h4>An empirical analysis on the relationship between fiscal deficit and inflation in Nigeria</h4>
+                <span>Abubakar, M., Aliero, H. M., & Umaru, A. D. (2014). Fascicle I. Economics and Applied Informatics.</span>
+            </div>
+            <div class="pub-item">
+                <h4>Small and medium scale enterprises (SMEs) as a catalyst in Nigeria’s economic transformation: some challenges</h4>
+                <span>Dantama, Y. U. & Umaru, A. D. (2013). Journal of Faculty Of Social Sciences Ignatius Ajuru University of Education, Port Harcourt.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 5. CONTACT PAGE ================= -->
+    <section id="contact" class="page-section">
+        <h2 class="section-title">Get in Touch</h2>
+        <p class="section-subtitle">Inquire about professional consultancy, custom dashboard architecture, or customized corporate training workshops.</p>
+
+        <div class="contact-grid">
+            <div>
+                <h3 style="color: var(--primary); margin-bottom: 1.5rem;" class="brand-font">Contact Information</h3>
+                <div class="contact-info-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div>
+                        <strong>Office Address:</strong><br>
+                        Central Bank of Nigeria, Kano Road, Sokoto / Abuja Branch
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                        <strong>Email Address:</strong><br>
+                        alidanjumah@gmail.com
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <strong>Phone Number / WhatsApp:</strong><br>
+                        +234 813 404 2317
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.4rem;"></i>
+                    <div>
+                        <strong>Direct WhatsApp Chat:</strong><br>
+                        <a href="https://wa.me/2348134042317?text=Hello%20Dr.%20Umaru,%20I%20am%20reaching%20out%20from%20your%20website." target="_blank" style="color: var(--secondary); text-decoration: none; font-weight: 600;">Click to chat on WhatsApp (+2348134042317)</a>
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fa-brands fa-linkedin"></i>
+                    <div>
+                        <strong>Professional Network:</strong><br>
+                        <a href="https://www.linkedin.com/in/ali-danjumah-umaru-phd-fica-40166849" target="_blank" style="color: var(--secondary); text-decoration: none;">View LinkedIn Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <!-- Form action points directly to mailto alidanjumah@gmail.com for automatic email dispatch -->
+                <form action="mailto:alidanjumah@gmail.com" method="POST" enctype="text/plain">
+                    <h3 style="color: var(--primary); margin-bottom: 1.5rem;" class="brand-font">Send a Message (Direct Email)</h3>
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" name="Name" class="form-control" required placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="Email" class="form-control" required placeholder="Enter your email address">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject / Service Required</label>
+                        <input type="text" name="Subject" class="form-control" required placeholder="e.g. PMI Dashboard / Training Inquiry">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="Message" class="form-control" rows="4" required placeholder="Type your message here..."></textarea>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Send Direct Email</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Dr. Ali Danjumah Umaru (Founder, Caliphate Data Analytics). All rights reserved.</p>
+            <p>System Time (GMT): <span class="system-time" id="gmt-clock">Loading...</span></p>
+        </div>
+    </footer>
+
+    <!-- Interactive Script for Single-Page Multi-View Routing and Live GMT Clock -->
+    <script>
+        function switchPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-section');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Show target page
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update navigation links state
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            event && event.target.tagName === 'A' && event.target.classList.add('active');
+
+            // Close mobile menu if open
+            document.getElementById('nav-links').classList.remove('show');
+        }
+
+        function toggleMenu() {
+            document.getElementById('nav-links').classList.toggle('show');
+        }
+
+        // Live GMT Clock updater
+        function updateGMTClock() {
+            const now = new Date();
+            const gmtString = now.toUTCString();
+            document.getElementById('gmt-clock').textContent = gmtString;
+        }
+        setInterval(updateGMTClock, 1000);
+        updateGMTClock();
+    </script>
+</body>
+</html>

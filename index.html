@@ -521,7 +521,7 @@
             </div>
             <div class="profile-card">
                 <div class="profile-img-container">
-                    <!-- Automatically picks the profile picture from the assets folder named profile.jpg (supports standard web extensions) -->
+                    <!-- Automatically picks profile.jpg from assets folder -->
                     <img src="assets/profile.jpg" alt="Dr. Ali Danjumah Umaru Portrait" onerror="this.onerror=null; this.src='assets/profile.png';">
                 </div>
                 <h3 class="brand-font" style="margin-bottom: 0.2rem;">Dr. Ali Danjumah Umaru</h3>
@@ -561,7 +561,7 @@
         <div style="background: var(--white); padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 3rem;">
             <h3 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.5rem;">Executive Biography</h3>
             <p style="color: var(--gray); margin-bottom: 1rem;">
-                Dr. Ali Danjumah Umaru holds a PhD, MSc, and BSc in Economics from Usmanu Danfodiyo University, Sokoto. As the Founder of <strong>Caliphate Data Analytics</strong>, he leads innovative solutions in data automation and business intelligence. Currently serving as a Manager and Data Analyst at the Abuja Branch Statistics Office of the Central Bank of Nigeria (CBN), his career encompasses broad leadership across branch statistics, currency control operations, payment systems, and administrative functions.
+                Dr. Ali Danjumah Umaru holds a PhD, MSc, and BSc in Economics from Usmanu Danfodiyo University, Sokoto. As the Founder of <strong>Caliphate Data Analytics</strong>, he leads innovative solutions in data automation and business intelligence. Currently serving as a Manager and Data Analyst at the Statistics Department of the Central Bank of Nigeria (CBN), his career encompasses broad leadership across suevey management, data analytics, currency operations, branch management, branch payment systems, and administrative functions.
             </p>
             <p style="color: var(--gray);">
                 As a member of the CBN Internal Faculty, a Full Member of the Nigerian Economic Society (NES), and a Fellow of the National Institute of Credit Administration (FICA), Dr. Umaru combines public sector oversight with elite technical proficiency in Power BI, Excel, E-views, Stata, and Microfit.
@@ -574,7 +574,7 @@
                 <div class="timeline-date">2026 – Present</div>
                 <div class="timeline-content">
                     <h4>Manager, Data Analyst</h4>
-                    <p style="color: var(--secondary); font-weight: 500; font-size: 0.9rem;">Abuja Branch Statistics Office, Central Bank of Nigeria</p>
+                    <p style="color: var(--secondary); font-weight: 500; font-size: 0.9rem;">Statistics Department, Central Bank of Nigeria, Abuja</p>
                 </div>
             </div>
             <div class="timeline-item">
@@ -594,7 +594,7 @@
             <div class="timeline-item">
                 <div class="timeline-date">2012 – 2024</div>
                 <div class="timeline-content">
-                    <h4>Prior Central Bank & Academic Roles</h4>
+                    <h4>Central Bank Operations & Academic Roles</h4>
                     <p style="color: var(--secondary); font-weight: 500; font-size: 0.9rem;">Head of Currency Control Office, Deputy Manager (Payment/Admin), and Graduate Assistant at Sokoto State University</p>
                 </div>
             </div>
@@ -616,12 +616,12 @@
             <div class="info-card">
                 <i class="fa-solid fa-tags"></i>
                 <h3>State-Level Weekly Prices Intelligence</h3>
-                <p>Creation of dynamic State-Level Weekly Prices Intelligence Dashboards for accurate inflation tracking and market behavior analysis.</p>
+                <p>Creation of dynamic State-Level Weekly Prices Intelligence Dashboards for accurate price tracking and market behavior analysis.</p>
             </div>
             <div class="info-card">
                 <i class="fa-solid fa-diagram-project"></i>
                 <h3>Field Survey Analytic Automation</h3>
-                <p>End-to-end survey workflow automation utilizing the 3Ps-Star Schema Approach and automated movement schedule templates.</p>
+                <p>End-to-end survey workflow automation for PMI, BES, IBES and Free-Text analytics utilizing the 3Ps-Star Schema Approach/Web-Based Approach and workflow automation for branch logistic movement schedule.</p>
             </div>
         </div>
 
@@ -646,8 +646,8 @@
         <div class="grid-3">
             <div class="info-card">
                 <i class="fa-solid fa-table"></i>
-                <h3>Financial Analytics using Excel & Power BI</h3>
-                <p>Practical masterclasses on advanced Excel modeling, Power Query transformations, and interactive Power BI dashboard design.</p>
+                <h3>Financial Market Analytics using Excel & Power BI</h3>
+                <p>Practical masterclasses on advanced Excel modeling, Power Query data cleaning and transformations, and interactive Power BI dashboard design.</p>
             </div>
             <div class="info-card">
                 <i class="fa-solid fa-truck-fast"></i>
@@ -790,7 +790,7 @@
             // Update navigation links state
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => link.classList.remove('active'));
-            event && event.target.tagName === 'A' && event.target.classList.add('active');
+            event && event.target.tagName === 'A' && event.target.classList.et && event.target.classList.add('active');
 
             // Close mobile menu if open
             document.getElementById('nav-links').classList.remove('show');

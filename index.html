@@ -521,8 +521,8 @@
             </div>
             <div class="profile-card">
                 <div class="profile-img-container">
-                    <!-- Fixed Profile Image mapping directly to the attached portrait picture filename -->
-                    <img src="1787320859966.jpg" alt="Dr. Ali Danjumah Umaru Portrait">
+                    <!-- Automatically picks the profile picture from the assets folder named profile.jpg (supports standard web extensions) -->
+                    <img src="assets/profile.jpg" alt="Dr. Ali Danjumah Umaru Portrait" onerror="this.onerror=null; this.src='assets/profile.png';">
                 </div>
                 <h3 class="brand-font" style="margin-bottom: 0.2rem;">Dr. Ali Danjumah Umaru</h3>
                 <p style="color: var(--secondary); font-weight: 600; font-size: 0.9rem; margin-bottom: 1rem;">Founder, Caliphate Data Analytics / Manager, CBN</p>
@@ -627,7 +627,7 @@
 
         <h3 style="color: var(--primary); margin-bottom: 1.5rem;" class="brand-font"><i class="fa-solid fa-chalkboard-user"></i> Training Programs & Capacity Building</h3>
         
-        <!-- Showcase Training Flyer extracted from attached image -->
+        <!-- Showcase Training Flyer -->
         <div class="flyer-showcase">
             <div>
                 <h4 style="color: var(--primary); font-size: 1.4rem; margin-bottom: 1rem;">Mastering the Analytical Lifecycle</h4>
@@ -639,7 +639,7 @@
                 </p>
             </div>
             <div>
-                <img src="flyer-11.jpg" alt="Data Analytics Lifecycle Training Flyer">
+                <img src="assets/flyer.jpg" alt="Data Analytics Lifecycle Training Flyer" onerror="this.onerror=null; this.src='flyer-11.jpg';">
             </div>
         </div>
 

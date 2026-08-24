@@ -1559,7 +1559,7 @@
                 </div>
                 <h3 class="brand-font" style="margin-bottom: 0.2rem;">Dr. Ali Danjumah Umaru</h3>
                 <p style="color: var(--secondary); font-weight: 600; font-size: 0.9rem; margin-bottom: 1rem;">Founder, Caliphate Data Analytics / Manager, CBN</p>
-                <p style="font-size: 0.85rem; color: var(--gray);">Specialist in PMI/BES Dashboard Architecture, Survey Automation, and Macroeconomic Intelligence.</p>
+                <p style="font-size: 0.85rem; color: var(--gray);">Specialist in Dashboard Architecture, Survey Automation, Capacity Building and Macroeconomic Intelligence.</p>
             </div>
         </div>
 <!-- ==========================================================
@@ -1887,7 +1887,7 @@
     <footer>
         <div class="footer-content">
             <p>&copy; 2026 Dr. Ali Danjumah Umaru (Founder, Caliphate Data Analytics). All rights reserved.</p>
-            <p>System Time (GMT): <span class="system-time" id="gmt-clock">Loading...</span></p>
+            <p>System Time (GMT+1): <span class="system-time" id="gmt-clock">Loading...</span></p>
         </div>
     </footer>
 
@@ -1918,11 +1918,11 @@
             document.getElementById('nav-links').classList.toggle('show');
         }
 
-        // Live GMT Clock updater
+        // Live GMT+1 Clock updater
         function updateGMTClock() {
             const now = new Date();
-            const gmtString = now.toUTCString();
-            document.getElementById('gmt-clock').textContent = gmtString;
+            const gmtPlusOneString = new Date(now.getTime() + 60 * 60 * 1000).toUTCString();
+            document.getElementById('gmt-clock').textContent = gmtPlusOneString.replace('GMT', 'GMT+1');
         }
         setInterval(updateGMTClock, 1000);
         updateGMTClock();

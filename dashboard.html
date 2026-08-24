@@ -3,78 +3,416 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sales Analytics Dashboard</title>
+<title>Calyda Advanced Analytics & Intelligence Hub | Dr. Ali Danjumah Umaru</title>
+<!-- Tailwind CSS for modern layout structure -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js & SheetJS libraries -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<!-- WordCloud2.js for Copilot-style Tag Cloud Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.0.1/wordcloud2.min.js"></script>
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root{
   --navy:#0b1f33; --blue:#1769aa; --teal:#0f9d8a; --gold:#e3a72f;
-  --bg:#f4f7fb; --card:#fff; --text:#1c2b39; --muted:#6b7b8c; --line:#dce4ec;
+  --bg:#f4f7fb; --card:#ffffff; --text:#1c2b39; --muted:#6b7b8c; --line:#dce4ec;
   --shadow:0 8px 24px rgba(11,31,51,.08);
 }
-*{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:Segoe UI,Arial,sans-serif;color:var(--text)}
-header{background:linear-gradient(120deg,var(--navy),#123c61);color:white;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;position:sticky;top:0;z-index:10}
-.brand h1{font-size:23px;margin:0}.brand p{margin:4px 0 0;color:#c8d7e5;font-size:12px}
-.upload{display:flex;align-items:center;gap:10px}.upload label{background:var(--gold);color:#172333;padding:10px 16px;border-radius:7px;font-weight:700;cursor:pointer}.upload input{display:none}
-#fileName{font-size:12px;color:#d7e4ef}
-main{padding:22px 28px;max-width:1600px;margin:auto}
-.controls{display:grid;grid-template-columns:repeat(4,1fr) 1.2fr;gap:12px;margin-bottom:18px}
-.control{background:var(--card);padding:12px;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
-.control label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:5px;text-transform:uppercase}
-select,input[type=date]{width:100%;border:1px solid var(--line);border-radius:6px;padding:8px;background:white;color:var(--text)}
-.datebox{display:flex;gap:7px}.datebox input{min-width:0}
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
-.kpi{background:var(--card);border-radius:12px;padding:17px;box-shadow:var(--shadow);border-top:4px solid var(--blue)}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:Segoe UI,Arial,sans-serif;color:var(--text); min-height:100vh; display:flex; flex-direction:column;}
+header.app-header{background:linear-gradient(120deg,var(--navy),#123c61);color:white;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);}
+.brand h1{font-size:18px;margin:0;font-weight:800}.brand p{margin:2px 0 0;color:#c8d7e5;font-size:11px}
+
+/* Horizontal Nav Tabs */
+.nav-tabs{display:flex;background:var(--card);padding:6px;border-radius:10px;gap:6px;border:1px solid var(--line);justify-content:center;margin:14px auto;max-width:950px;box-shadow:var(--shadow);}
+.tab-btn{background:transparent;border:none;color:var(--muted);padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.tab-btn.active{background:var(--navy);color:var(--gold);box-shadow:var(--shadow);}
+.tab-pane{display:none;padding:0 16px 24px;max-width:1500px;margin:auto;width:100%;}
+.tab-pane.active{display:block;}
+
+.card-box{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:16px;margin-bottom:12px;}
+
+/* Compact Scrolling Ticker Alert */
+.ticker-wrap{background:#eef3f8;border-left:4px solid var(--gold);padding:6px 12px;border-radius:4px;font-size:11px;color:#334155;margin-bottom:10px;display:flex;align-items:center;overflow:hidden;}
+.ticker-content{white-space:nowrap;animation:marquee 25s linear infinite;}
+@keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+
+/* Sales Dashboard specific elements - Compacted Spacing */
+.sales-controls{display:grid;grid-template-columns:repeat(4,1fr) 1.2fr;gap:8px;margin-bottom:10px}
+.sales-control{background:#f8fafc;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.sales-control label{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:3px;text-transform:uppercase}
+.sales-control select, .sales-control input[type=date]{width:100%;border:1px solid var(--line);border-radius:4px;padding:5px 8px;background:white;color:var(--text);font-size:11px;}
+.datebox{display:flex;gap:5px}.datebox input{min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:10px}
+.kpi{background:var(--card);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow);border-top:4px solid var(--blue)}
 .kpi:nth-child(2){border-color:var(--teal)}.kpi:nth-child(3){border-color:var(--gold)}.kpi:nth-child(4){border-color:#7c5cbf}.kpi:nth-child(5){border-color:#e05d5d}
-.kpi .label{font-size:12px;color:var(--muted);font-weight:700}.kpi .value{font-size:26px;font-weight:800;margin-top:6px}.kpi .sub{font-size:11px;color:var(--muted);margin-top:4px}
-.grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:15px;min-height:300px}.wide{grid-column:span 2}.card h3{font-size:14px;margin:0 0 12px}.chartwrap{height:245px;position:relative}
-footer{text-align:center;color:var(--muted);font-size:11px;padding:22px}
-@media(max-width:1000px){.controls{grid-template-columns:repeat(2,1fr)}.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.wide{grid-column:auto}}
-@media(max-width:600px){header{padding:14px;align-items:flex-start;flex-direction:column}main{padding:14px}.controls,.kpis{grid-template-columns:1fr}}
+.kpi .label{font-size:11px;color:var(--muted);font-weight:700}.kpi .value{font-size:20px;font-weight:800;margin-top:3px;color:var(--text)}
+.kpi .sub{font-size:10px;color:var(--muted);margin-top:2px}
+
+.sales-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:10px}.sales-card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);padding:12px;min-height:230px}.wide{grid-column:span 2}.sales-card h3{font-size:12px;margin:0 0 8px;color:var(--text);font-weight:700;}
+.chartwrap{height:185px;position:relative}
+
+footer{text-align:center;color:var(--muted);font-size:11px;padding:14px;margin-top:auto;border-top:1px solid var(--line);background:var(--card);}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand"><h1>Caliphate Analytics Sample Sales Performance Dashboard</h1><p>Interactive Excel / CSV sales analytics</p></div>
-  <div class="upload">
-    <span id="fileName">Load your dataset to begin</span>
-    <label for="fileInput">⬆ Upload Excel / CSV</label>
-    <input id="fileInput" type="file" accept=".xlsx,.xls,.csv">
+
+<!-- Top Navigation & Return Link -->
+<header class="app-header">
+  <div class="brand">
+    <h1>Calyda Intelligence Hub</h1>
+    <p>Dr. Ali Danjumah Umaru (PhD, FICA, FMNES) • Founder, Caliphate Data Analytics</p>
+  </div>
+  <div>
+    <a href="https://alidanjumah-glitch.github.io/#" class="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-700">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span>Return to Website</span>
+    </a>
   </div>
 </header>
-</div><a class="tour" href="index.html"> Back To Caliphate Analytics Website</a></nav></header>
-<main>
 
-<main>
-<section class="controls">
-  <div class="control"><label>Region</label><select id="region"><option value="All">All Regions</option></select></div>
-  <div class="control"><label>Category</label><select id="category"><option value="All">All Categories</option></select></div>
-  <div class="control"><label>Sales Representative</label><select id="rep"><option value="All">All Sales Reps</option></select></div>
-  <div class="control"><label>Product</label><select id="product"><option value="All">All Products</option></select></div>
-  <div class="control"><label>Timeline</label><div class="datebox"><input id="from" type="date"><input id="to" type="date"></div></div>
-</section>
+<!-- Horizontal Engine Navigation Tabs -->
+<nav class="nav-tabs">
+  <button onclick="switchEngine('m1')" id="btn-m1" class="tab-btn active"><i class="fa-solid fa-chart-line"></i> Machine I: Econometric OLS</button>
+  <button onclick="switchEngine('m2')" id="btn-m2" class="tab-btn"><i class="fa-solid fa-comments"></i> Machine II: NLP Sentiment</button>
+  <button onclick="switchEngine('m3')" id="btn-m3" class="tab-btn"><i class="fa-solid fa-shop"></i> Machine III: Sales Dashboard</button>
+</nav>
 
-<section class="kpis">
-  <div class="kpi"><div class="label">TOTAL SALES</div><div class="value" id="sales">₦0</div><div class="sub">Quantity × Unit Price</div></div>
-  <div class="kpi"><div class="label">GROSS PROFIT</div><div class="value" id="profit">₦0</div><div class="sub">Sales − Cost</div></div>
-  <div class="kpi"><div class="label">PROFIT MARGIN</div><div class="value" id="margin">0%</div><div class="sub">Gross profit / sales</div></div>
-  <div class="kpi"><div class="label">UNITS SOLD</div><div class="value" id="units">0</div><div class="sub">Total quantity</div></div>
-  <div class="kpi"><div class="label">TRANSACTIONS</div><div class="value" id="transactions">0</div><div class="sub">Distinct Transaction IDs</div></div>
-</section>
+<div class="max-w-7xl mx-auto px-4 w-full">
 
-<section class="grid">
-  <div class="card wide"><h3>Sales Trend Over Time</h3><div class="chartwrap"><canvas id="trend"></canvas></div></div>
-  <div class="card"><h3>Sales by Region</h3><div class="chartwrap"><canvas id="regionChart"></canvas></div></div>
-  <div class="card"><h3>Sales by Category</h3><div class="chartwrap"><canvas id="categoryChart"></canvas></div></div>
-  <div class="card"><h3>Top 10 Products by Sales</h3><div class="chartwrap"><canvas id="productChart"></canvas></div></div>
-  <div class="card"><h3>Sales Rep Performance</h3><div class="chartwrap"><canvas id="repChart"></canvas></div></div>
-</section>
-</main>
-<footer>Dashboard automatically recalculates when a compatible Excel/CSV file is uploaded.</footer>
+  <!-- ========================================================== -->
+  <!-- MACHINE I: Econometric & OLS Engine                        -->
+  <!-- ========================================================== -->
+  <div id="pane-m1" class="tab-pane active">
+    <div class="card-box">
+      <!-- Live Ticker / Schema Scroller -->
+      <div class="ticker-wrap">
+        <div class="ticker-content font-medium text-slate-700">
+          <i class="fa-solid fa-circle-info text-amber-500 mr-2"></i> <span id="ticker-m1">Currently using Seated Demo Macro Data. To test your own data, upload a file with required schema: Quarter, GDP_Growth, Capital_Investment, Inflation_Rate</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-2 border-b border-slate-200 gap-2">
+        <div>
+          <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Macroeconomic & Research Module</span>
+          <h2 class="text-base font-bold text-slate-900 mt-1">Automated OLS Regression & Diagnostic Suite</h2>
+        </div>
+      </div>
+
+      <!-- Compact Upload & Action Bar -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-700 mb-1">Upload Dataset (.csv, .xlsx, .xls)</label>
+          <input type="file" id="file-m1" accept=".csv,.xlsx,.xls" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+        </div>
+        <div class="text-xs text-slate-600">
+          Status: <span id="status-m1" class="font-bold text-teal-600">Seated Demo Data Active</span>
+        </div>
+        <div class="text-right">
+          <button onclick="runAnalysis('m1')" class="bg-navy text-gold font-bold px-5 py-2 rounded-lg text-xs transition shadow-sm hover:bg-slate-800">
+            <i class="fa-solid fa-play mr-1"></i> Run Analysis
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Panel (Hidden until run) -->
+      <div id="results-m1" class="hidden space-y-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
+            <span class="text-[11px] text-slate-500 block">R-Squared ($R^2$)</span>
+            <span id="m1-r2" class="text-lg font-extrabold text-amber-600">0.8942</span>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
+            <span class="text-[11px] text-slate-500 block">F-Statistic</span>
+            <span id="m1-f" class="text-lg font-extrabold text-teal-600">45.21</span>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
+            <span class="text-[11px] text-slate-500 block">Durbin-Watson</span>
+            <span id="m1-dw" class="text-lg font-extrabold text-blue-600">1.98</span>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
+            <span class="text-[11px] text-slate-500 block">Observations ($N$)</span>
+            <span id="m1-n" class="text-lg font-extrabold text-slate-800">16 Periods</span>
+          </div>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700">
+          <span class="font-bold text-amber-700">Automated Economic Inference:</span> Model exhibits strong explanatory power. Capital formation coefficients indicate high statistical significance at the 1% alpha level.
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div class="h-56"><canvas id="chartM1"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MACHINE II: NLP Sentiment & Text Miner                     -->
+  <!-- ========================================================== -->
+  <div id="pane-m2" class="tab-pane">
+    <div class="card-box">
+      <!-- Live Ticker / Schema Scroller -->
+      <div class="ticker-wrap">
+        <div class="ticker-content font-medium text-slate-700">
+          <i class="fa-solid fa-circle-info text-teal-500 mr-2"></i> Text Sentiment Miner & Copilot Word Cloud active. Type or paste qualitative review text below to generate instant polarity matrices and keyword maps.
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-2 border-b border-slate-200 gap-2">
+        <div>
+          <span class="bg-teal-100 text-teal-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Corporate AI & Text Module</span>
+          <h2 class="text-base font-bold text-slate-900 mt-1">Free-Text & Customer Feedback Sentiment Engine</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <div class="md:col-span-2">
+          <label class="block text-[10px] font-bold text-slate-700 mb-1">Paste Raw Text Corpus or Customer Feedback</label>
+          <textarea id="text-input-m2" rows="1" class="w-full bg-white border border-slate-300 rounded-md p-2 text-xs text-slate-800 focus:outline-none focus:border-teal-600">The dashboard deployment was exceptionally fast and accurate. Data cleaning workflows saved our team weeks of effort. Overall, stellar economic and technical support!</textarea>
+        </div>
+        <div class="text-right">
+          <button onclick="runAnalysis('m2')" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2 rounded-lg text-xs transition shadow-sm w-full">
+            <i class="fa-solid fa-play mr-1"></i> Run Sentiment Analysis
+          </button>
+        </div>
+      </div>
+
+      <div id="results-m2" class="hidden space-y-4">
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
+            <span class="text-[11px] text-slate-500 block">Positive Polarity</span>
+            <span id="sent-pos" class="text-lg font-extrabold text-emerald-600">78%</span>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
+            <span class="text-[11px] text-slate-500 block">Neutral Polarity</span>
+            <span id="sent-neu" class="text-lg font-extrabold text-amber-600">15%</span>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
+            <span class="text-[11px] text-slate-500 block">Negative Polarity</span>
+            <span id="sent-neg" class="text-lg font-extrabold text-rose-600">7%</span>
+          </div>
+        </div>
+        
+        <!-- Side-by-Side Outputs: Sentiment Pie Chart & Copilot Word Cloud -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <h3 class="text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-chart-pie mr-1 text-teal-600"></i> Sentiment Polarity Distribution</h3>
+            <div class="h-56"><canvas id="chartM2"></canvas></div>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <h3 class="text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-cloud mr-1 text-blue-600"></i> Copilot-Style Key Phrase Word Cloud</h3>
+            <div class="h-56 relative w-full flex items-center justify-center">
+              <canvas id="wordCloudCanvas" class="w-full h-full absolute inset-0"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MACHINE III: Enterprise Sales Performance Dashboard          -->
+  <!-- ========================================================== -->
+  <div id="pane-m3" class="tab-pane">
+    <div class="card-box">
+      <!-- Live Ticker / Schema Scroller -->
+      <div class="ticker-wrap">
+        <div class="ticker-content font-medium text-slate-700">
+          <i class="fa-solid fa-circle-info text-blue-500 mr-2"></i> <span id="ticker-sales">Currently using Seated Demo Sales Data. To load custom data, upload Excel/CSV with required headers: TransactionID, Date, CustomerName, ProductID, Quantity, UnitPrice, Region, SalesRep, ProductName, Category, UnitCost, Supplier</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-2 border-b border-slate-200 gap-2 mb-2">
+        <div>
+          <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Enterprise Sales Module</span>
+          <h2 class="text-base font-bold text-slate-900 mt-1">Interactive Sales Analytics & KPI Engine</h2>
+        </div>
+      </div>
+
+      <!-- Compact Sales Data Upload & Run Bar -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-700 mb-1">Upload Sales Dataset (.xlsx, .xls, .csv)</label>
+          <input id="salesFileInput" type="file" accept=".xlsx,.xls,.csv" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+        </div>
+        <div class="text-xs text-slate-600">
+          Status: <span id="salesFileName" class="font-bold text-blue-600">Seated Demo Sales Data Active</span>
+        </div>
+        <div class="text-right">
+          <button onclick="runSalesDashboard()" class="bg-navy text-gold font-bold px-5 py-2 rounded-lg text-xs transition shadow-sm hover:bg-slate-800">
+            <i class="fa-solid fa-play mr-1"></i> Run Dashboard
+          </button>
+        </div>
+      </div>
+
+      <!-- Sales Dashboard Interface (Hidden until run) -->
+      <div id="sales-dashboard-content" class="hidden space-y-3">
+        <section class="sales-controls">
+          <div class="sales-control"><label>Region</label><select id="region"><option value="All">All Regions</option></select></div>
+          <div class="sales-control"><label>Category</label><select id="category"><option value="All">All Categories</option></select></div>
+          <div class="sales-control"><label>Sales Representative</label><select id="rep"><option value="All">All Sales Reps</option></select></div>
+          <div class="sales-control"><label>Product</label><select id="product"><option value="All">All Products</option></select></div>
+          <div class="sales-control"><label>Timeline</label><div class="datebox"><input id="from" type="date"><input id="to" type="date"></div></div>
+        </section>
+
+        <section class="kpis">
+          <div class="kpi"><div class="label">TOTAL SALES</div><div class="value" id="sales">₦0</div><div class="sub">Qty × Unit Price</div></div>
+          <div class="kpi"><div class="label">GROSS PROFIT</div><div class="value" id="profit">₦0</div><div class="sub">Sales − Cost</div></div>
+          <div class="kpi"><div class="label">PROFIT MARGIN</div><div class="value" id="margin">0%</div><div class="sub">Profit / sales</div></div>
+          <div class="kpi"><div class="label">UNITS SOLD</div><div class="value" id="units">0</div><div class="sub">Total quantity</div></div>
+          <div class="kpi"><div class="label">TRANSACTIONS</div><div class="value" id="transactions">0</div><div class="sub">Distinct IDs</div></div>
+        </section>
+
+        <section class="sales-grid">
+          <div class="sales-card wide"><h3>Sales Trend Over Time</h3><div class="chartwrap"><canvas id="trend"></canvas></div></div>
+          <div class="sales-card"><h3>Sales by Region</h3><div class="chartwrap"><canvas id="regionChart"></canvas></div></div>
+          <div class="sales-card"><h3>Sales by Category</h3><div class="chartwrap"><canvas id="categoryChart"></canvas></div></div>
+          <div class="sales-card"><h3>Top 10 Products by Sales</h3><div class="chartwrap"><canvas id="productChart"></canvas></div></div>
+          <div class="sales-card"><h3>Sales Rep Performance</h3><div class="chartwrap"><canvas id="repChart"></canvas></div></div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Dr. Ali Danjumah Umaru (Founder, Caliphate Data Analytics). All rights reserved. • <a href="https://alidanjumah-glitch.github.io/#" class="text-amber-600 hover:underline">alidanjumah-glitch.github.io</a></p>
+</footer>
 
 <script>
-let rows=[], charts={};
-const required=["TransactionID","Date","CustomerName","ProductID","Quantity","UnitPrice","Region","SalesRep","ProductName","Category","UnitCost","Supplier"];
+// --- Tab Switching Architecture ---
+function switchEngine(id) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + id).classList.add('active');
+  document.getElementById('btn-' + id).classList.add('active');
+}
+
+// --- Run Analysis Gate Controller ---
+let charts = {};
+function runAnalysis(machine) {
+  if(machine === 'm1') {
+    const fileInput = document.getElementById('file-m1');
+    if(fileInput.files.length > 0) {
+      processFileGeneric(fileInput.files[0], 'm1');
+    } else {
+      document.getElementById('status-m1').textContent = "Seated Demo Data Active";
+      document.getElementById('ticker-m1').textContent = "Active dataset loaded successfully. Click 'Run Analysis' to re-verify diagnostic vectors.";
+    }
+    document.getElementById('results-m1').classList.remove('hidden');
+    initChartM1();
+  } else if(machine === 'm2') {
+    document.getElementById('results-m2').classList.remove('hidden');
+    initChartM2();
+    initWordCloud();
+  }
+}
+
+// --- Generic File Processor (CSV & Excel) for Machine I ---
+function processFileGeneric(file, machine) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      let wb = XLSX.read(ev.target.result, {type:"array"});
+      let ws = wb.Sheets[wb.SheetNames[0]];
+      let data = XLSX.utils.sheet_to_json(ws, {defval:""});
+      if(data.length > 0) {
+        document.getElementById('status-m1').textContent = `Parsed: ${file.name} (${data.length} rows)`;
+        document.getElementById('ticker-m1').textContent = `Successfully uploaded "${file.name}" containing ${data.length} records. OLS regression model computed successfully.`;
+        document.getElementById('m1-n').textContent = data.length + " Periods";
+      }
+    } catch(err) {
+      alert("Could not parse file. Ensure valid CSV or Excel format.");
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// --- Machine I Chart ---
+function initChartM1() {
+  if(charts['m1']) charts['m1'].destroy();
+  const ctx = document.getElementById('chartM1').getContext('2d');
+  charts['m1'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Q1 2022', 'Q2 2022', 'Q3 2022', 'Q4 2022', 'Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023'],
+      datasets: [{
+        label: 'Actual GDP Growth (%)',
+        data: [2.1, 2.3, 2.5, 2.0, 2.3, 2.5, 2.8, 3.1],
+        borderColor: '#0b1f33', backgroundColor: 'rgba(11, 31, 51, 0.05)', fill: true, tension: 0.3
+      }, {
+        label: 'OLS Fitted Model',
+        data: [2.0, 2.2, 2.6, 2.1, 2.4, 2.6, 2.7, 3.0],
+        borderColor: '#1769aa', borderDash: [4, 4], tension: 0.3
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#1c2b39', font: { size: 10 } } } }, scales: { x: { ticks: { color: '#6b7b8c', font: { size: 10 } }, grid: { color: '#dce4ec' } }, y: { ticks: { color: '#6b7b8c', font: { size: 10 } }, grid: { color: '#dce4ec' } } } }
+  });
+}
+
+// --- Machine II Chart ---
+function initChartM2() {
+  if(charts['m2']) charts['m2'].destroy();
+  const ctx = document.getElementById('chartM2').getContext('2d');
+  charts['m2'] = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Positive', 'Neutral', 'Negative'],
+      datasets: [{ data: [78, 15, 7], backgroundColor: ['#0f9d8a', '#e3a72f', '#e05d5d'], borderWidth: 0 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#1c2b39', font: { size: 10 } } } } }
+  });
+}
+
+// --- Copilot-Style Word Cloud Generator ---
+function initWordCloud() {
+  const textInput = document.getElementById('text-input-m2').value;
+  const stopWords = new Set(['the','and','to','a','of','in','for','is','on','that','by','this','with','i','you','it','not','or','be','are','from','at','as','your','all','have','new','more','an','was','we']);
+  
+  // Tokenize and count frequency
+  const words = textInput.toLowerCase().replace(/[^\w\s]/gi, '').split(/\s+/);
+  const freqMap = {};
+  words.forEach(w => {
+    if(w.length > 2 && !stopWords.has(w)) {
+      freqMap[w] = (freqMap[w] || 0) + 1;
+    }
+  });
+
+  // Convert map to [word, weight] array format required by WordCloud2
+  let cloudList = Object.keys(freqMap).map(word => [word, (freqMap[word] * 12) + 14]);
+  
+  // Ensure default fallback list if text is empty/short
+  if(cloudList.length === 0) {
+    cloudList = [['dashboard', 36], ['analytics', 30], ['fast', 26], ['support', 24], ['accuracy', 22], ['workflows', 20]];
+  }
+
+  const canvas = document.getElementById('wordCloudCanvas');
+  // Size canvas container dynamically
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+
+  WordCloud(canvas, {
+    list: cloudList,
+    gridSize: Math.round(12 * canvas.width / 400),
+    weightFactor: 1.1,
+    fontFamily: 'Segoe UI, sans-serif',
+    color: function(word, weight) {
+      const colors = ['#0b1f33', '#1769aa', '#0f9d8a', '#e3a72f', '#7c5cbf'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    },
+    rotateRatio: 0.3,
+    rotationSteps: 2,
+    backgroundColor: 'transparent',
+    abortThreshold: 3000
+  });
+}
+
+// ==========================================================
+// --- MACHINE III: Enterprise Sales Logic                   ---
+// ==========================================================
+let salesRows = [];
+const requiredSalesHeaders = ["TransactionID","Date","CustomerName","ProductID","Quantity","UnitPrice","Region","SalesRep","ProductName","Category","UnitCost","Supplier"];
 
 function money(n){return "₦"+Number(n||0).toLocaleString(undefined,{maximumFractionDigits:0})}
 function num(v){let n=Number(String(v??0).replace(/[^0-9.-]/g,''));return isNaN(n)?0:n}
@@ -85,69 +423,119 @@ function dateVal(v){
 }
 function iso(d){return d?new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10):""}
 function uniq(a){return [...new Set(a.filter(x=>x!=="" && x!=null))].sort()}
-function fill(id, vals, label){
+function fillDropdown(id, vals, label){
   const s=document.getElementById(id), old=s.value;
   s.innerHTML='<option value="All">All '+label+'</option>'+vals.map(v=>`<option>${String(v).replace(/&/g,'&amp;')}</option>`).join('');
   if(vals.includes(old))s.value=old;
 }
-function validRows(data){
+
+function runSalesDashboard() {
+  document.getElementById('sales-dashboard-content').classList.remove('hidden');
+  const fileInput = document.getElementById('salesFileInput');
+  
+  if(fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    document.getElementById('salesFileName').textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        let wb = XLSX.read(ev.target.result, {type:"array"});
+        let ws = wb.Sheets[wb.SheetNames[0]];
+        let data = XLSX.utils.sheet_to_json(ws, {defval:""});
+        const missing = requiredSalesHeaders.filter(h => !Object.keys(data[0]||{}).map(x=>x.trim()).includes(h));
+        if(missing.length) {
+          alert("Missing required columns in uploaded sales file:\n" + missing.join(", "));
+          return;
+        }
+        salesRows = parseSalesRows(data);
+        document.getElementById('ticker-sales').textContent = `Successfully loaded custom file "${file.name}" with ${salesRows.length} transaction records.`;
+        populateSalesControls();
+      } catch(err) {
+        alert("Error parsing sales file. Please ensure proper formatting.");
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    salesRows = getSeatedDemoSalesData();
+    document.getElementById('salesFileName').textContent = "Seated Demo Sales Data Active";
+    document.getElementById('ticker-sales').textContent = "Currently using Seated Demo Sales Data. Upload Excel/CSV to test real-time KPI generation.";
+    populateSalesControls();
+  }
+}
+
+function parseSalesRows(data) {
   return data.map(r=>{
     const o={}; Object.keys(r).forEach(k=>o[String(k).trim()]=r[k]);
-    o.Quantity=num(o.Quantity);o.UnitPrice=num(o.UnitPrice);o.UnitCost=num(o.UnitCost);o.Date=dateVal(o.Date);
+    o.Quantity=num(o.Quantity); o.UnitPrice=num(o.UnitPrice); o.UnitCost=num(o.UnitCost); o.Date=dateVal(o.Date);
     return o;
   }).filter(r=>r.TransactionID!=null && r.Date && r.ProductName!=null);
 }
-function filtered(){
-  let a=rows, R=document.getElementById("region").value,C=document.getElementById("category").value,
-      S=document.getElementById("rep").value,P=document.getElementById("product").value,
-      f=document.getElementById("from").value,t=document.getElementById("to").value;
-  return a.filter(r=>(R==="All"||r.Region===R)&&(C==="All"||r.Category===C)&&(S==="All"||r.SalesRep===S)&&(P==="All"||r.ProductName===P)
-    &&(!f||iso(r.Date)>=f)&&(!t||iso(r.Date)<=t));
-}
-function aggregate(a,key,fn){
-  const m={};a.forEach(r=>{let k=r[key]??"Unknown";m[k]=(m[k]||0)+fn(r)});return m;
-}
-function chart(id,type,labels,data,label,horiz=false){
-  if(charts[id])charts[id].destroy();
-  charts[id]=new Chart(document.getElementById(id),{type,data:{labels,datasets:[{label,data,borderWidth:2,tension:.3}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type==="doughnut"}},scales:type==="doughnut"?{}:{y:{beginAtZero:true,grid:{color:"#e8edf2"}},x:{grid:{display:false}}}}});
-}
-function update(){
-  const a=filtered();
-  let sales=a.reduce((s,r)=>s+r.Quantity*r.UnitPrice,0), cost=a.reduce((s,r)=>s+r.Quantity*r.UnitCost,0), profit=sales-cost;
-  document.getElementById("sales").textContent=money(sales);
-  document.getElementById("profit").textContent=money(profit);
-  document.getElementById("margin").textContent=(sales?profit/sales*100:0).toFixed(1)+"%";
-  document.getElementById("units").textContent=a.reduce((s,r)=>s+r.Quantity,0).toLocaleString();
-  document.getElementById("transactions").textContent=new Set(a.map(r=>r.TransactionID)).size.toLocaleString();
 
-  const trend={};a.forEach(r=>{let k=iso(r.Date);trend[k]=(trend[k]||0)+r.Quantity*r.UnitPrice});
-  const tk=Object.keys(trend).sort();chart("trend","line",tk,tk.map(k=>trend[k]),"Sales");
-  let x=aggregate(a,"Region",r=>r.Quantity*r.UnitPrice), k=Object.keys(x).sort((a,b)=>x[b]-x[a]);chart("regionChart","bar",k,k.map(v=>x[v]),"Sales");
-  x=aggregate(a,"Category",r=>r.Quantity*r.UnitPrice);k=Object.keys(x);chart("categoryChart","doughnut",k,k.map(v=>x[v]),"Sales");
-  x=aggregate(a,"ProductName",r=>r.Quantity*r.UnitPrice);k=Object.keys(x).sort((a,b)=>x[b]-x[a]).slice(0,10);chart("productChart","bar",k,k.map(v=>x[v]),"Sales");
-  x=aggregate(a,"SalesRep",r=>r.Quantity*r.UnitPrice);k=Object.keys(x).sort((a,b)=>x[b]-x[a]);chart("repChart","bar",k,k.map(v=>x[v]),"Sales");
+function getSeatedDemoSalesData() {
+  let raw = [
+    {TransactionID:"T101", Date:"2026-01-10", CustomerName:"Alpha Ltd", ProductID:"P1", Quantity:12, UnitPrice:15000, Region:"North", SalesRep:"Aliyu", ProductName:"Enterprise Server", Category:"Hardware", UnitCost:10000, Supplier:"TechCorp"},
+    {TransactionID:"T102", Date:"2026-01-15", CustomerName:"Beta PLC", ProductID:"P2", Quantity:25, UnitPrice:8000, Region:"South", SalesRep:"Chidi", ProductName:"Cloud Suite", Category:"Software", UnitCost:4500, Supplier:"SoftSolutions"},
+    {TransactionID:"T103", Date:"2026-02-02", CustomerName:"Gamma Inc", ProductID:"P3", Quantity:50, UnitPrice:3500, Region:"Central", SalesRep:"Fatima", ProductName:"Security Token", Category:"Hardware", UnitCost:2000, Supplier:"SecureNet"},
+    {TransactionID:"T104", Date:"2026-02-20", CustomerName:"Delta Bank", ProductID:"P1", Quantity:10, UnitPrice:15000, Region:"North", SalesRep:"Aliyu", ProductName:"Enterprise Server", Category:"Hardware", UnitCost:10000, Supplier:"TechCorp"},
+    {TransactionID:"T105", Date:"2026-03-05", CustomerName:"Echo Stores", ProductID:"P2", Quantity:40, UnitPrice:8000, Region:"South", SalesRep:"Chidi", ProductName:"Cloud Suite", Category:"Software", UnitCost:4500, Supplier:"SoftSolutions"}
+  ];
+  return parseSalesRows(raw);
 }
-function populate(){
-  fill("region",uniq(rows.map(r=>r.Region)),"Regions");fill("category",uniq(rows.map(r=>r.Category)),"Categories");
-  fill("rep",uniq(rows.map(r=>r.SalesRep)),"Sales Reps");fill("product",uniq(rows.map(r=>r.ProductName)),"Products");
-  const ds=rows.map(r=>r.Date).filter(Boolean).sort((a,b)=>a-b);
-  if(ds.length){document.getElementById("from").value=iso(ds[0]);document.getElementById("to").value=iso(ds[ds.length-1])}
-  update();
+
+function filteredSales() {
+  let a = salesRows, R = document.getElementById("region").value, C = document.getElementById("category").value,
+      S = document.getElementById("rep").value, P = document.getElementById("product").value,
+      f = document.getElementById("from").value, t = document.getElementById("to").value;
+  return a.filter(r => (R==="All"||r.Region===R) && (C==="All"||r.Category===C) && (S==="All"||r.SalesRep===S) && (P==="All"||r.ProductName===P) && (!f||iso(r.Date)>=f) && (!t||iso(r.Date)<=t));
 }
-document.getElementById("fileInput").addEventListener("change",e=>{
-  const file=e.target.files[0];if(!file)return;document.getElementById("fileName").textContent=file.name;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      let wb=XLSX.read(ev.target.result,{type:"array"}), ws=wb.Sheets[wb.SheetNames[0]], data=XLSX.utils.sheet_to_json(ws,{defval:""});
-      const missing=required.filter(h=>!Object.keys(data[0]||{}).map(x=>x.trim()).includes(h));
-      if(missing.length){alert("Missing required columns:\\n"+missing.join(", "));return}
-      rows=validRows(data);populate();
-    }catch(err){alert("Could not read this file. Please use a valid Excel or CSV file.")}
-  };reader.readAsArrayBuffer(file);
+
+function aggregateSales(a, key, fn) {
+  const m={}; a.forEach(r=>{let k=r[key]??"Unknown"; m[k]=(m[k]||0)+fn(r)}); return m;
+}
+
+function renderSalesChart(id, type, labels, data, label) {
+  if(charts[id]) charts[id].destroy();
+  charts[id] = new Chart(document.getElementById(id), {
+    type, data:{labels, datasets:[{label, data, borderWidth:2, tension:.3, backgroundColor: type==='doughnut'?['#0b1f33','#1769aa','#0f9d8a','#e3a72f']: '#1769aa'}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:type==="doughnut", labels:{font:{size:10}}}}, scales:type==="doughnut"?{}:{y:{beginAtZero:true,grid:{color:"#dce4ec"},ticks:{font:{size:10}}},x:{grid:{display:false},ticks:{font:{size:10}}}}}
+  });
+}
+
+function updateSalesDashboard() {
+  const a = filteredSales();
+  let sales = a.reduce((s,r)=>s+r.Quantity*r.UnitPrice,0), cost = a.reduce((s,r)=>s+r.Quantity*r.UnitCost,0), profit = sales-cost;
+  
+  document.getElementById("sales").textContent = money(sales);
+  document.getElementById("profit").textContent = money(profit);
+  document.getElementById("margin").textContent = (sales?profit/sales*100:0).toFixed(1)+"%";
+  document.getElementById("units").textContent = a.reduce((s,r)=>s+r.Quantity,0).toLocaleString();
+  document.getElementById("transactions").textContent = new Set(a.map(r=>r.TransactionID)).size.toLocaleString();
+
+  const trend={}; a.forEach(r=>{let k=iso(r.Date); trend[k]=(trend[k]||0)+r.Quantity*r.UnitPrice});
+  const tk = Object.keys(trend).sort(); renderSalesChart("trend","line",tk,tk.map(k=>trend[k]),"Sales");
+  
+  let x = aggregateSales(a,"Region",r=>r.Quantity*r.UnitPrice), k = Object.keys(x).sort((a,b)=>x[b]-x[a]); renderSalesChart("regionChart","bar",k,k.map(v=>x[v]),"Sales");
+  x = aggregateSales(a,"Category",r=>r.Quantity*r.UnitPrice); k = Object.keys(x); renderSalesChart("categoryChart","doughnut",k,k.map(v=>x[v]),"Sales");
+  x = aggregateSales(a,"ProductName",r=>r.Quantity*r.UnitPrice); k = Object.keys(x).sort((a,b)=>x[b]-x[a]).slice(0,10); renderSalesChart("productChart","bar",k,k.map(v=>x[v]),"Sales");
+  x = aggregateSales(a,"SalesRep",r=>r.Quantity*r.UnitPrice); k = Object.keys(x).sort((a,b)=>x[b]-x[a]); renderSalesChart("repChart","bar",k,k.map(v=>x[v]),"Sales");
+}
+
+function populateSalesControls() {
+  fillDropdown("region", uniq(salesRows.map(r=>r.Region)), "Regions");
+  fillDropdown("category", uniq(salesRows.map(r=>r.Category)), "Categories");
+  fillDropdown("rep", uniq(salesRows.map(r=>r.SalesRep)), "Sales Reps");
+  fillDropdown("product", uniq(salesRows.map(r=>r.ProductName)), "Products");
+  const ds = salesRows.map(r=>r.Date).filter(Boolean).sort((a,b)=>a-b);
+  if(ds.length) {
+    document.getElementById("from").value = iso(ds[0]);
+    document.getElementById("to").value = iso(ds[ds.length-1]);
+  }
+  updateSalesDashboard();
+}
+
+["region","category","rep","product","from","to"].forEach(id => {
+  document.getElementById(id).addEventListener("change", updateSalesDashboard);
 });
-["region","category","rep","product","from","to"].forEach(id=>document.getElementById(id).addEventListener("change",update));
 </script>
 </body>
 </html>

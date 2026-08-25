@@ -9,7 +9,7 @@
 <!-- Chart.js & SheetJS libraries -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<!-- WordCloud2.js for Copilot-style Tag Cloud Generation -->
+<!-- WordCloud2.js for Caliphate-style Tag Cloud Generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.0.1/wordcloud2.min.js"></script>
 <!-- FontAwesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -244,7 +244,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:14px;margin-t
       <!-- Live Ticker / Schema Scroller -->
       <div class="ticker-wrap">
         <div class="ticker-content font-medium text-slate-700">
-          <i class="fa-solid fa-circle-info text-teal-500 mr-2"></i> Text Sentiment Miner & Copilot Word Cloud active. Type or paste qualitative review text below to generate instant polarity matrices and keyword maps.
+          <i class="fa-solid fa-circle-info text-teal-500 mr-2"></i> Text Sentiment Miner & Word Cloud active. Type or paste qualitative review text below to generate instant polarity matrices and keyword maps.
         </div>
       </div>
 
@@ -283,14 +283,14 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:14px;margin-t
           </div>
         </div>
         
-        <!-- Side-by-Side Outputs: Sentiment Pie Chart & Copilot Word Cloud -->
+        <!-- Side-by-Side Outputs: Sentiment Pie Chart & Word Cloud -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
             <h3 class="text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-chart-pie mr-1 text-teal-600"></i> Sentiment Polarity Distribution</h3>
             <div class="h-56"><canvas id="chartM2"></canvas></div>
           </div>
           <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-            <h3 class="text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-cloud mr-1 text-blue-600"></i> Copilot-Style Key Phrase Word Cloud</h3>
+            <h3 class="text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-cloud mr-1 text-blue-600"></i> Key Phrase Word Cloud</h3>
             <div class="h-56 relative w-full flex items-center justify-center">
               <canvas id="wordCloudCanvas" class="w-full h-full absolute inset-0"></canvas>
             </div>

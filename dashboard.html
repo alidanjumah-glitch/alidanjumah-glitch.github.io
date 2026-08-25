@@ -88,58 +88,149 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:14px;margin-t
       <!-- Live Ticker / Schema Scroller -->
       <div class="ticker-wrap">
         <div class="ticker-content font-medium text-slate-700">
-          <i class="fa-solid fa-circle-info text-amber-500 mr-2"></i> <span id="ticker-m1">Currently using Seated Demo Macro Data. To test your own data, upload a file with required schema: Quarter, GDP_Growth, Capital_Investment, Inflation_Rate</span>
+          <i class="fa-solid fa-circle-info text-amber-500 mr-2"></i> <span id="ticker-m1">Advanced Econometric OLS Engine Active. Upload dataset (.xlsx, .xls, .csv), configure date variable, frequency, Dependent and Independent variables.</span>
         </div>
       </div>
 
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-2 border-b border-slate-200 gap-2">
         <div>
           <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">Macroeconomic & Research Module</span>
-          <h2 class="text-base font-bold text-slate-900 mt-1">Automated OLS Regression & Diagnostic Suite</h2>
+          <h2 class="text-base font-bold text-slate-900 mt-1">Automated OLS Regression, Diagnostics & Descriptive Suite</h2>
         </div>
       </div>
 
-      <!-- Compact Upload & Action Bar -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
+      <!-- Configuration Control Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-3 my-3 items-center bg-slate-50 p-3 rounded-xl border border-slate-200">
         <div>
           <label class="block text-[10px] font-bold text-slate-700 mb-1">Upload Dataset (.csv, .xlsx, .xls)</label>
-          <input type="file" id="file-m1" accept=".csv,.xlsx,.xls" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+          <input type="file" id="file-m1" accept=".csv,.xlsx,.xls" onchange="handleM1FileUpload(this)" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
         </div>
-        <div class="text-xs text-slate-600">
-          Status: <span id="status-m1" class="font-bold text-teal-600">Seated Demo Data Active</span>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-700 mb-1">Date Variable & Frequency</label>
+          <div class="flex gap-1">
+            <select id="m1-date-var" class="w-2/3 border border-slate-300 rounded-md p-1.5 bg-white text-xs text-slate-800">
+              <option value="Quarter">Quarter (Demo)</option>
+            </select>
+            <select id="m1-freq" class="w-1/3 border border-slate-300 rounded-md p-1.5 bg-white text-xs text-slate-800">
+              <option value="Quarterly">Quarterly</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Annual">Annual</option>
+            </select>
+          </div>
         </div>
-        <div class="text-right">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-700 mb-1">Dependent Variable (Y)</label>
+          <select id="m1-dep-var" class="w-full border border-slate-300 rounded-md p-1.5 bg-white text-xs text-slate-800">
+            <option value="GDP_Growth">GDP_Growth (Demo)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-700 mb-1">Independent Variables (X)</label>
+          <div id="m1-ind-vars" class="max-h-20 overflow-y-auto bg-white border border-slate-300 rounded-md p-1.5 text-xs text-slate-800 space-y-1">
+            <label class="flex items-center gap-1.5"><input type="checkbox" name="m1-x" value="Capital_Investment" checked> Capital_Investment</label>
+            <label class="flex items-center gap-1.5"><input type="checkbox" name="m1-x" value="Inflation_Rate" checked> Inflation_Rate</label>
+          </div>
+        </div>
+        <div class="text-right flex flex-col justify-end">
+          <span class="text-[10px] text-slate-600 mb-1">Status: <span id="status-m1" class="font-bold text-teal-600">Seated Demo Data Active</span></span>
           <button onclick="runAnalysis('m1')" class="bg-navy text-gold font-bold px-5 py-2 rounded-lg text-xs transition shadow-sm hover:bg-slate-800">
-            <i class="fa-solid fa-play mr-1"></i> Run Analysis
+            <i class="fa-solid fa-play mr-1"></i> Run Regression
           </button>
         </div>
       </div>
 
       <!-- Results Panel (Hidden until run) -->
       <div id="results-m1" class="hidden space-y-4">
+        <!-- KPI Summary Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
             <span class="text-[11px] text-slate-500 block">R-Squared ($R^2$)</span>
-            <span id="m1-r2" class="text-lg font-extrabold text-amber-600">0.8942</span>
+            <span id="m1-r2" class="text-lg font-extrabold text-amber-600">0.0397</span>
           </div>
           <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
             <span class="text-[11px] text-slate-500 block">F-Statistic</span>
-            <span id="m1-f" class="text-lg font-extrabold text-teal-600">45.21</span>
+            <span id="m1-f" class="text-lg font-extrabold text-teal-600">0.8681</span>
           </div>
           <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
             <span class="text-[11px] text-slate-500 block">Durbin-Watson</span>
-            <span id="m1-dw" class="text-lg font-extrabold text-blue-600">1.98</span>
+            <span id="m1-dw" class="text-lg font-extrabold text-blue-600">1.100</span>
           </div>
           <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-center">
             <span class="text-[11px] text-slate-500 block">Observations ($N$)</span>
-            <span id="m1-n" class="text-lg font-extrabold text-slate-800">16 Periods</span>
+            <span id="m1-n" class="text-lg font-extrabold text-slate-800">45 Periods</span>
           </div>
         </div>
-        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700">
-          <span class="font-bold text-amber-700">Automated Economic Inference:</span> Model exhibits strong explanatory power. Capital formation coefficients indicate high statistical significance at the 1% alpha level.
+
+        <!-- Stata-Style Regression Output Table -->
+        <div class="bg-slate-900 text-emerald-400 p-4 rounded-xl font-mono text-xs overflow-x-auto shadow-inner border border-slate-700">
+          <div class="text-amber-400 font-bold mb-2 border-b border-slate-700 pb-1">. regress <span id="stata-eq-y">GDP_Growth</span> <span id="stata-eq-x">Capital_Investment Inflation_Rate</span></div>
+          <div class="flex justify-between text-slate-300 mb-1">
+            <span>Source |      SS           df       MS</span>
+            <span>Number of obs   = <span id="stata-n" class="text-white font-bold">45</span></span>
+          </div>
+          <div class="flex justify-between text-slate-300 mb-1">
+            <span>-------------+----------------------------------</span>
+            <span>F( <span id="stata-dfm">2</span>, <span id="stata-dfr">42</span>)      = <span id="stata-f" class="text-white font-bold">0.87</span></span>
+          </div>
+          <div class="flex justify-between text-slate-300 mb-1">
+            <span>Model | <span id="stata-msm">2.145</span>        <span id="stata-dfm2">2</span>   <span id="stata-msm2">1.0725</span></span>
+            <span>Prob &gt; F        = <span id="stata-pval" class="text-white font-bold">0.4270</span></span>
+          </div>
+          <div class="flex justify-between text-slate-300 mb-1">
+            <span>Residual | <span id="stata-rss">51.874</span>       <span id="stata-dfr2">42</span>   <span id="stata-msr">1.2351</span></span>
+            <span>R-squared       = <span id="stata-r2" class="text-white font-bold">0.0397</span></span>
+          </div>
+          <div class="flex justify-between text-slate-300 mb-2 border-b border-slate-700 pb-1">
+            <span>-------------+----------------------------------</span>
+            <span>Adj R-squared   = <span id="stata-adjr2" class="text-white font-bold">-0.0060</span></span>
+          </div>
+          <table class="w-full text-left text-emerald-400">
+            <thead>
+              <tr class="text-amber-300 border-b border-slate-800">
+                <th class="py-1 pr-2"><span id="stata-dep-name">GDP_Growth</span></th>
+                <th class="py-1 px-2">Coef.</th>
+                <th class="py-1 px-2">Std. Err.</th>
+                <th class="py-1 px-2">t</th>
+                <th class="py-1 px-2">P&gt;|t|</th>
+                <th class="py-1 pl-2">[95% Conf. Interval]</th>
+              </tr>
+            </thead>
+            <tbody id="stata-coefficients-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
         </div>
+
+        <!-- Descriptive Statistics Table -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <h3 class="text-xs font-bold text-slate-800 mb-3 uppercase tracking-wider"><i class="fa-solid fa-table mr-1.5 text-amber-600"></i> Comprehensive Descriptive Statistics</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                  <th class="p-2">Variable</th>
+                  <th class="p-2 text-right">Obs (N)</th>
+                  <th class="p-2 text-right">Mean</th>
+                  <th class="p-2 text-right">Std. Dev.</th>
+                  <th class="p-2 text-right">Min</th>
+                  <th class="p-2 text-right">Median</th>
+                  <th class="p-2 text-right">Max</th>
+                </tr>
+              </thead>
+              <tbody id="desc-stats-body" class="divide-y divide-slate-100 text-slate-700">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="m1-inference" class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700">
+          <span class="font-bold text-amber-700">Automated Economic Inference:</span> Model estimated successfully via Ordinary Least Squares (OLS).
+        </div>
+
         <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <div class="h-56"><canvas id="chartM1"></canvas></div>
+          <h3 class="text-xs font-bold text-slate-700 mb-2"><i class="fa-solid fa-chart-line mr-1 text-blue-600"></i> Actual vs OLS Fitted Relationship Curve</h3>
+          <div class="h-64"><canvas id="chartM1"></canvas></div>
         </div>
       </div>
     </div>
@@ -292,6 +383,9 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:14px;margin-t
 </footer>
 
 <script>
+// --- Global Chart Registry ---
+let charts = {};
+
 // --- Tab Switching Architecture ---
 function switchEngine(id) {
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
@@ -300,19 +394,251 @@ function switchEngine(id) {
   document.getElementById('btn-' + id).classList.add('active');
 }
 
-// --- Run Analysis Gate Controller ---
-let charts = {};
+// --- Machine I: Dynamic Data & Matrix OLS Engine ---
+let m1RawData = [
+  {Quarter: "Q2 2015", GDP_Growth: 3.51, Capital_Investment: 3609.21, Inflation_Rate: 9.1},
+  {Quarter: "Q3 2015", GDP_Growth: 3.24, Capital_Investment: 2906.35, Inflation_Rate: 9.2},
+  {Quarter: "Q4 2015", GDP_Growth: 5.03, Capital_Investment: 3306.97, Inflation_Rate: 9.3},
+  {Quarter: "Q1 2016", GDP_Growth: 3.58, Capital_Investment: 4934.05, Inflation_Rate: 17.0},
+  {Quarter: "Q2 2016", GDP_Growth: 3.62, Capital_Investment: 4127.42, Inflation_Rate: 17.5},
+  {Quarter: "Q3 2016", GDP_Growth: 2.24, Capital_Investment: 3821.10, Inflation_Rate: 17.9},
+  {Quarter: "Q4 2016", GDP_Growth: 1.83, Capital_Investment: 4100.50, Inflation_Rate: 18.5},
+  {Quarter: "Q1 2017", GDP_Growth: 2.10, Capital_Investment: 3950.20, Inflation_Rate: 17.8},
+  {Quarter: "Q2 2017", GDP_Growth: 2.30, Capital_Investment: 4200.00, Inflation_Rate: 16.1},
+  {Quarter: "Q3 2017", GDP_Growth: 2.50, Capital_Investment: 4400.10, Inflation_Rate: 15.9},
+  {Quarter: "Q4 2017", GDP_Growth: 2.11, Capital_Investment: 4650.80, Inflation_Rate: 15.37},
+  {Quarter: "Q1 2018", GDP_Growth: 1.95, Capital_Investment: 5100.20, Inflation_Rate: 14.33},
+  {Quarter: "Q2 2018", GDP_Growth: 1.50, Capital_Investment: 4800.50, Inflation_Rate: 11.23},
+  {Quarter: "Q3 2018", GDP_Growth: 1.81, Capital_Investment: 5200.00, Inflation_Rate: 11.28},
+  {Quarter: "Q4 2018", GDP_Growth: 2.38, Capital_Investment: 5400.30, Inflation_Rate: 11.44},
+  {Quarter: "Q1 2019", GDP_Growth: 2.10, Capital_Investment: 5600.00, Inflation_Rate: 11.37}
+];
+
+function handleM1FileUpload(input) {
+  if (input.files.length > 0) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        let wb = XLSX.read(ev.target.result, {type:"array"});
+        let ws = wb.Sheets[wb.SheetNames[0]];
+        let data = XLSX.utils.sheet_to_json(ws, {defval:""});
+        if(data.length > 0) {
+          m1RawData = data;
+          document.getElementById('status-m1').textContent = `Parsed: ${file.name} (${data.length} rows)`;
+          document.getElementById('ticker-m1').textContent = `Successfully uploaded "${file.name}" containing ${data.length} records. Configure date and variables below.`;
+          populateM1Dropdowns(data[0]);
+        }
+      } catch(err) {
+        alert("Could not parse file. Ensure valid CSV or Excel format.");
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+}
+
+function populateM1Dropdowns(sampleRow) {
+  const keys = Object.keys(sampleRow);
+  const dateSelect = document.getElementById('m1-date-var');
+  const depSelect = document.getElementById('m1-dep-var');
+  const indContainer = document.getElementById('m1-ind-vars');
+  
+  dateSelect.innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+  depSelect.innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+  indContainer.innerHTML = keys.map(k => `<label class="flex items-center gap-1.5"><input type="checkbox" name="m1-x" value="${k}"> ${k}</label>`).join('');
+}
+
+// Matrix operations for OLS
+function transpose(A) { return A[0].map((_, c) => A.map(row => row[c])); }
+function multiply(A, B) {
+  let m = A.length, n = B[0].length, p = B.length, C = Array(m).fill(0).map(() => Array(n).fill(0));
+  for (let i = 0; i < m; i++) for (let j = 0; j < n; j++) for (let k = 0; k < p; k++) C[i][j] += A[i][k] * B[k][j];
+  return C;
+}
+function invert(matrix) {
+  let n = matrix.length, A = matrix.map(row => [...row]), I = Array(n).fill(0).map((_, i) => Array(n).fill(0).map((_, j) => i === j ? 1 : 0));
+  for (let i = 0; i < n; i++) {
+    let maxEl = Math.abs(A[i][i]), maxRow = i;
+    for (let k = i + 1; k < n; k++) if (Math.abs(A[k][i]) > maxEl) { maxEl = Math.abs(A[k][i]); maxRow = k; }
+    let tmp = A[maxRow]; A[maxRow] = A[i]; A[i] = tmp;
+    tmp = I[maxRow]; I[maxRow] = I[i]; I[i] = tmp;
+    let t = A[i][i];
+    if (Math.abs(t) < 1e-12) return null; // Singular
+    for (let j = i; j < n; j++) A[i][j] /= t;
+    for (let j = 0; j < n; j++) I[i][j] /= t;
+    for (let k = 0; k < n; k++) {
+      if (k !== i) {
+        let v = A[k][i];
+        for (let j = i; j < n; j++) A[k][j] -= v * A[i][j];
+        for (let j = 0; j < n; j++) I[k][j] -= v * I[i][j];
+      }
+    }
+  }
+  return I;
+}
+
+// Student's t distribution cumulative approximation for p-value calculation
+function tCDF(t, df) {
+  let x = df / (df + t * t);
+  let p = 0.5 * incompleteBeta(df / 2, 0.5, x);
+  return t <= 0 ? 1 - p : p;
+}
+function incompleteBeta(a, b, x) {
+  if (x === 0) return 0;
+  if (x === 1) return 1;
+  let lln = lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x);
+  let front = Math.exp(lln);
+  let sum = 1, term = 1;
+  for (let i = 0; i <= 200; i++) {
+    let numerator = (a + i) * (a + b + i) * x;
+    let denominator = (a + 2 * i) * (a + 2 * i + 1);
+    term *= numerator / denominator;
+    sum += term;
+  }
+  return front * sum / a;
+}
+function lgamma(z) {
+  let c = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.120858003e-2, -0.536382e-5];
+  let x = z, y = z, tmp = x + 5.5;
+  tmp -= (x + 0.5) * Math.log(tmp);
+  let ser = 1.000000000190015;
+  for (let j = 0; j < 5; j++) ser += c[j] / ++y;
+  return -tmp + Math.log(2.5066282746310005 * ser / x);
+}
+
 function runAnalysis(machine) {
   if(machine === 'm1') {
-    const fileInput = document.getElementById('file-m1');
-    if(fileInput.files.length > 0) {
-      processFileGeneric(fileInput.files[0], 'm1');
-    } else {
-      document.getElementById('status-m1').textContent = "Seated Demo Data Active";
-      document.getElementById('ticker-m1').textContent = "Active dataset loaded successfully. Click 'Run Analysis' to re-verify diagnostic vectors.";
+    const dateVar = document.getElementById('m1-date-var').value;
+    const freq = document.getElementById('m1-freq').value;
+    const depVar = document.getElementById('m1-dep-var').value;
+    const xCheckboxes = document.querySelectorAll('input[name="m1-x"]:checked');
+    const indVars = Array.from(xCheckboxes).map(cb => cb.value);
+
+    if(indVars.length === 0) {
+      alert("Please select at least one independent variable (X).");
+      return;
     }
+
+    // Extract valid rows
+    let validRows = m1RawData.filter(r => {
+      if(r[depVar] === "" || isNaN(Number(r[depVar]))) return false;
+      for(let x of indVars) if(r[x] === "" || isNaN(Number(r[x]))) return false;
+      return true;
+    });
+
+    if(validRows.length <= indVars.length + 1) {
+      alert("Insufficient observations for regression.");
+      return;
+    }
+
+    let N = validRows.length;
+    let K = indVars.length + 1; // including constant
+    let y = validRows.map(r => [Number(r[depVar])]);
+    let X = validRows.map(r => [1, ...indVars.map(x => Number(r[x]))]);
+
+    // OLS: beta = (X'X)^-1 X'y
+    let Xt = transpose(X);
+    let XtX = multiply(Xt, X);
+    let XtX_inv = invert(XtX);
+    if(!XtX_inv) {
+      alert("Matrix inversion failed due to multicollinearity. Check selected variables.");
+      return;
+    }
+    let Xty = multiply(Xt, y);
+    let beta = multiply(XtX_inv, Xty); // K x 1
+
+    // Residuals & stats
+    let yHat = multiply(X, beta);
+    let residuals = y.map((row, i) => [row[0] - yHat[i][0]]);
+    let rss = residuals.reduce((sum, r) => sum + r[0] * r[0], 0);
+    let yMean = y.reduce((sum, r) => sum + r[0], 0) / N;
+    let tss = y.reduce((sum, r) => sum + Math.pow(r[0] - yMean, 2), 0);
+    
+    let r2 = 1 - (rss / tss);
+    let dfResid = N - K;
+    let adjR2 = 1 - ((rss / dfResid) / (tss / (N - 1)));
+    let sigma2 = rss / dfResid;
+    let varCovar = XtX_inv.map(row => row.map(val => val * sigma2));
+    let stdErrs = varCovar.map((row, i) => Math.sqrt(row[i]));
+    let tStats = beta.map((b, i) => b[0] / stdErrs[i]);
+    let pValues = tStats.map(t => 2 * (1 - tCDF(Math.abs(t), dfResid)));
+
+    let fStat = ((tss - rss) / (K - 1)) / sigma2;
+    let fPVal = 1 - incompleteBeta((K - 1) / 2, dfResid / 2, dfResid / (dfResid + (K - 1) * fStat));
+    let dw = 0;
+    for(let i = 1; i < N; i++) dw += Math.pow(residuals[i][0] - residuals[i-1][0], 2);
+    dw /= rss;
+
+    // Update UI Stats
+    document.getElementById('m1-r2').textContent = r2.toFixed(4);
+    document.getElementById('m1-f').textContent = fStat.toFixed(2);
+    document.getElementById('m1-dw').textContent = dw.toFixed(2);
+    document.getElementById('m1-n').textContent = N + " " + freq;
+
+    document.getElementById('stata-eq-y').textContent = depVar;
+    document.getElementById('stata-eq-x').textContent = indVars.join(" ");
+    document.getElementById('stata-n').textContent = N;
+    document.getElementById('stata-dfm').textContent = K - 1;
+    document.getElementById('stata-dfr').textContent = dfResid;
+    document.getElementById('stata-f').textContent = fStat.toFixed(2);
+    document.getElementById('stata-pval').textContent = fPVal.toFixed(4);
+    document.getElementById('stata-r2').textContent = r2.toFixed(4);
+    document.getElementById('stata-adjr2').textContent = adjR2.toFixed(4);
+    document.getElementById('stata-dep-name').textContent = depVar;
+
+    let varNames = ["_cons", ...indVars];
+    let tbody = document.getElementById('stata-coefficients-body');
+    tbody.innerHTML = "";
+
+    varNames.forEach((name, i) => {
+      let b = beta[i][0], se = stdErrs[i], t = tStats[i], p = pValues[i];
+      let ciLower = b - 1.96 * se, ciUpper = b + 1.96 * se;
+      let star = p < 0.01 ? "***" : p < 0.05 ? "**" : p < 0.1 ? "*" : "";
+      
+      tbody.innerHTML += `
+        <tr class="border-b border-slate-800">
+          <td class="py-1 pr-2 font-bold">${name}</td>
+          <td class="py-1 px-2">${b.toFixed(4)}${star}</td>
+          <td class="py-1 px-2">${se.toFixed(4)}</td>
+          <td class="py-1 px-2">${t.toFixed(2)}</td>
+          <td class="py-1 px-2">${p.toFixed(3)}</td>
+          <td class="py-1 pl-2">[${ciLower.toFixed(4)}, ${ciUpper.toFixed(4)}]</td>
+        </tr>
+      `;
+    });
+
+    // Populate Descriptive Statistics Table
+    let allVars = [depVar, ...indVars];
+    let descBody = document.getElementById('desc-stats-body');
+    descBody.innerHTML = "";
+
+    allVars.forEach(v => {
+      let vals = validRows.map(r => Number(r[v])).sort((a, b) => a - b);
+      let count = vals.length;
+      let mean = vals.reduce((a, b) => a + b, 0) / count;
+      let variance = vals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (count - 1 || 1);
+      let sd = Math.sqrt(variance);
+      let min = vals[0];
+      let max = vals[count - 1];
+      let median = count % 2 === 0 ? (vals[count / 2 - 1] + vals[count / 2]) / 2 : vals[Math.floor(count / 2)];
+
+      descBody.innerHTML += `
+        <tr class="hover:bg-slate-50">
+          <td class="p-2 font-semibold text-slate-800">${v}</td>
+          <td class="p-2 text-right">${count}</td>
+          <td class="p-2 text-right">${mean.toFixed(4)}</td>
+          <td class="p-2 text-right">${sd.toFixed(4)}</td>
+          <td class="p-2 text-right">${min.toFixed(4)}</td>
+          <td class="p-2 text-right">${median.toFixed(4)}</td>
+          <td class="p-2 text-right">${max.toFixed(4)}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById('m1-inference').innerHTML = `<span class="font-bold text-amber-700">Automated Economic Inference:</span> Model estimated across ${N} ${freq.toLowerCase()} periods (${dateVar}). R-squared indicates that ${(r2*100).toFixed(1)}% of the variance in ${depVar} is explained by the regressors.`;
+
     document.getElementById('results-m1').classList.remove('hidden');
-    initChartM1();
+    initChartM1(validRows, dateVar, depVar, yHat.map(r => r[0]));
   } else if(machine === 'm2') {
     document.getElementById('results-m2').classList.remove('hidden');
     initChartM2();
@@ -320,41 +646,21 @@ function runAnalysis(machine) {
   }
 }
 
-// --- Generic File Processor (CSV & Excel) for Machine I ---
-function processFileGeneric(file, machine) {
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      let wb = XLSX.read(ev.target.result, {type:"array"});
-      let ws = wb.Sheets[wb.SheetNames[0]];
-      let data = XLSX.utils.sheet_to_json(ws, {defval:""});
-      if(data.length > 0) {
-        document.getElementById('status-m1').textContent = `Parsed: ${file.name} (${data.length} rows)`;
-        document.getElementById('ticker-m1').textContent = `Successfully uploaded "${file.name}" containing ${data.length} records. OLS regression model computed successfully.`;
-        document.getElementById('m1-n').textContent = data.length + " Periods";
-      }
-    } catch(err) {
-      alert("Could not parse file. Ensure valid CSV or Excel format.");
-    }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
 // --- Machine I Chart ---
-function initChartM1() {
+function initChartM1(rows, dateVar, depVar, fittedVals) {
   if(charts['m1']) charts['m1'].destroy();
   const ctx = document.getElementById('chartM1').getContext('2d');
   charts['m1'] = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Q1 2022', 'Q2 2022', 'Q3 2022', 'Q4 2022', 'Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023'],
+      labels: rows.map(r => r[dateVar] || "T"),
       datasets: [{
-        label: 'Actual GDP Growth (%)',
-        data: [2.1, 2.3, 2.5, 2.0, 2.3, 2.5, 2.8, 3.1],
+        label: `Actual ${depVar}`,
+        data: rows.map(r => Number(r[depVar])),
         borderColor: '#0b1f33', backgroundColor: 'rgba(11, 31, 51, 0.05)', fill: true, tension: 0.3
       }, {
         label: 'OLS Fitted Model',
-        data: [2.0, 2.2, 2.6, 2.1, 2.4, 2.6, 2.7, 3.0],
+        data: fittedVals,
         borderColor: '#1769aa', borderDash: [4, 4], tension: 0.3
       }]
     },
@@ -381,7 +687,6 @@ function initWordCloud() {
   const textInput = document.getElementById('text-input-m2').value;
   const stopWords = new Set(['the','and','to','a','of','in','for','is','on','that','by','this','with','i','you','it','not','or','be','are','from','at','as','your','all','have','new','more','an','was','we']);
   
-  // Tokenize and count frequency
   const words = textInput.toLowerCase().replace(/[^\w\s]/gi, '').split(/\s+/);
   const freqMap = {};
   words.forEach(w => {
@@ -390,16 +695,12 @@ function initWordCloud() {
     }
   });
 
-  // Convert map to [word, weight] array format required by WordCloud2
   let cloudList = Object.keys(freqMap).map(word => [word, (freqMap[word] * 12) + 14]);
-  
-  // Ensure default fallback list if text is empty/short
   if(cloudList.length === 0) {
     cloudList = [['dashboard', 36], ['analytics', 30], ['fast', 26], ['support', 24], ['accuracy', 22], ['workflows', 20]];
   }
 
   const canvas = document.getElementById('wordCloudCanvas');
-  // Size canvas container dynamically
   canvas.width = canvas.parentElement.clientWidth;
   canvas.height = canvas.parentElement.clientHeight;
 

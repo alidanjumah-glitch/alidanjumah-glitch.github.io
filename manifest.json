@@ -1,7 +1,8 @@
 {
   "name": "Caliphate Data Analytics Hub",
   "short_name": "Calyda",
-  "start_url": "./",
+  "description": "Free Text analytics, and privacy-focused offline data tools.",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#111827"

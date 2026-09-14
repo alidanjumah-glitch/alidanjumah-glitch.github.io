@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>DR. UMARU A.D.  Dynamic Free-Text Analytics Engine</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  /* CBN palette */
+  --green:#00693e;--green-d:#004d2e;--green-dk:#00381f;--green-l:#0a8a54;--green-xl:#1fa971;
+  --gold:#c99700;--gold-l:#f0b90b;--gold-xl:#ffd558;
+  --ink:#14261c;--slate:#5f6f66;--bg:#eef2ef;--card:#ffffff;--line:#dfe6e1;
+  --red:#d64545;--amber:#e8a41c;--blue:#2f74c0;
+  --shadow:0 4px 18px rgba(9,40,26,.08);--shadow-lg:0 12px 36px rgba(9,40,26,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;overflow-x:hidden;}
+a{text-decoration:none;color:inherit}
+.app{display:flex;min-height:100vh;flex-direction:row;}
+@media(max-width:860px){.app{flex-direction:column;}}
+/* sidebar */
+.sidebar{width:256px;background:linear-gradient(180deg,var(--green-dk),var(--green));color:#e9f2ec;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;z-index:50;transition:transform .3s ease;}
+@media(max-width:860px){.sidebar{position:relative;width:100%;inset:auto;height:auto;}}
+.brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.brand .logo{display:flex;align-items:center;gap:11px}
+.brand .mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--gold-l),var(--gold));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.brand h1{font-size:15px;font-weight:800;letter-spacing:.3px}
+.brand p{font-size:10px;opacity:.72;margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
+.nav{padding:12px 10px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.nav .sec{font-size:9.5px;text-transform:uppercase;letter-spacing:1.4px;opacity:.5;padding:12px 12px 6px}
+.nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:#d9e8df;font-size:12.8px;font-weight:600;margin-bottom:3px;cursor:pointer;transition:.16s;position:relative}
+.nav a .ic{width:22px;text-align:center;font-size:15px}
+.nav a .step{position:absolute;right:10px;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.14);font-size:9.5px;display:flex;align-items:center;justify-content:center;font-weight:800}
+.nav a:hover{background:rgba(255,255,255,.08)}
+.nav a.active{background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 3px 0 0 var(--gold-l)}
+.gatebox{margin:8px 12px;padding:11px 12px;border-radius:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.gatebox .gl{font-size:9.5px;text-transform:uppercase;letter-spacing:1px;opacity:.7}
+.gatebox .gv{font-size:12.5px;font-weight:800;margin-top:3px;display:flex;align-items:center;gap:7px}
+.gatebox .gdot{width:9px;height:9px;border-radius:50%;background:var(--amber)}
+.gatebox.ready .gdot{background:var(--green-xl);box-shadow:0 0 0 3px rgba(31,169,113,.25)}
+.side-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.1);font-size:10px;opacity:.7}
+/* main */
+.main{margin-left:256px;flex:1;display:flex;flex-direction:column;min-width:0;}
+@media(max-width:860px){.main{margin-left:0;}}
+.topbar{background:var(--card);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;gap:14px;flex-wrap:wrap}
+.topbar .tt h2{font-size:17px;font-weight:800}
+.topbar .tt p{font-size:11.5px;color:var(--slate);margin-top:1px}
+.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;padding:9px 14px;border-radius:9px;border:none;cursor:pointer;transition:.15s}
+.btn-primary{background:linear-gradient(135deg,var(--green-l),var(--green));color:#fff;box-shadow:0 3px 12px rgba(0,105,62,.28)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-gold{background:linear-gradient(135deg,var(--gold-l),var(--gold));color:#3a2b00;box-shadow:0 3px 12px rgba(201,151,0,.28)}
+.btn-gold:hover{filter:brightness(1.05)}
+.btn-ghost{background:#f1f4f2;color:var(--slate);border:1px solid var(--line)}
+.btn-ghost:hover{background:#e7ede9}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.exp-wrap{position:relative}
+.exp-menu{position:absolute;right:0;top:44px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:7px;min-width:250px;display:none;z-index:60}
+.exp-menu.show{display:block}
+.exp-menu button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;border:none;background:none;border-radius:8px;font-size:12.5px;cursor:pointer;font-weight:600;color:var(--ink)}
+.exp-menu button:hover{background:#f1f4f2}
+.exp-menu .em-lab{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--slate);font-weight:800;padding:6px 12px 3px}
+.exp-menu .em-sep{height:1px;background:var(--line);margin:5px 6px}
+.content{padding:22px 24px 48px}
+.page{display:none;animation:fade .35s ease}
+.page.show{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page-head{margin-bottom:16px}
+.page-head h3{font-size:20px;font-weight:800;display:flex;align-items:center;gap:10px}
+.page-head .bar{width:5px;height:24px;border-radius:3px;background:linear-gradient(var(--gold-l),var(--gold))}
+.page-head p{color:var(--slate);font-size:12.5px;margin-top:5px;max-width:960px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1150px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:860px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);padding:18px;position:relative}
+.card h4{font-size:13.5px;font-weight:800;margin-bottom:3px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card .sub{font-size:10.8px;color:var(--slate);margin-bottom:12px}
+.tag{font-size:9.5px;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:.4px;white-space:nowrap}
+.tag-v{background:rgba(0,105,62,.12);color:#0a6b41}.tag-t{background:rgba(201,151,0,.16);color:#8a6600}
+.tag-g{background:rgba(31,169,113,.15);color:#137a51}.tag-a{background:rgba(232,164,28,.16);color:#9a6c00}
+.tag-r{background:rgba(214,69,69,.14);color:#b23029}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--green)}
+.kpi.k-t::before{background:var(--gold)}.kpi.k-g::before{background:var(--green-xl)}.kpi.k-a::before{background:var(--amber)}.kpi.k-r::before{background:var(--red)}.kpi.k-v::before{background:var(--green-l)}
+.kpi .lab{font-size:10.8px;color:var(--slate);font-weight:700;line-height:1.3;min-height:28px}
+.kpi .val{font-size:28px;font-weight:800;letter-spacing:-.5px;margin-top:5px}
+.kpi .foot{font-size:10.5px;color:var(--slate);margin-top:3px}
+.dropzone{border:2.5px dashed var(--green-l);border-radius:16px;padding:26px 20px;background:#f2f9f5;cursor:pointer;transition:.2s;text-align:center}
+.dropzone.drag{background:#e5f3ec;border-color:var(--green)}
+.dropzone .dz-ic{font-size:32px}
+.dropzone .dz-t{font-weight:800;margin-top:8px;font-size:14px}
+.dropzone .dz-s{font-size:11px;color:var(--slate);margin-top:3px}
+table.tbl{width:100%;border-collapse:collapse;font-size:12px}
+table.tbl th{text-align:left;padding:8px 9px;color:var(--slate);font-size:10.3px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--line);position:sticky;top:0;background:#fff}
+table.tbl td{padding:8px 9px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.tbl tr:hover td{background:#f6faf7}
+.scroll{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px;-webkit-overflow-scrolling:touch;}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;background:#f1f4f2;color:var(--slate)}
+.chip.t{background:rgba(0,105,62,.12);color:#0a6b41}.chip.v{background:rgba(201,151,0,.15);color:#8a6600}
+.freqbar{height:8px;border-radius:6px;background:#e9efeb;overflow:hidden;min-width:60px}
+.freqbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--green-l),var(--gold))}
+.mini-select,.mini-input{font-size:12px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;font-weight:600;color:var(--ink)}
+.mini-input{font-weight:500}
+.seg{display:inline-flex;background:#f1f4f2;border:1px solid var(--line);border-radius:9px;padding:3px}
+.seg button{border:none;background:none;font-size:11.5px;font-weight:700;padding:6px 13px;border-radius:7px;cursor:pointer;color:var(--slate)}
+.seg button.on{background:#fff;color:var(--green);box-shadow:var(--shadow)}
+.chart-wrap{position:relative;height:300px}.chart-wrap.sm{height:240px}
+#cloud{width:100%;height:380px;border-radius:12px;background:#fbfdfb;border:1px solid var(--line)}
+.progress{height:12px;border-radius:8px;background:#e9efeb;overflow:hidden}
+.progress i{display:block;height:100%;transition:width .5s}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:6px 11px;border-radius:20px;background:#f1f4f2;color:var(--slate);border:1px solid var(--line)}
+.pill .x{cursor:pointer;font-weight:800;color:var(--red)}
+.banner{border-radius:13px;padding:15px 18px;display:flex;align-items:center;gap:14px;font-size:12.8px;font-weight:600}
+.banner .bic{font-size:24px}
+.banner.warn{background:#fff6e6;border:1px solid #f0c66b;color:#8a5a00}
+.banner.ok{background:#e8f6ef;border:1px solid #86d3ac;color:#0f6e47}
+.banner.info{background:#eaf3ee;border:1px solid #a9cdb8;color:#0a6b41}
+.rec-actions{display:flex;gap:5px;flex-wrap:wrap}
+.rec-actions button{font-size:10.5px;font-weight:700;padding:5px 9px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;color:var(--slate)}
+.rec-actions button:hover{background:#f1f4f2}
+.rec-actions button.map{border-color:var(--green);color:#0a6b41}
+.rec-actions button.new{border-color:var(--gold);color:#8a6600}
+.rec-actions button.stop{border-color:var(--amber);color:#9a6c00}
+.rec-actions button.noise{border-color:var(--red);color:#b23029}
+/* header selection */
+.hdr-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow:auto}
+.hdr-item{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border:1.5px solid var(--line);border-radius:11px;cursor:pointer;transition:.15s;background:#fff}
+.hdr-item:hover{border-color:var(--green-l);background:#f6faf7}
+.hdr-item.sel{border-color:var(--green);background:#eef7f1;box-shadow:0 2px 10px rgba(0,105,62,.1)}
+.hdr-item .ck{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;margin-top:1px}
+.hdr-item.sel .ck{background:var(--green);border-color:var(--green)}
+.hdr-item .hbody{flex:1}
+.hdr-item .hname{font-weight:700;font-size:13px;color:var(--ink)}
+.hdr-item .hmeta{font-size:10.5px;color:var(--slate);margin-top:2px}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--ink);color:#fff;padding:13px 18px;border-radius:11px;font-size:12.5px;font-weight:600;box-shadow:var(--shadow-lg);z-index:120;opacity:0;transform:translateY(12px);transition:.3s;max-width:360px}
+.toast.show{opacity:1;transform:none}
+.modal{position:fixed;inset:0;background:rgba(9,40,26,.5);backdrop-filter:blur(3px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal .box{background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);width:min(440px,94vw);padding:22px}
+.modal h4{font-size:15px;font-weight:800;margin-bottom:10px}
+.modal label{font-size:11px;font-weight:700;color:var(--slate);display:block;margin:10px 0 4px}
+.modal input,.modal select{width:100%;font-size:12.5px;padding:9px 11px;border:1px solid var(--line);border-radius:9px}
+.modal .m-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}
+.empty{text-align:center;padding:50px 20px;color:var(--slate)}
+.empty .ei{font-size:44px;opacity:.6}
+.empty h3{font-size:17px;color:var(--ink);margin-top:10px}
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--slate);margin-top:10px}
+.legend-row span{display:inline-flex;align-items:center;gap:6px}.legend-row i{width:11px;height:11px;border-radius:3px}
+.section-title{font-size:13px;font-weight:800;color:var(--green-d);text-transform:uppercase;letter-spacing:.7px;margin:6px 0 12px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';width:18px;height:3px;border-radius:2px;background:var(--gold)}
+.foot-note{font-size:10.3px;color:var(--slate);margin-top:20px;text-align:center;padding-top:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo"><div class="mark">🧠</div>
+    <div><h1>DR. UMARU A.D. </h1><p>Free-Text Analytics</p></div></div></div>
+  <nav class="nav" id="nav">
+    <div class="sec">Workflow</div>
+    <a data-p="p1" class="active"><span class="ic">📥</span> 1 · Pre-Analysis <span class="step">①</span></a>
+    <a data-p="p2" id="navP2"><span class="ic">📊</span> 2 · Analysis <span class="step">②</span></a>
+    <div class="sec">Governance</div>
+    <a data-p="p3"><span class="ic">📚</span> Theme Dictionary</a>
+    <a data-p="p4"><span class="ic">🛑</span> Stop-Word Registry</a>
+    <a data-p="p5"><span class="ic">🧾</span> Audit Trail</a>
+  </nav>
+  <div class="gatebox" id="gatebox">
+    <div class="gl">Status</div>
+    <div class="gv"><span class="gdot"></span><span id="gateTxt">Awaiting data</span></div>
+  </div>
+  <div class="side-foot">Central Bank of Nigeria<br>Statistics Department · SMD<br><b id="dictVer">Dictionary v1.0</b></div>
+</aside>
+<div class="main">
+  <div class="topbar">
+    <div class="tt"><h2 id="topTitle">Pre-Analysis · Learn &amp; Reconcile</h2>
+      <p id="topSub">Upload survey responses, choose the question header(s) to analyse, and enrich themes.</p></div>
+    <div class="controls">
+      <button class="btn btn-primary" id="uploadTop">📥 Upload responses</button>
+      <button class="btn btn-ghost" id="demoTop">Load demo data</button>
+      <div class="exp-wrap">
+        <button class="btn btn-gold" id="exportBtn">⬇ Export ▾</button>
+        <div class="exp-menu" id="exportMenu">
+          <div class="em-lab">Analysis outputs</div>
+          <button data-x="excel">📊 Full workbook (themes · n-grams · responses)</button>
+          <button data-x="cloud">🖼️ Word cloud (PNG)</button>
+          <div class="em-sep"></div>
+          <div class="em-lab">Governance</div>
+          <button data-x="dict">📚 Dictionary (CSV)</button>
+          <button data-x="audit">🧾 Audit trail (CSV)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <section class="page show" id="p1"></section>
+    <section class="page" id="p2"></section>
+    <section class="page" id="p3"></section>
+    <section class="page" id="p4"></section>
+    <section class="page" id="p5"></section>
+  </div>
+</div>
+</div>
+<input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none">
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+
+<script>
+/* ===== Knowledge base: 42 themes (CBN survey domains) ===== */
+const SEED_THEMES = {
+  "Inflation & Prices": {polarity:-1, syn:["inflation","inflationary","price","prices","pricing","costly","expensive","high cost","cost of living","hike","price hike","dearness","rising price","increase in price","price increase","cost push","escalating price","soaring price","skyrocketing price","high price","price surge","runaway inflation","hyperinflation","spiralling cost","overpriced","exorbitant"]},
+  "Exchange Rate / FX": {polarity:-1, syn:["exchange rate","forex","fx","foreign exchange","naira","dollar","devaluation","depreciation","currency","exchange","fx scarcity","fx shortage","forex scarcity","weak naira","naira depreciation","black market rate","parallel market","fx volatility","exchange volatility","currency crisis","dollar scarcity","forex crisis","fx rate","floating naira","exchange loss","currency instability","fx access","forex access","official rate","bureau de change","bdc"]},
+  "Interest & Lending Rates": {polarity:-1, syn:["interest rate","interest","lending rate","borrowing cost","high interest","mpr","monetary policy rate","loan rate","cost of borrowing","cost of fund","cost of funds","credit cost","expensive loan","high lending","interest burden","prime rate","maximum lending rate","rate hike","tight monetary","high borrowing","costly credit"]},
+  "Access to Credit / Finance": {polarity:-1, syn:["access to credit","credit","loan","loans","finance","financing","funding","capital","working capital","bank loan","credit facility","access to finance","access to fund","access to funds","collateral","credit access","unable to borrow","no access to loan","loan approval","credit line","overdraft","credit squeeze","credit crunch","denied loan","loan rejection","microfinance","grant","bailout","intervention fund"]},
+  "Consumer Purchasing Power": {polarity:-1, syn:["purchasing power","income","disposable income","standard of living","poverty","affordability","spending power","real income","take home","salary value","erosion of income","low income","reduced income","weak purchasing","cost of living crisis","impoverished","hardship of living","shrinking income","dwindling income","household income"]},
+  "Liquidity / Cash Flow": {polarity:-1, syn:["liquidity","cash flow","cash","cashflow","working capital shortage","cash crunch","cash squeeze","liquidity crisis","cash shortage","tight liquidity","cash scarcity","naira scarcity","cash flow problem","no cash","liquidity challenge","money supply","cash trap","funds tied","delayed payment","receivables"]},
+  "Foreign Investment / Capital Flow": {polarity:0, syn:["investment","investor","investors","foreign investment","capital importation","capital flow","fdi","portfolio investment","divestment","capital flight","foreign capital","direct investment","investor confidence","capital inflow","capital outflow","hot money","repatriation","dividend repatriation","foreign inflow"]},
+  "Savings & Deposits": {polarity:0, syn:["savings","deposit","deposits","saving","fixed deposit","term deposit","depositor","deposit rate","savings rate","reserve","idle funds","dormant account","withdrawal","bank deposit","savings culture"]},
+  "Security / Insecurity": {polarity:-1, syn:["security","insecurity","insecure","kidnapping","kidnap","banditry","bandit","terrorism","terrorist","violence","unrest","crime","robbery","theft","herdsmen","boko haram","attack","conflict","killing","abduction","unsafe","armed robbery","gunmen","militancy","ransom","hostage","clashes","communal clash","farmer herder","cattle rustling","piracy","cultism","vandalism","arson"]},
+  "Power / Electricity": {polarity:-1, syn:["power","electricity","energy","power supply","light","epileptic power","blackout","outage","generator","fuel for generator","nepa","phcn","disco","grid","power outage","unstable power","erratic power","no light","electricity tariff","band a","load shedding","power failure","darkness","poor power","electricity bill","estimated billing","metering","prepaid meter","national grid","grid collapse"]},
+  "Fuel / Energy Cost": {polarity:-1, syn:["fuel","petrol","diesel","pms","subsidy","fuel price","fuel scarcity","petrol scarcity","fuel cost","pump price","fuel subsidy","gas","cooking gas","energy cost","high fuel","subsidy removal","fuel queue","diesel cost","lpg","kerosene","fuel shortage","fuel hike","black market fuel"]},
+  "Infrastructure": {polarity:-1, syn:["infrastructure","road","roads","bad road","transport","transportation","logistics","port","ports","network","facilities","amenities","water supply","poor road","road network","dilapidated","poor infrastructure","pothole","gridlock","traffic","rail","railway","bridge","drainage","housing","warehouse","cold chain","broadband","telecom infrastructure","decaying infrastructure"]},
+  "Business Environment": {polarity:0, syn:["business environment","operating environment","ease of doing business","enabling environment","operating cost","overhead","running cost","cost of operation","harsh environment","difficult environment","business climate","tough environment","hostile environment","unfriendly environment","doing business","operational cost","cost of production","production cost"]},
+  "Raw Materials / Supply": {polarity:-1, syn:["raw material","raw materials","supply","supplies","supply chain","input","inputs","scarcity","shortage","importation","import","imported","availability of materials","sourcing","procurement","material cost","local sourcing","supply disruption","stock out","inventory","spare parts","components","local content","backward integration","supply shortage"]},
+  "Logistics & Transportation": {polarity:-1, syn:["logistics","transportation","transport cost","haulage","freight","shipping","clearing","cargo","trucking","distribution","delivery","fuel for transport","high transport","movement of goods","last mile","fleet","demurrage","port congestion","clearing agent"]},
+  "Import / Export & Trade": {polarity:0, syn:["import","importation","export","exportation","trade","international trade","customs","border","border closure","trade policy","tariff barrier","non oil export","import duty","export ban","import restriction","trade balance","balance of trade","afcfta","cross border","smuggling","dumping","trade deficit"]},
+  "Taxes & Levies": {polarity:-1, syn:["tax","taxes","taxation","levy","levies","multiple taxation","vat","duty","duties","tariff","tariffs","high tax","multiple tax","tax burden","government levy","rates and levies","company tax","cit","paye","withholding tax","stamp duty","tax evasion","tax reform","excise duty","tenement rate","development levy","illegal levy","double taxation"]},
+  "Regulation & Policy": {polarity:0, syn:["regulation","regulatory","policy","policies","government policy","compliance","bureaucracy","red tape","licensing","license","permit","cbn policy","fiscal policy","monetary policy","reform","reforms","legislation","law","directive","guideline","framework","policy inconsistency","policy summersault","policy reversal","regulatory burden","overregulation","bottleneck","approval delay","enforcement","standard","regulatory uncertainty","policy flip flop"]},
+  "Government / Governance": {polarity:0, syn:["government","govt","leadership","corruption","corrupt","mismanagement","accountability","transparency","public sector","politics","political","election","governance","state government","federal government","authorities","bad governance","poor leadership","political instability","government inaction","policy makers","public office","embezzlement","looting","nepotism","impunity"]},
+  "Public Services & Institutions": {polarity:0, syn:["public service","civil service","institution","institutions","judiciary","court","police","agency","parastatal","ministry","bureaucrat","public servant","service delivery","government office","due process","rule of law","contract enforcement","public procurement"]},
+  "Fiscal & Debt": {polarity:-1, syn:["debt","public debt","national debt","budget deficit","fiscal deficit","borrowing","debt servicing","debt burden","deficit","government borrowing","debt sustainability","fiscal crisis","revenue shortfall","subsidy burden","fiscal space","ways and means","debt to gdp","external debt"]},
+  "Demand / Sales": {polarity:0, syn:["demand","sales","patronage","customers","turnover","market","low demand","low sales","low patronage","weak demand","poor sales","reduced demand","slow market","no customers","drop in sales","fall in demand","high demand","increased sales","customer base","market size","declining sales","dwindling patronage","sales volume","order book","footfall"]},
+  "Competition & Market Structure": {polarity:0, syn:["competition","competitor","competitors","competitive","market share","price war","stiff competition","unfair competition","monopoly","oligopoly","market saturation","new entrant","substitute product","counterfeit","fake product","cheap import","undercutting","market dominance"]},
+  "Pricing & Margins": {polarity:-1, syn:["profit margin","margin","profitability","profit","low margin","shrinking margin","loss","losses","break even","markup","cost pressure","squeezed margin","thin margin","price control","unprofitable","bottom line","operating margin","gross margin","net profit"]},
+  "Employment / Labour": {polarity:0, syn:["employment","unemployment","jobs","job","labour","labor","workforce","staff","layoff","retrenchment","salary","wage","wages","minimum wage","workers","hiring","recruitment","job loss","staffing","job creation","underemployment","downsizing","redundancy","labour cost","staff turnover","brain drain","skilled labour","manpower","japa"]},
+  "Skills & Training": {polarity:0, syn:["skill","skills","training","capacity building","competence","expertise","upskilling","reskilling","talent","human capital","workforce development","knowledge gap","skill gap","apprenticeship","vocational","certification","mentorship","professional development"]},
+  "Health & Wellbeing": {polarity:0, syn:["health","healthcare","medical","illness","disease","hospital","wellbeing","sick leave","health cost","medical bill","pandemic","epidemic","covid","health insurance","staff health","mental health","malaria","clinic","health facility"]},
+  "Consumer Behaviour & Confidence": {polarity:0, syn:["consumer confidence","consumer behaviour","consumer sentiment","spending habit","consumer spending","buying pattern","shopping","consumer trust","brand loyalty","customer satisfaction","consumer demand","willingness to spend","budget conscious","price sensitive","bargain hunting"]},
+  "Confidence & Optimism": {polarity:1, syn:["confidence","optimism","optimistic","positive","hopeful","hope","trust","stability","stable","improvement","improving","better","recovery","growth","progress","favourable","encouraging","upbeat","bright","promising","resilient","booming","thriving","expansion","rebound","turnaround","brighter outlook","confident"]},
+  "Pessimism / Uncertainty": {polarity:-1, syn:["uncertainty","uncertain","pessimism","pessimistic","fear","worry","worried","instability","unstable","unpredictable","volatile","volatility","risk","risky","difficult","hardship","challenge","challenging","tough","harsh","bleak","gloomy","discouraging","anxiety","apprehension","doubt","nervous","frustration","despair","hopeless","struggle","survival mode"]},
+  "Economic Growth / Activity": {polarity:1, syn:["economic growth","gdp","output","economic activity","expansion","productivity","industrial output","capacity utilization","capacity utilisation","real sector","economic recovery","boom","development","industrialization","industrialisation","value addition","manufacturing output","economic expansion"]},
+  "Recession / Slowdown": {polarity:-1, syn:["recession","slowdown","downturn","contraction","stagnation","depression","economic crisis","slump","decline","negative growth","shrinking economy","economic hardship","stagflation","collapse","meltdown","distress","comatose","dying economy"]},
+  "Agriculture & Food": {polarity:0, syn:["agriculture","farming","farmer","food","crop","harvest","agro","livestock","poultry","fertilizer","seed","irrigation","food security","food price","agricultural input","planting","agribusiness","food shortage","grain","produce","cash crop","agricultural"]},
+  "Manufacturing & Industry": {polarity:0, syn:["manufacturing","industry","industrial","factory","production","plant","assembly","machinery","equipment","capacity","output","local manufacturing","industrial sector","processing","fabrication","production line","shop floor","made in nigeria"]},
+  "SME & Small Business": {polarity:0, syn:["sme","small business","smes","msme","micro business","small scale","entrepreneur","startup","start up","small enterprise","informal sector","petty trading","artisan","small and medium","cottage industry","nano business","self employed"]},
+  "Banking & Financial Services": {polarity:0, syn:["bank","banking","financial services","bank charges","bank service","atm","pos","account","transfer","transaction","bank branch","charges","hidden charges","service charge","account maintenance","banking app","mobile banking","interbank","settlement","clearing house"]},
+  "Real Estate & Housing": {polarity:0, syn:["real estate","housing","rent","property","accommodation","land","building","mortgage","construction","rental cost","high rent","property price","shop rent","office space","warehouse rent","building material","cement price","landlord"]},
+  "Technology / Digital": {polarity:1, syn:["technology","digital","automation","innovation","internet","online","software","system","platform","fintech","digitalization","digitalisation","ict","e-payment","cashless","tech","mobile money","artificial intelligence","ai","data","cybersecurity","e-commerce","app","connectivity","network coverage","data cost","digital economy"]},
+  "Environment & Climate": {polarity:-1, syn:["environment","climate","climate change","flood","flooding","erosion","drought","pollution","waste","weather","environmental","desertification","global warming","natural disaster","rainfall","emission","sustainability","green","carbon","ecological"]},
+  "Corruption & Integrity": {polarity:-1, syn:["corruption","corrupt","bribery","bribe","kickback","extortion","fraud","embezzlement","graft","integrity","dishonesty","misappropriation","ghost worker","inflated contract","rent seeking","cronyism","favouritism","money laundering"]},
+  "Bureaucracy & Delays": {polarity:-1, syn:["bureaucracy","red tape","delay","delays","bottleneck","slow process","paperwork","procedure","approval delay","long process","administrative delay","protocol","cumbersome process","tedious process","backlog","waiting time","processing delay","stringent requirement"]},
+  "Quality & Standards": {polarity:0, syn:["quality","standard","standards","substandard","fake","counterfeit","adulterated","quality control","certification","son","nafdac","product quality","poor quality","inferior","specification","conformity","quality assurance","genuine product","expired product"]}
+};
+const BASE_STOPWORDS = new Set(("a an the and or but if then else of to in on at for with without by from into onto upon over under again further once here there all any both each few more most other some such no nor not only own same so than too very can will just should now i me my we our you your he she it they them his her its their this that these those is are was were be been being have has had do does did doing would could shall may might must am also as about above below up down out off really quite rather much many lot lots thing things get got make made way ways one etc eg ie please kindly said say says like well still even though although because since due while during between within around per among across").split(/\s+/));
+const POS_WORDS = new Set("good great better best improve improved improving improvement positive optimistic optimism confidence confident stable stability growth grow increase increased rise rising boost strong strength favourable favorable encouraging hopeful hope recovery gain gains progress benefit beneficial opportunity opportunities excellent effective efficient satisfied satisfaction success successful bright promising steady resilient support supportive ease easier".split(/\s+/));
+const NEG_WORDS = new Set("bad worse worst poor decline declined declining decrease decreased fall falling drop dropped weak weakness negative pessimistic pessimism fear worried worry uncertain uncertainty unstable instability difficult difficulty hardship hard tough harsh challenge challenging problem problems crisis high cost costly expensive scarcity shortage insecurity insecure unsafe corruption corrupt loss lose losing lost burden struggle struggling collapse fail failure inadequate insufficient lack limited barrier obstacle constraint hindrance slow bleak gloomy discouraging concern concerns concerned".split(/\s+/));
+</script>
+
+<script>
+/* =================================================================
+   CORE ENGINE — wide-format (headers = questions), non-blocking
+   ================================================================= */
+const STATE={
+  loaded:false, analysed:false,
+  headers:[],            // [{name, responses:[...]}]  (wide format)
+  selected:[],           // indices of headers chosen for analysis
+  responses:[],          // combined analysis set [{id,header,raw,clean,tokens,tokAll,ngrams,themes,sentiment}]
+  question:"",
+  dictVersion:"1.0",
+  themes:JSON.parse(JSON.stringify(SEED_THEMES)),
+  userStop:new Set(), userAllow:new Set(),
+  ood:[], quarantine:[], audit:[], ngramMode:'uni'
+};
+function logAudit(action,detail){STATE.audit.unshift({ts:new Date().toISOString().replace('T',' ').slice(0,19),actor:'analyst',action,detail});}
+function stopwords(){const s=new Set(BASE_STOPWORDS);STATE.userAllow.forEach(w=>s.delete(w));STATE.userStop.forEach(w=>s.add(w));return s;}
+const CONTRACTIONS={"can't":"cannot","won't":"will not","n't":" not","'re":" are","'s":" is","'d":" would","'ll":" will","'ve":" have","'m":" am"};
+function cleanText(t){let s=String(t==null?'':t).toLowerCase();for(const k in CONTRACTIONS)s=s.split(k).join(CONTRACTIONS[k]);
+  return s.replace(/https?:\/\/\S+/g,' ').replace(/[^a-z\s'-]/g,' ').replace(/[-']/g,' ').replace(/\s+/g,' ').trim();}
+function lemma(w){if(w.length<=3)return w;
+  const irr={"prices":"price","costs":"cost","taxes":"tax","rates":"rate","supplies":"supply","policies":"policy","facilities":"facility","duties":"duty","levies":"levy","bandits":"bandit","roads":"road","customers":"customer","materials":"material","investors":"investor","jobs":"job","wages":"wage","workers":"worker"};
+  if(irr[w])return irr[w];
+  if(/ing$/.test(w)){let b=w.slice(0,-3);if(/(.)\1$/.test(b))b=b.slice(0,-1);if(b.length>=4)return b;return w;}
+  if(/ed$/.test(w)){let b=w.slice(0,-2);if(/(.)\1$/.test(b))b=b.slice(0,-1);if(b.length>=4)return b;return w;}
+  if(/ies$/.test(w)&&w.length>4)return w.slice(0,-3)+"y";
+  if(/es$/.test(w)&&/(s|x|z|ch|sh)es$/.test(w))return w.slice(0,-2);
+  if(/s$/.test(w)&&!/ss$/.test(w)&&w.length>3)return w.slice(0,-1);
+  return w;}
+function ngrams(tk,n){const o=[];for(let i=0;i+n<=tk.length;i++)o.push(tk.slice(i,i+n).join(' '));return o;}
+let THEME_INDEX=null;
+function buildThemeIndex(){THEME_INDEX={uni:{},phrase:[]};
+  for(const th in STATE.themes){STATE.themes[th].syn.forEach(term=>{const c=cleanText(term).split(' ').map(lemma).filter(Boolean);
+    if(c.length===1){(THEME_INDEX.uni[c[0]]=THEME_INDEX.uni[c[0]]||new Set()).add(th);}
+    else if(c.length>1){THEME_INDEX.phrase.push({key:c.join(' '),theme:th,len:c.length});}});}
+  THEME_INDEX.phrase.sort((a,b)=>b.len-a.len);}
+function tagThemes(tokAll){const joined=' '+tokAll.join(' ')+' ';const found=new Set();
+  THEME_INDEX.phrase.forEach(p=>{if(joined.includes(' '+p.key+' '))found.add(p.theme);});
+  tokAll.forEach(t=>{if(THEME_INDEX.uni[t])THEME_INDEX.uni[t].forEach(th=>found.add(th));});return[...found];}
+function scoreSentiment(tk){let p=0,n=0;tk.forEach(t=>{if(POS_WORDS.has(t))p++;if(NEG_WORDS.has(t))n++;});const net=p-n;
+  return{p,n,net,label:net>0?'Positive':net<0?'Negative':'Neutral'};}
+
+/* ---- WIDE-FORMAT PARSE: row0 = headers (questions); columns = responses ---- */
+function parseWide(rows){
+  if(!rows||!rows.length) throw new Error('The file appears to be empty.');
+  let h=0; while(h<rows.length && !(rows[h]&&rows[h].some(c=>c!=null&&String(c).trim()!=='')))h++;
+  const header=rows[h]||[];
+  const ncol=header.length;
+  const heads=[];
+  for(let c=0;c<ncol;c++){
+    const name=String(header[c]==null?('Column '+(c+1)):header[c]).trim()||('Column '+(c+1));
+    const resp=[];
+    for(let r=h+1;r<rows.length;r++){const cell=rows[r]?rows[r][c]:null;if(cell!=null&&String(cell).trim()!=='')resp.push(String(cell).trim());}
+    heads.push({name,responses:resp,idx:c});
+  }
+  const withData=heads.filter(x=>x.responses.length>0);
+  if(!withData.length) throw new Error('No responses found under any header. Ensure headers are in the first row and answers beneath them.');
+  STATE.headers=withData; STATE.loaded=true;
+  const biggest=withData.reduce((a,b)=>b.responses.length>a.responses.length?b:a,withData[0]);
+  STATE.selected=[withData.indexOf(biggest)];
+  buildAnalysisSet();
+  logAudit('UPLOAD',withData.length+' header(s) detected · '+withData.reduce((a,b)=>a+b.responses.length,0)+' total responses');
+}
+
+function buildAnalysisSet(){
+  buildThemeIndex();
+  const sw=stopwords();
+  STATE.responses=[]; STATE.quarantine=[];
+  const sel=STATE.selected.length?STATE.selected:[0];
+  const names=sel.map(i=>STATE.headers[i]?STATE.headers[i].name:'').filter(Boolean);
+  STATE.question=names.join('  |  ');
+  let counter=0;
+  sel.forEach(i=>{
+    const hd=STATE.headers[i]; if(!hd)return;
+    hd.responses.forEach(raw=>{
+      counter++; const id='R'+String(counter).padStart(4,'0');
+      const s=String(raw).trim();
+      if(s===''){STATE.quarantine.push({id,reason:'Empty response',header:hd.name,text:''});return;}
+      if(/^[\d\s.,%-]+$/.test(s)){STATE.quarantine.push({id,reason:'Numeric / no words',header:hd.name,text:s});return;}
+      const clean=cleanText(s);
+      if(clean===''){STATE.quarantine.push({id,reason:'No usable words',header:hd.name,text:s});return;}
+      const tokAll=clean.split(' ').map(lemma).filter(w=>w&&w.length>1&&!/^\d+$/.test(w));
+      const tokContent=tokAll.filter(w=>!sw.has(w));
+      const themes=tagThemes(tokAll);
+      STATE.responses.push({id,header:hd.name,raw:s,clean,
+        tokens:tokContent, tokAll,
+        ngrams:{uni:tokContent.slice(),bi:ngrams(tokContent,2),tri:ngrams(tokContent,3)},
+        themes, sentiment:scoreSentiment(tokAll)});
+    });
+  });
+  discoverOOD();
+  STATE.analysed=STATE.responses.length>0;
+  updateGateBadge&&updateGateBadge();
+}
+
+function setSelectedHeaders(indices){
+  STATE.selected=indices.length?indices:[0];
+  buildAnalysisSet();
+  logAudit('SELECT-HEADERS',STATE.selected.map(i=>STATE.headers[i].name).join(' + '));
+}
+
+function discoverOOD(){
+  buildThemeIndex();
+  const freq={};STATE.responses.forEach(r=>{new Set(r.tokens).forEach(t=>{freq[t]=(freq[t]||0)+1;});});
+  const decided=new Set(STATE.ood.filter(o=>o.decided).map(o=>o.term));
+  const list=[];
+  for(const t in freq){if(THEME_INDEX.uni[t])continue;if(stopwords().has(t))continue;if(decided.has(t))continue;list.push({term:t,count:freq[t],decided:false});}
+  list.sort((a,b)=>b.count-a.count);
+  list.forEach(o=>{const s=suggestTheme(o.term);o.suggest=s.theme;o.suggestScore=s.score;o.suggestWhy=s.why;});
+  STATE.ood=STATE.ood.filter(o=>o.decided).concat(list);
+}
+function suggestTheme(term){
+  buildThemeIndex();
+  const scores={};
+  const add=(th,v)=>{scores[th]=(scores[th]||0)+v;};
+  for(const th in STATE.themes){
+    let best=0;
+    STATE.themes[th].syn.forEach(syn=>{
+      const c=cleanText(syn).split(' ').map(lemma).filter(Boolean);
+      c.forEach(w=>{const sim=strSim(term,w);if(sim>best)best=sim;});
+    });
+    if(best>=0.66) add(th,best*2.4);
+  }
+  let co=0;
+  STATE.responses.forEach(r=>{
+    if(r.tokens.includes(term)){co++;
+      const uniq=[...new Set(r.themes)];
+      uniq.forEach(th=>add(th, 1.3/Math.max(1,uniq.length)));
+    }
+  });
+  let bestTh=null,bestSc=0;
+  for(const th in scores){if(scores[th]>bestSc){bestSc=scores[th];bestTh=th;}}
+  const conf=Math.min(1, bestSc/ (2 + co*0.6) + (bestSc>=2.0?0.35:0));
+  const why = bestTh ? (bestSc>=2.0?'similar to existing terms':'often mentioned with '+bestTh) : '';
+  return {theme:bestTh, score:+conf.toFixed(2), why};
+}
+function strSim(a,b){
+  a=String(a);b=String(b);
+  if(a===b)return 1;
+  if(a.length<2||b.length<2)return a===b?1:0;
+  const bg=s=>{const m=new Map();for(let i=0;i<s.length-1;i++){const g=s.substr(i,2);m.set(g,(m.get(g)||0)+1);}return m;};
+  const A=bg(a),B=bg(b);let inter=0;
+  A.forEach((v,g)=>{if(B.has(g))inter+=Math.min(v,B.get(g));});
+  return (2*inter)/((a.length-1)+(b.length-1));
+}
+function acceptSuggestion(term){
+  const o=STATE.ood.find(o=>o.term===term && !o.decided);
+  if(!o)return;
+  if(o.suggest && STATE.themes[o.suggest]){
+    STATE.themes[o.suggest].syn.push(term);
+    markDecided(term,'auto→'+o.suggest);
+    logAudit('DICT-AUTO','"'+term+'" auto-mapped → '+o.suggest+' (conf '+(o.suggestScore||0)+')');
+    reprocessThemes();
+  }else{
+    markDecided(term,'accepted-other');
+    logAudit('RECONCILE','"'+term+'" accepted (no confident theme)');
+    discoverOOD();
+  }
+}
+function acceptAllSuggestions(){
+  let mapped=0,other=0;
+  const pending=STATE.ood.filter(o=>!o.decided);
+  pending.forEach(o=>{
+    if(o.suggest && STATE.themes[o.suggest]){STATE.themes[o.suggest].syn.push(o.term);o.decided=true;o.decision='auto→'+o.suggest;mapped++;}
+    else{o.decided=true;o.decision='accepted-other';other++;}
+  });
+  logAudit('DICT-AUTO','Accepted all suggestions — '+mapped+' auto-mapped, '+other+' kept as Other');
+  reprocessThemes();
+}
+function coverageStats(){
+  buildThemeIndex();
+  let total=0,mapped=0,themedResp=0;
+  STATE.responses.forEach(r=>{r.tokens.forEach(t=>{total++;if(THEME_INDEX.uni[t])mapped++;});if(r.themes.length)themedResp++;});
+  return{total,mapped,
+    themedRespPct:STATE.responses.length?100*themedResp/STATE.responses.length:0,
+    pendingSig:STATE.ood.filter(o=>!o.decided&&o.count>=2).length,
+    pendingTotal:STATE.ood.filter(o=>!o.decided).length};
+}
+function acceptRemainingOOD(){const n=STATE.ood.filter(o=>!o.decided).length;STATE.ood.forEach(o=>{if(!o.decided){o.decided=true;o.decision='accepted-other';}});logAudit('RECONCILE','Accepted '+n+' term(s) as reviewed');}
+
+function reMapTerm(term,theme){if(!STATE.themes[theme])return;STATE.themes[theme].syn.push(term);markDecided(term,'mapped→'+theme);logAudit('DICT-MAP','"'+term+'" → '+theme);reprocessThemes();}
+function reNewTheme(term,name,pol){name=name.trim();if(!name)return;if(!STATE.themes[name])STATE.themes[name]={polarity:parseInt(pol)||0,syn:[]};STATE.themes[name].syn.push(term);markDecided(term,'newTheme→'+name);bumpVersion();logAudit('DICT-NEW','New theme "'+name+'" from "'+term+'"');reprocessThemes();}
+function reStopword(term){STATE.userStop.add(term);markDecided(term,'stopword');logAudit('STOPWORD-ADD','"'+term+'" added');reprocessAll();}
+function reNoise(term){markDecided(term,'noise');logAudit('RECONCILE','"'+term+'" ignored');discoverOOD();}
+function markDecided(term,d){let o=STATE.ood.find(o=>o.term===term);if(o){o.decided=true;o.decision=d;}else STATE.ood.push({term,count:0,decided:true,decision:d});}
+function bumpVersion(){const p=STATE.dictVersion.split('.');p[1]=String(parseInt(p[1]||0)+1);STATE.dictVersion=p.join('.');}
+function reprocessThemes(){buildThemeIndex();STATE.responses.forEach(r=>{r.themes=tagThemes(r.tokAll);});discoverOOD();}
+function reprocessAll(){buildThemeIndex();const sw=stopwords();STATE.responses.forEach(r=>{r.tokens=r.tokAll.filter(w=>!sw.has(w));r.ngrams={uni:r.tokens.slice(),bi:ngrams(r.tokens,2),tri:ngrams(r.tokens,3)};r.themes=tagThemes(r.tokAll);});discoverOOD();}
+
+function aggThemes(){const map={};STATE.responses.forEach(r=>{r.themes.forEach(t=>{map[t]=map[t]||{count:0,pos:0,neg:0,neu:0};map[t].count++;if(r.sentiment.label==='Positive')map[t].pos++;else if(r.sentiment.label==='Negative')map[t].neg++;else map[t].neu++;});});
+  return Object.entries(map).map(([theme,v])=>({theme,...v,share:STATE.responses.length?100*v.count/STATE.responses.length:0})).sort((a,b)=>b.count-a.count);}
+function aggNgram(mode){const f={};STATE.responses.forEach(r=>{(r.ngrams[mode]||[]).forEach(g=>{f[g]=(f[g]||0)+1;});});return Object.entries(f).map(([term,count])=>({term,count})).sort((a,b)=>b.count-a.count);}
+function aggSentiment(){let p=0,n=0,z=0;STATE.responses.forEach(r=>{if(r.sentiment.label==='Positive')p++;else if(r.sentiment.label==='Negative')n++;else z++;});return{p,n,z,total:STATE.responses.length};}
+function integrityStats(){const total=STATE.responses.length+STATE.quarantine.length;const themed=STATE.responses.filter(r=>r.themes.length).length;const other=STATE.responses.filter(r=>!r.themes.length).length;
+  return{total,kept:STATE.responses.length,quarantined:STATE.quarantine.length,themed,other,
+    themedPct:STATE.responses.length?100*themed/STATE.responses.length:0,otherPct:STATE.responses.length?100*other/STATE.responses.length:0,quarPct:total?100*STATE.quarantine.length/total:0};}
+function aggCooccurrence(){const pair={},tot={},N=STATE.responses.length;
+  STATE.responses.forEach(r=>{const th=[...new Set(r.themes)];th.forEach(t=>tot[t]=(tot[t]||0)+1);for(let i=0;i<th.length;i++)for(let j=i+1;j<th.length;j++){const[a,b]=[th[i],th[j]].sort();pair[a+'||'+b]=(pair[a+'||'+b]||0)+1;}});
+  const pairs=Object.entries(pair).map(([k,c])=>{const[a,b]=k.split('||');const pa=tot[a]/N,pb=tot[b]/N,pab=c/N;return{a,b,count:c,lift:pa*pb>0?+(pab/(pa*pb)).toFixed(2):0,jaccard:+(c/(tot[a]+tot[b]-c)).toFixed(2);}).sort((x,y)=>y.count-x.count||y.lift-x.lift);
+  return{pairs,totals:tot,N};}
+function cooccurMatrix(topK){const themes=aggThemes().slice(0,topK).map(t=>t.theme);const idx={};themes.forEach((t,i)=>idx[t]=i);const M=themes.map(()=>themes.map(()=>0));
+  STATE.responses.forEach(r=>{const th=[...new Set(r.themes)].filter(t=>t in idx);th.forEach(t=>M[idx[t]][idx[t]]++);for(let i=0;i<th.length;i++)for(let j=i+1;j<th.length;j++){M[idx[th[i]]][idx[th[j]]]++;M[idx[th[j]]][idx[th[i]]]++;}});
+  return{themes,M};}
+function computeTFIDF(topPerTheme){topPerTheme=topPerTheme||12;const themes=aggThemes().map(t=>t.theme);if(!themes.length)return{themes:[],perTheme:{},flat:[]};
+  const themeTokens={};themes.forEach(t=>themeTokens[t]=[]);STATE.responses.forEach(r=>{r.themes.forEach(t=>{if(themeTokens[t])themeTokens[t].push(...r.tokens);});});
+  const tf={},df={};themes.forEach(t=>{tf[t]={};const toks=themeTokens[t];const L=toks.length||1;toks.forEach(w=>tf[t][w]=(tf[t][w]||0)+1);const seen=new Set();for(const w in tf[t]){tf[t][w]=tf[t][w]/L;if(!seen.has(w)){df[w]=(df[w]||0)+1;seen.add(w);}}});
+  const T=themes.length,perTheme={},flat=[];themes.forEach(t=>{const arr=Object.keys(tf[t]).map(w=>{const idf=Math.log(1+T/(df[w]||1));return{term:w,tfidf:+(tf[t][w]*idf).toFixed(4),tf:+tf[t][w].toFixed(4),df:df[w]};}).filter(x=>x.term.length>2).sort((a,b)=>b.tfidf-a.tfidf).slice(0,topPerTheme);perTheme[t]=arr;arr.forEach(x=>flat.push({theme:t,...x}));});
+  flat.sort((a,b)=>b.tfidf-a.tfidf);return{themes,perTheme,flat};}
+</script>
+
+<script>
+/* =================================================================
+   UI · shared + PAGE 1 (Pre-Analysis)
+   ================================================================= */
+const PAGES={
+ p1:['Pre-Analysis · Learn & Reconcile','Upload survey responses, choose the question header(s) to analyse, and optionally enrich themes.'],
+ p2:['Analysis · Score & Visualise','Thematic scoring, n-gram analytics, sentiment and a downloadable word cloud.'],
+ p3:['Theme Dictionary','The governed synonym→theme lexicon that drives tagging.'],
+ p4:['Stop-Word Registry','Base, domain and user-defined stop-words with full logging.'],
+ p5:['Audit Trail','Immutable log of dictionary edits, header selection and runs.']
+};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function head(p){return `<div class="page-head"><h3><span class="bar"></span> ${PAGES[p][0]}</h3><p>${PAGES[p][1]}</p></div>`;}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),3000);}
+
+function P1(){
+ const e=document.getElementById('p1');
+ if(!STATE.loaded){
+   e.innerHTML=head('p1')+`
+    <div class="card"><div class="dropzone" id="dz1">
+      <div class="dz-ic">📥</div><div class="dz-t">Drop your survey file here</div>
+      <div class="dz-s">.xlsx / .xls / .csv &nbsp;·&nbsp; each <b>column header = a question</b>, answers listed beneath it</div>
+    </div>
+    <div style="text-align:center;margin-top:14px"><button class="btn btn-ghost" id="demo1">Or load demo data</button></div></div>
+    <div class="banner info" style="margin-top:16px"><span class="bic">💡</span>
+      <div>Your file can contain <b>several question columns</b>. After upload you'll pick which header(s) to analyse — selected headers are pooled and analysed together as one.</div></div>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><h4>① Upload</h4><div class="sub">Headers as questions, responses in the rows beneath each header.</div></div>
+      <div class="card"><h4>② Select header(s)</h4><div class="sub">Tick one or more question columns to include in the analysis.</div></div>
+      <div class="card"><h4>③ Analyse</h4><div class="sub">Analysis is always available — reconciling new words simply enriches themes.</div></div>
+    </div>`;
+   document.getElementById('dz1').onclick=()=>fileInput.click();
+   document.getElementById('demo1').onclick=loadDemo;
+   wireDrop(document.getElementById('dz1'));
+   return;
+ }
+ const c=coverageStats(), it=integrityStats();
+ e.innerHTML=head('p1')+
+  `<div class="banner ok" style="margin-bottom:16px"><span class="bic">✅</span>
+     <div style="flex:1"><b>Analysis is ready.</b> ${STATE.responses.length} response(s) loaded from ${STATE.selected.length} selected header(s). ${c.pendingSig?('There are '+c.pendingSig+' frequent new term(s) you may optionally map to themes below.'):'All frequent terms are recognised.'}</div>
+     <button class="btn btn-primary" id="goAnalyse">Go to Analysis →</button></div>
+
+   <div class="grid g4" style="margin-bottom:16px">
+     <div class="kpi k-t"><div class="lab">Headers detected</div><div class="val">${STATE.headers.length}</div><div class="foot">question columns</div></div>
+     <div class="kpi k-v"><div class="lab">Responses (selected)</div><div class="val">${STATE.responses.length}</div><div class="foot">to be analysed</div></div>
+     <div class="kpi k-g"><div class="lab">Themed</div><div class="val">${it.themedPct.toFixed(0)}%</div><div class="foot">carry ≥1 theme</div></div>
+     <div class="kpi k-a"><div class="lab">Quarantined</div><div class="val">${STATE.quarantine.length}</div><div class="foot">numeric · empty</div></div>
+   </div>
+
+   <div class="card" style="margin-bottom:16px">
+     <h4>① Select question header(s) to analyse <span class="tag tag-v">${STATE.selected.length} selected</span>
+       <span style="display:flex;gap:6px"><button class="btn btn-ghost" id="selAll" style="padding:6px 10px">Select all</button><button class="btn btn-ghost" id="selNone" style="padding:6px 10px">Clear</button></span></h4>
+     <div class="sub">Tick the question(s) whose free-text answers you want to analyse. Selected headers are pooled and analysed together as one.</div>
+     <div class="hdr-list" id="hdrList"></div>
+   </div>
+
+   <div class="grid g2">
+     <div class="card">
+       <h4>② Auto-mapped new vocabulary <span style="display:flex;gap:6px;align-items:center"><span class="tag ${c.pendingSig?'tag-a':'tag-g'}">${c.pendingTotal} new</span><button class="btn btn-primary" id="acceptAllBtn" style="padding:6px 11px">✓ Accept all</button></span></h4>
+       <div class="sub">The engine <b>auto-suggests a theme</b> for each new term (from word similarity &amp; co-occurrence). Just click <b>Accept</b> — or override. Analysis works regardless.</div>
+       <div class="scroll"><table class="tbl"><thead><tr><th>Term</th><th>Count</th><th>Suggested theme</th><th style="width:200px">Action</th></tr></thead><tbody id="oodBody"></tbody></table></div>
+     </div>
+     <div class="card">
+       <h4>Quarantine <span class="tag tag-a">${STATE.quarantine.length}</span></h4>
+       <div class="sub">Held back to protect integrity — surfaced, never silently dropped.</div>
+       <div class="scroll"><table class="tbl"><thead><tr><th>ID</th><th>Reason</th><th>Value</th></tr></thead><tbody>
+         ${STATE.quarantine.slice(0,80).map(q=>`<tr><td>${esc(q.id)}</td><td><span class="chip">${esc(q.reason)}</span></td><td style="color:var(--slate)">${esc(q.text).slice(0,40)}</td></tr>`).join('')||'<tr><td colspan="3" style="color:var(--green)">None 🎉</td></tr>'}
+       </tbody></table></div>
+     </div>
+   </div>
+   <div class="foot-note">Pre-Analysis · Dictionary v${STATE.dictVersion} · Analysis is never blocked — reconciliation only enriches coverage.</div>`;
+
+ renderHeaderList();
+ renderOOD();
+ const aab=document.getElementById('acceptAllBtn');if(aab)aab.onclick=()=>{acceptAllSuggestions();P1();updateGateBadge();toast('All suggestions accepted');};
+ document.getElementById('goAnalyse').onclick=()=>nav('p2');
+ document.getElementById('selAll').onclick=()=>{setSelectedHeaders(STATE.headers.map((_,i)=>i));P1();updateGateBadge();toast('All headers selected');};
+ document.getElementById('selNone').onclick=()=>{setSelectedHeaders([0]);P1();updateGateBadge();toast('Reset to first header');};
+ updateGateBadge();
+}
+function renderHeaderList(){
+ const el=document.getElementById('hdrList'); if(!el)return;
+ el.innerHTML=STATE.headers.map((h,i)=>{
+   const sel=STATE.selected.includes(i);
+   const preview=(h.responses[0]||'').slice(0,70);
+   return `<div class="hdr-item ${sel?'sel':''}" data-i="${i}">
+     <div class="ck">${sel?'✓':''}</div>
+     <div class="hbody"><div class="hname">${esc(h.name)}</div>
+       <div class="hmeta">${h.responses.length} response(s) · e.g. “${esc(preview)}${h.responses[0]&&h.responses[0].length>70?'…':''}”</div></div>
+   </div>`;}).join('');
+ el.querySelectorAll('.hdr-item').forEach(it=>it.onclick=()=>{
+   const i=parseInt(it.dataset.i);
+   const s=new Set(STATE.selected);
+   if(s.has(i))s.delete(i);else s.add(i);
+   if(s.size===0)s.add(i);
+   setSelectedHeaders([...s].sort((a,b)=>a-b));
+   P1(); updateGateBadge();
+ });
+}
+function renderOOD(){
+ const tb=document.getElementById('oodBody'); if(!tb)return;
+ const list=STATE.ood.filter(o=>!o.decided).slice(0,60);
+ if(!list.length){tb.innerHTML='<tr><td colspan="4" style="color:var(--green);font-weight:700">All terms recognised ✔</td></tr>';return;}
+ const maxc=Math.max(...list.map(o=>o.count),1);
+ tb.innerHTML=list.map(o=>{
+   const sugg=o.suggest? `<span class="chip t">${esc(o.suggest)}</span> <span style="font-size:9.5px;color:var(--slate)">${Math.round((o.suggestScore||0)*100)}%</span>`
+                        : `<span class="chip">Other</span> <span style="font-size:9.5px;color:var(--slate)">no match</span>`;
+   return `<tr>
+   <td><b>${esc(o.term)}</b></td>
+   <td><div style="display:flex;align-items:center;gap:7px"><span style="width:20px">${o.count}</span><div class="freqbar" style="width:${40+o.count/maxc*40}px"><i style="width:${o.count/maxc*100}%"></i></div></div></td>
+   <td>${sugg}</td>
+   <td><div class="rec-actions">
+     <button class="map" style="border-color:var(--green);color:#0a6b41;font-weight:800" onclick="acceptSuggestion('${esc(o.term)}');P1()">✓ Accept</button>
+     <button class="new" onclick="openMap('${esc(o.term)}')" title="Choose a different theme">✎</button>
+     <button class="stop" onclick="reStopword('${esc(o.term)}');P1()" title="Add to stop-words">🛑</button>
+     <button class="noise" onclick="reNoise('${esc(o.term)}');P1()" title="Ignore as noise">⨯</button>
+   </div></td></tr>`;}).join('');
+}
+function openMap(term){const themes=Object.keys(STATE.themes).sort();
+ document.getElementById('modalBox').innerHTML=`<h4>Map “${esc(term)}” to a theme</h4><label>Existing theme</label>
+   <select id="mapSel">${themes.map(t=>`<option>${esc(t)}</option>`).join('')}</select>
+   <div class="m-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="doMap('${esc(term)}')">Map term</button></div>`;showModal();}
+function doMap(term){const t=document.getElementById('mapSel').value;reMapTerm(term,t);closeModal();P1();toast('“'+term+'” mapped to '+t);}
+function openNew(term){document.getElementById('modalBox').innerHTML=`<h4>Create a new theme from “${esc(term)}”</h4><label>Theme name</label><input id="newName" placeholder="e.g. Regulatory Burden">
+   <label>Polarity</label><select id="newPol"><option value="0">Neutral</option><option value="-1">Negative</option><option value="1">Positive</option></select>
+   <div class="m-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" onclick="doNew('${esc(term)}')">Create theme</button></div>`;showModal();setTimeout(()=>document.getElementById('newName').focus(),50);}
+function doNew(term){const n=document.getElementById('newName').value,p=document.getElementById('newPol').value;if(!n.trim()){toast('Enter a theme name');return;}reNewTheme(term,n,p);closeModal();P1();toast('New theme “'+n+'” created');}
+function showModal(){document.getElementById('modal').classList.add('show');}
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+</script>
+
+<script>
+/* =================================================================
+   UI · PAGE 2 (Analysis) — Copilot-palette word cloud
+   ================================================================= */
+Chart.defaults.font.family="'Segoe UI',system-ui,sans-serif";Chart.defaults.font.size=11;Chart.defaults.color='#5f6f66';
+const CHARTS={};
+const CLOUD_COLORS=['#00B7C3','#0099BC','#0078D4','#4F6BED','#6B69D6','#8764B8','#B146C2','#E3008C','#EF6950','#00A88F'];
+const CBN_CHART=['#00693e','#c99700','#0a8a54','#1fa971','#e8a41c','#2f74c0','#8764B8','#d64545'];
+function mk(id,cfg){const el=document.getElementById(id);if(!el)return;if(CHARTS[id])CHARTS[id].destroy();CHARTS[id]=new Chart(el,cfg);}
+
+function P2(){
+ const e=document.getElementById('p2');
+ if(!STATE.responses.length){e.innerHTML=head('p2')+`<div class="empty"><div class="ei">📊</div><h3>No responses to analyse yet</h3>
+   <p>Upload a file and select at least one question header on the Pre-Analysis page.</p>
+   <button class="btn btn-primary" style="margin-top:14px" onclick="nav('p1')">Go to Pre-Analysis</button></div>`;return;}
+ const it=integrityStats(),themes=aggThemes(),sent=aggSentiment();
+ e.innerHTML=head('p2')+
+  `<div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,#f2f9f5,#fff)">
+     <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--slate);font-weight:800">Question(s) under analysis</div>
+     <div style="font-size:14px;font-weight:700;color:var(--green-d);margin-top:3px">${esc(STATE.question)||'—'}</div>
+   </div>
+   <div class="grid g4" style="margin-bottom:16px">
+     <div class="kpi k-v"><div class="lab">Responses analysed</div><div class="val">${it.kept}</div><div class="foot">of ${it.total} uploaded</div></div>
+     <div class="kpi k-t"><div class="lab">Distinct themes</div><div class="val">${themes.length}</div><div class="foot">present in data</div></div>
+     <div class="kpi k-g"><div class="lab">Themed coverage</div><div class="val">${it.themedPct.toFixed(0)}%</div><div class="foot">integrity metric</div></div>
+     <div class="kpi ${sent.n>sent.p?'k-r':'k-g'}"><div class="lab">Net sentiment</div><div class="val">${sent.p-sent.n>=0?'+':''}${sent.p-sent.n}</div><div class="foot">${sent.p}+ · ${sent.n}− · ${sent.z}~</div></div>
+   </div>
+
+   <div class="card" style="margin-bottom:16px"><h4>Data integrity <span class="tag tag-g">quality guard</span></h4>
+     <div class="sub">Transparent view of what was themed, what fell to “Other”, and what was quarantined.</div>
+     <div class="progress" style="display:flex">
+       <i style="width:${it.themedPct}%;background:var(--green-xl)"></i><i style="width:${it.otherPct}%;background:var(--amber)"></i><i style="width:${it.quarPct}%;background:var(--red)"></i></div>
+     <div class="legend-row"><span><i style="background:var(--green-xl)"></i>Themed ${it.themed} (${it.themedPct.toFixed(0)}%)</span>
+       <span><i style="background:var(--amber)"></i>Other ${it.other} (${it.otherPct.toFixed(0)}%)</span>
+       <span><i style="background:var(--red)"></i>Quarantined ${it.quarantined} (${it.quarPct.toFixed(0)}%)</span></div></div>
+
+   <div class="grid g2" style="margin-bottom:16px">
+     <div class="card"><h4>Top themes by frequency</h4><div class="sub">Responses mentioning each theme (a response can carry several).</div>
+       <div class="chart-wrap"><canvas id="cThemes"></canvas></div></div>
+     <div class="card"><h4>Sentiment by theme <span class="tag tag-t">stacked</span></h4><div class="sub">Positive / neutral / negative split within leading themes.</div>
+       <div class="chart-wrap"><canvas id="cThemeSent"></canvas></div></div>
+   </div>
+
+   <div class="card" style="margin-bottom:16px">
+     <h4>N-gram frequency <span class="seg" id="ngramSeg"><button data-m="uni" class="on">Words</button><button data-m="bi">Bigrams</button><button data-m="tri">Trigrams</button></span></h4>
+     <div class="sub">Most frequent single words, two-word and three-word phrases.</div>
+     <div class="grid g2"><div class="chart-wrap"><canvas id="cNgram"></canvas></div>
+       <div class="scroll"><table class="tbl"><thead><tr><th>#</th><th>Term</th><th>Count</th><th style="width:120px">Freq</th></tr></thead><tbody id="ngramBody"></tbody></table></div></div>
+   </div>
+
+   <div class="card" style="margin-bottom:16px">
+     <h4>Word cloud <span class="tag tag-v">Copilot palette · downloadable</span>
+       <span class="seg" id="cloudSeg"><button data-m="uni" class="on">Words</button><button data-m="bi">Bigrams</button><button data-m="tri">Trigrams</button></span></h4>
+     <div class="sub">Frequency-weighted, coloured in the Copilot word-cloud palette. Download as PNG from the Export menu.</div>
+     <canvas id="cloud"></canvas></div>
+
+   <div class="section-title">Theme Co-occurrence</div>
+   <div class="grid g2" style="margin-bottom:16px">
+     <div class="card"><h4>Co-occurrence heatmap</h4><div class="sub">Darker/larger = the two themes appear together more (diagonal = own frequency).</div>
+       <div class="chart-wrap" style="height:360px"><canvas id="cHeat"></canvas></div></div>
+     <div class="card"><h4>Strongest theme pairs <span class="tag tag-t">by association</span></h4><div class="sub">Lift (&gt;1 = together more than chance) and Jaccard overlap.</div>
+       <div class="scroll"><table class="tbl"><thead><tr><th>Theme A</th><th>Theme B</th><th>Together</th><th>Lift</th><th>Jac.</th></tr></thead><tbody id="coocBody"></tbody></table></div></div>
+   </div>
+
+   <div class="section-title">TF-IDF · Distinctive Terms per Theme</div>
+   <div class="card" style="margin-bottom:16px"><h4>What words most distinguish each theme
+       <span style="display:flex;align-items:center;gap:8px"><select class="mini-select" id="tfidfTheme"></select><span class="tag tag-t">TF-IDF</span></span></h4>
+     <div class="sub">Terms frequent within a theme but rare across others — the words that truly characterise it.</div>
+     <div class="grid g2"><div class="chart-wrap"><canvas id="cTfidf"></canvas></div>
+       <div class="scroll"><table class="tbl"><thead><tr><th>#</th><th>Term</th><th>TF-IDF</th><th>TF</th><th>#Themes</th></tr></thead><tbody id="tfidfBody"></tbody></table></div></div></div>
+
+   <div class="grid g2">
+     <div class="card"><h4>Theme frequency table</h4><div class="sub">Counts, share and sentiment split.</div>
+       <div class="scroll"><table class="tbl"><thead><tr><th>Theme</th><th>Count</th><th>Share</th><th>+</th><th>~</th><th>−</th></tr></thead><tbody id="themeBody"></tbody></table></div></div>
+     <div class="card"><h4>Response explorer</h4><div class="sub">Each response with its tags and sentiment (first 80 shown).</div>
+       <div class="scroll"><table class="tbl"><thead><tr><th>ID</th><th>Response</th><th>Themes</th><th>S.</th></tr></thead><tbody id="respBody"></tbody></table></div></div>
+   </div>
+   <div class="foot-note">Analysis · Dictionary v${STATE.dictVersion} · ${it.kept} responses · ${new Date().toLocaleString()}</div>`;
+
+ const top=themes.slice(0,12);
+ mk('cThemes',{type:'bar',data:{labels:top.map(t=>t.theme),datasets:[{data:top.map(t=>t.count),backgroundColor:'#00693e',borderRadius:6}]},
+   options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#eef2ef'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});
+ mk('cThemeSent',{type:'bar',data:{labels:top.slice(0,8).map(t=>t.theme),datasets:[
+     {label:'Positive',data:top.slice(0,8).map(t=>t.pos),backgroundColor:'#1fa971'},
+     {label:'Neutral',data:top.slice(0,8).map(t=>t.neu),backgroundColor:'#c7d0ca'},
+     {label:'Negative',data:top.slice(0,8).map(t=>t.neg),backgroundColor:'#d64545'}]},
+   options:{indexAxis:'y',plugins:{legend:{position:'bottom',labels:{boxWidth:11,padding:9}}},scales:{x:{stacked:true,grid:{color:'#eef2ef'}},y:{stacked:true,grid:{display:false},ticks:{font:{size:9.5}}}}}});
+
+ renderNgram('uni');renderThemeTable(themes);renderRespTable();drawCloud('uni');renderCooc();renderTfidf();
+ document.querySelectorAll('#ngramSeg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#ngramSeg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderNgram(b.dataset.m);});
+ document.querySelectorAll('#cloudSeg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#cloudSeg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');STATE.ngramMode=b.dataset.m;drawCloud(b.dataset.m);});
+}
+function renderNgram(mode){const list=aggNgram(mode).slice(0,15),max=Math.max(...list.map(x=>x.count),1);
+ mk('cNgram',{type:'bar',data:{labels:list.map(x=>x.term),datasets:[{data:list.map(x=>x.count),backgroundColor:'#c99700',borderRadius:5}]},
+   options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#eef2ef'}},y:{grid:{display:false},ticks:{font:{size:9.5}}}}}});
+ const tb=document.getElementById('ngramBody');if(tb)tb.innerHTML=list.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.term)}</b></td><td>${x.count}</td><td><div class="freqbar"><i style="width:${x.count/max*100}%"></i></div></td></tr>`).join('');}
+function renderThemeTable(themes){const tb=document.getElementById('themeBody');if(!tb)return;tb.innerHTML=themes.map(t=>`<tr><td><b>${esc(t.theme)}</b></td><td>${t.count}</td><td>${t.share.toFixed(0)}%</td><td style="color:var(--green-xl)">${t.pos}</td><td style="color:var(--slate)">${t.neu}</td><td style="color:var(--red)">${t.neg}</td></tr>`).join('');}
+function renderRespTable(){const tb=document.getElementById('respBody');if(!tb)return;tb.innerHTML=STATE.responses.slice(0,80).map(r=>`<tr><td>${esc(r.id)}</td><td style="max-width:250px">${esc(r.raw).slice(0,90)}</td><td>${r.themes.map(t=>`<span class="chip t">${esc(t)}</span>`).join(' ')||'<span class="chip">Other</span>'}</td><td style="color:${r.sentiment.label==='Positive'?'var(--green-xl)':r.sentiment.label==='Negative'?'var(--red)':'var(--slate)'};font-weight:800">${r.sentiment.label[0]}</td></tr>`).join('');}
+function drawCloud(mode){const el=document.getElementById('cloud');if(!el||!window.WordCloud)return;el.width=el.offsetWidth;el.height=380;
+ const list=aggNgram(mode).slice(0,mode==='uni'?100:mode==='bi'?60:40);if(!list.length)return;const max=list[0].count;
+ const words=list.map(x=>[x.term,x.count]);
+ WordCloud(el,{list:words,gridSize:8,weightFactor:s=>Math.max(12,s/max*68),fontFamily:'Segoe UI, sans-serif',
+   color:(word,weight)=>{const idx=Math.min(CLOUD_COLORS.length-1,Math.floor((weight/max)*CLOUD_COLORS.length));return CLOUD_COLORS[Math.max(0,idx)];},
+   rotateRatio:0.3,rotationSteps:2,backgroundColor:'#fbfdfb',shuffle:false,drawOutOfBound:false});}
+function renderCooc(){const {themes,M}=cooccurMatrix(9);const tb=document.getElementById('coocBody');const co=aggCooccurrence();
+ if(tb){if(!co.pairs.length)tb.innerHTML='<tr><td colspan="5" style="color:var(--slate)">No multi-theme responses yet.</td></tr>';
+   else tb.innerHTML=co.pairs.slice(0,18).map(p=>`<tr><td><b>${esc(p.a)}</b></td><td><b>${esc(p.b)}</b></td><td><span class="chip t">${p.count}</span></td><td style="font-weight:800;color:${p.lift>=1.5?'var(--green)':'var(--slate)'}">${p.lift}</td><td>${p.jaccard}</td></tr>`).join('');}
+ const el=document.getElementById('cHeat');if(!el)return;if(CHARTS['cHeat'])CHARTS['cHeat'].destroy();
+ let maxV=1;M.forEach(row=>row.forEach(v=>{if(v>maxV)maxV=v;}));const pts=[];
+ for(let i=0;i<themes.length;i++)for(let j=0;j<themes.length;j++){const v=M[i][j];if(v<=0)continue;pts.push({x:j,y:themes.length-1-i,v,r:6+(v/maxV)*20,diag:i===j});}
+ const sl=themes.map(t=>t.length>16?t.slice(0,15)+'…':t);
+ CHARTS['cHeat']=new Chart(el,{type:'bubble',data:{datasets:[{data:pts,backgroundColor:pts.map(p=>{const a=0.25+0.7*(p.v/maxV);return p.diag?`rgba(201,151,0,${a})`:`rgba(0,105,62,${a})`;}),borderColor:'rgba(255,255,255,.7)',borderWidth:1}]},
+   options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const p=c.raw;return themes[themes.length-1-p.y]+' × '+themes[p.x]+': '+p.v;}}}},
+     scales:{x:{min:-0.5,max:themes.length-0.5,ticks:{stepSize:1,callback:v=>sl[v]||'',font:{size:8.5},maxRotation:60,minRotation:45},grid:{color:'#eef2ef'}},y:{min:-0.5,max:themes.length-0.5,ticks:{stepSize:1,callback:v=>sl[themes.length-1-v]||'',font:{size:8.5}},grid:{color:'#eef2ef'}}}}});}
+let TFIDF_CACHE=null;
+function renderTfidf(){TFIDF_CACHE=computeTFIDF(15);const sel=document.getElementById('tfidfTheme');if(!sel)return;
+ if(!TFIDF_CACHE.themes.length){sel.innerHTML='<option>—</option>';return;}
+ sel.innerHTML=TFIDF_CACHE.themes.map(t=>`<option>${esc(t)}</option>`).join('');sel.onchange=()=>drawTfidf(sel.value);drawTfidf(sel.value);}
+function drawTfidf(theme){const arr=(TFIDF_CACHE.perTheme[theme]||[]).slice(0,12);const el=document.getElementById('cTfidf');
+ if(el){if(CHARTS['cTfidf'])CHARTS['cTfidf'].destroy();CHARTS['cTfidf']=new Chart(el,{type:'bar',data:{labels:arr.map(x=>x.term),datasets:[{data:arr.map(x=>x.tfidf),backgroundColor:'#0a8a54',borderRadius:5}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#eef2ef'}},y:{grid:{display:false},ticks:{font:{size:10}}}}}});}
+ const tb=document.getElementById('tfidfBody');if(tb)tb.innerHTML=arr.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.term)}</b></td><td style="font-weight:800;color:var(--green)">${x.tfidf.toFixed(3)}</td><td>${x.tf.toFixed(3)}</td><td>${x.df}</td></tr>`).join('')||'<tr><td colspan="5" style="color:var(--slate)">—</td></tr>';}
+</script>
+
+<script>
+/* =================================================================
+   UI · PAGES 3-5 · NAV · UPLOAD · EXPORT · DEMO · BOOT
+   ================================================================= */
+function P3(){
+  const e=document.getElementById('p3');
+  const themes=Object.keys(STATE.themes).sort();
+  const totalSyn=themes.reduce((a,t)=>a+STATE.themes[t].syn.length,0);
+  e.innerHTML=head('p3')+`<div class="grid g4" style="margin-bottom:16px">
+     <div class="kpi k-v"><div class="lab">Themes</div><div class="val">${themes.length}</div><div class="foot">in lexicon</div></div>
+     <div class="kpi k-t"><div class="lab">Synonyms / terms</div><div class="val">${totalSyn}</div><div class="foot">mapped</div></div>
+     <div class="kpi k-g"><div class="lab">Version</div><div class="val">v${STATE.dictVersion}</div><div class="foot">current</div></div>
+     <div class="kpi k-a"><div class="lab">Polarity</div><div class="val">${themes.filter(t=>STATE.themes[t].polarity<0).length}−/${themes.filter(t=>STATE.themes[t].polarity>0).length}+</div><div class="foot">neg / pos</div></div></div>
+   <div class="card"><h4>Add a term to the lexicon</h4><div class="sub">Extend a theme with a new synonym; versioned and logged.</div>
+     <div style="display:flex;gap:9px;flex-wrap:wrap"><input class="mini-input" id="d_term" placeholder="term or phrase" style="flex:1;min-width:200px">
+       <select class="mini-select" id="d_theme">${themes.map(t=>`<option>${esc(t)}</option>`).join('')}</select>
+       <button class="btn btn-primary" id="d_add">Add term</button></div></div>
+   <div class="card" style="margin-top:16px"><h4>Theme → synonyms</h4><div class="sub">The governed dictionary driving thematic tagging.</div>
+     <div class="scroll" style="max-height:440px"><table class="tbl"><thead><tr><th>Theme</th><th>Pol.</th><th>Terms</th></tr></thead><tbody>
+     ${themes.map(t=>{const d=STATE.themes[t];const pol=d.polarity<0?'<span class="tag tag-r">neg</span>':d.polarity>0?'<span class="tag tag-g">pos</span>':'<span class="tag">neu</span>';
+       return `<tr><td style="min-width:170px"><b>${esc(t)}</b></td><td>${pol}</td><td>${d.syn.map(s=>`<span class="chip v">${esc(s)}</span>`).join(' ')}</td></tr>`;}).join('')}</tbody></table></div></div>
+   <div class="foot-note">Theme Dictionary · every edit captured in the Audit Trail.</div>`;
+  document.getElementById('d_add').onclick=()=>{const term=document.getElementById('d_term').value.trim().toLowerCase(),th=document.getElementById('d_theme').value;if(!term){toast('Enter a term');return;}STATE.themes[th].syn.push(term);bumpVersion();logAudit('DICT-ADD','"'+term+'" → '+th);if(STATE.responses.length)reprocessThemes();P3();updateGateBadge();toast('Added “'+term+'”');};
+}
+function P4(){
+  const e=document.getElementById('p4');
+  const base=[...BASE_STOPWORDS].sort();
+  e.innerHTML=head('p4')+`<div class="grid g3" style="margin-bottom:16px">
+     <div class="kpi k-a"><div class="lab">Base stop-words</div><div class="val">${BASE_STOPWORDS.size}</div><div class="foot">English + domain</div></div>
+     <div class="kpi k-v"><div class="lab">User-added</div><div class="val">${STATE.userStop.size}</div><div class="foot">custom</div></div>
+     <div class="kpi k-t"><div class="lab">Re-allowed</div><div class="val">${STATE.userAllow.size}</div><div class="foot">from base</div></div></div>
+   <div class="grid g2"><div class="card"><h4>➕ Add stop-word</h4><div class="sub">Exclude from frequency &amp; themes (kept for sentiment).</div>
+       <div style="display:flex;gap:9px"><input class="mini-input" id="sw_add" placeholder="word to ignore" style="flex:1"><button class="btn btn-primary" id="sw_addb">Add</button></div>
+       <div class="pill-row" style="margin-top:12px" id="userStopPills"></div></div>
+     <div class="card"><h4>♻️ Re-allow a base stop-word</h4><div class="sub">Bring a base word back into analysis.</div>
+       <div style="display:flex;gap:9px"><input class="mini-input" id="sw_allow" placeholder="base word" style="flex:1"><button class="btn btn-ghost" id="sw_allowb">Re-allow</button></div>
+       <div class="pill-row" style="margin-top:12px" id="allowPills"></div></div></div>
+   <div class="card" style="margin-top:16px"><h4>Base stop-word list</h4><div class="sub">${BASE_STOPWORDS.size} standard exclusions.</div>
+     <div class="pill-row" style="max-height:180px;overflow:auto">${base.map(w=>`<span class="pill" style="cursor:default">${esc(w)}</span>`).join('')}</div></div>
+   <div class="foot-note">Stop-Word Registry · versioned in the Audit Trail.</div>`;
+  const rp=()=>{
+    document.getElementById('userStopPills').innerHTML=[...STATE.userStop].map(w=>`<span class="pill">${esc(w)} <span class="x" onclick="STATE.userStop.delete('${esc(w)}');logAudit('STOPWORD-REMOVE','\\'${esc(w)}\\'');if(STATE.responses.length)reprocessAll();P4()">✕</span></span>`).join('')||'<span style="color:var(--slate);font-size:11px">None yet</span>';
+    document.getElementById('allowPills').innerHTML=[...STATE.userAllow].map(w=>`<span class="pill">${esc(w)} <span class="x" onclick="STATE.userAllow.delete('${esc(w)}');if(STATE.responses.length)reprocessAll();P4()">✕</span></span>`).join('')||'<span style="color:var(--slate);font-size:11px">None yet</span>';
+  };
+  rp();
+  document.getElementById('sw_addb').onclick=()=>{const w=document.getElementById('sw_add').value.trim().toLowerCase();if(!w)return;STATE.userStop.add(w);logAudit('STOPWORD-ADD','"'+w+'"');if(STATE.responses.length)reprocessAll();P4();toast('Stop-word added');};
+  document.getElementById('sw_allowb').onclick=()=>{const w=document.getElementById('sw_allow').value.trim().toLowerCase();if(!w)return;STATE.userAllow.add(w);logAudit('STOPWORD-ALLOW','"'+w+'"');if(STATE.responses.length)reprocessAll();P4();toast('Re-allowed');};
+}
+function P5(){
+  const e=document.getElementById('p5');
+  e.innerHTML=head('p5')+`<div class="grid g4" style="margin-bottom:16px">
+     <div class="kpi k-v"><div class="lab">Log entries</div><div class="val">${STATE.audit.length}</div><div class="foot">this session</div></div>
+     <div class="kpi k-t"><div class="lab">Dictionary edits</div><div class="val">${STATE.audit.filter(a=>a.action.startsWith('DICT')).length}</div><div class="foot">map/new/add</div></div>
+     <div class="kpi k-a"><div class="lab">Stop-word changes</div><div class="val">${STATE.audit.filter(a=>a.action.startsWith('STOPWORD')).length}</div><div class="foot">add/remove</div></div>
+     <div class="kpi k-g"><div class="lab">Version</div><div class="val">v${STATE.dictVersion}</div><div class="foot">reproducible</div></div></div>
+   <div class="card"><h4>Immutable change log <span class="tag tag-v">governance</span></h4><div class="sub">Every reconciliation, edit, header selection and run — time-stamped.</div>
+     <div class="scroll" style="max-height:460px"><table class="tbl"><thead><tr><th>Timestamp</th><th>Actor</th><th>Action</th><th>Detail</th></tr></thead><tbody>
+     ${STATE.audit.map(a=>`<tr><td style="color:var(--slate);white-space:nowrap">${esc(a.ts)}</td><td><b>${esc(a.actor)}</b></td><td><span class="chip">${esc(a.action)}</span></td><td style="font-family:monospace;font-size:11px">${esc(a.detail)}</td></tr>`).join('')||'<tr><td colspan="4" style="color:var(--slate)">No actions yet.</td></tr>'}
+     </tbody></table></div></div>
+   <div class="foot-note">Audit Trail · fully reproducible governance record.</div>`;
+}
+
+function nav(id){
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+  const targetNav=document.querySelector(`.nav a[data-p="${id}"]`);
+  if(targetNav)targetNav.classList.add('active');
+  const targetPage=document.getElementById(id);
+  if(targetPage)targetPage.classList.add('show');
+  const t=PAGES[id];
+  if(t){document.getElementById('topTitle').textContent=t[0];document.getElementById('topSub').textContent=t[1];}
+  window.scrollTo(0,0);
+  if(id==='p1')P1();if(id==='p2')P2();if(id==='p3')P3();if(id==='p4')P4();if(id==='p5')P5();
+}
+
+document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>nav(a.dataset.p));
+
+function updateGateBadge(){
+  const gb=document.getElementById('gatebox'),gt=document.getElementById('gateTxt'),dv=document.getElementById('dictVer');
+  if(dv)dv.textContent='Dictionary v'+STATE.dictVersion;
+  if(!gb||!gt)return;
+  if(STATE.responses.length>0){gb.classList.add('ready');gt.textContent=STATE.responses.length+' responses ready';}
+  else{gb.classList.remove('ready');gt.textContent='Awaiting data';}
+}
+
+/* File handling & Parsing */
+const fileInput=document.getElementById('fileInput');
+fileInput.onchange=e=>{const f=e.target.files[0];if(!f)return;parseFile(f);};
+
+function parseFile(f){
+  const reader=new FileReader();
+  const name=f.name.toLowerCase();
+  if(name.endsWith('.csv')){
+    reader.onload=e=>{
+      try{
+        const text=e.target.result;
+        const rows=parseCSV(text);
+        parseWide(rows);
+        nav('p1');
+        toast('File loaded successfully');
+      }catch(err){toast('Error: '+err.message);}
+    };
+    reader.readAsText(f);
+  }else{
+    reader.onload=e=>{
+      try{
+        const data=new Uint8Array(e.target.result);
+        const wb=XLSX.read(data,{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const rows=XLSX.utils.sheet_to_json(ws,{header:1});
+        parseWide(rows);
+        nav('p1');
+        toast('File loaded successfully');
+      }catch(err){toast('Error: '+err.message);}
+    };
+    reader.readAsArrayBuffer(f);
+  }
+}
+
+function parseCSV(text){
+  const lines=text.split(/\r\n|\n/);
+  return lines.map(line=>{
+    const row=[];let cur='';let inQ=false;
+    for(let i=0;i<line.length;i++){
+      const c=line[i];
+      if(c==='"'){inQ=!inQ;}
+      else if(c===','&&!inQ){row.push(cur.trim());cur='';}
+      else{cur+=c;}
+    }
+    row.push(cur.trim());
+    return row;
+  });
+}
+
+function wireDrop(dz){
+  dz.ondragover=e=>{e.preventDefault();dz.classList.add('drag');};
+  dz.ondragleave=()=>dz.classList.remove('drag');
+  dz.drop=e=>{e.preventDefault();dz.classList.remove('drag');if(e.dataTransfer.files[0])parseFile(e.dataTransfer.files[0]);};
+}
+
+document.getElementById('uploadTop').onclick=()=>fileInput.click();
+document.getElementById('demoTop').onclick=loadDemo;
+
+function loadDemo(){
+  const demoRows=[
+    ["Business Challenge / Constraint","Inflation & Price Impact","Future Outlook"],
+    ["High inflation and soaring fuel prices are crippling our manufacturing capacity and increasing operating costs.","Electricity tariff hike and exchange rate volatility make planning extremely difficult.","Pessimistic about the immediate term unless intervention funds arrive."],
+    ["Forex scarcity and severe cash crunch have reduced our customer demand and sales turnover.","High cost of living and expensive borrowing rates are crippling purchasing power.","Uncertainty remains high due to inconsistent regulatory policies."],
+    ["Unstable power supply and epileptic grid collapse destroy raw materials and drive up generator diesel expenses.","Inflation is eroding profit margins across all product categories.","Cautious optimism if infrastructure improves."],
+    ["Multiple taxation, levies from state authorities, and bureaucratic red tape are hurting small businesses.","Exchange rate depreciation increased the cost of imported raw materials.","Challenging operating environment requiring urgent fiscal reforms."],
+    ["Insecurity along agricultural transport routes has reduced food supply and caused severe market shortages.","High transport cost and logistics bottlenecks drive up retail prices.","Hopeful for better security measures in agricultural zones."]
+  ];
+  parseWide(demoRows);
+  nav('p1');
+  toast('Demo data loaded successfully');
+}
+
+/* Export functionality */
+const exportBtn=document.getElementById('exportBtn'),exportMenu=document.getElementById('exportMenu');
+exportBtn.onclick=(e)=>{e.stopPropagation();exportMenu.classList.toggle('show');};
+window.onclick=()=>exportMenu.classList.remove('show');
+exportMenu.onclick=e=>e.stopPropagation();
+
+exportMenu.querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{
+    const type=b.dataset.x;
+    exportMenu.classList.remove('show');
+    if(type==='excel')exportExcel();
+    if(type==='cloud')exportCloudPNG();
+    if(type==='dict')exportDictCSV();
+    if(type==='audit')exportAuditCSV();
+  };
+});
+
+function exportExcel(){
+  if(!STATE.responses.length){toast('No analysis data to export');return;}
+  const wb=XLSX.utils.book_new();
+  const themeData=aggThemes().map(t=>({Theme:t.theme,Count:t.count,SharePct:+t.share.toFixed(1),Positive:t.pos,Neutral:t.neu,Negative:t.neg}));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(themeData),'Themes');
+  const respData=STATE.responses.map(r=>({ID:r.id,Header:r.header,Response:r.raw,Themes:r.themes.join(', '),Sentiment:r.sentiment.label}));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(respData),'Responses');
+  const auditData=STATE.audit.map(a=>({Timestamp:a.ts,Actor:a.actor,Action:a.action,Detail:a.detail}));
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(auditData),'Audit Trail');
+  XLSX.writeFile(wb,'FreeText_Analytics_Report.xlsx');
+  toast('Excel workbook exported');
+  logAudit('EXPORT','Excel workbook generated');
+}
+
+function exportCloudPNG(){
+  const el=document.getElementById('cloud');
+  if(!el){toast('Word cloud not available');return;}
+  const url=el.toDataURL('image/png');
+  const a=document.createElement('a');a.href=url;a.download='WordCloud.png';a.click();
+  toast('Word cloud PNG downloaded');
+  logAudit('EXPORT','Word cloud PNG exported');
+}
+
+function exportDictCSV(){
+  const rows=[['Theme','Polarity','Synonyms']];
+  for(const th in STATE.themes){rows.push([th,STATE.themes[th].polarity,STATE.themes[th].syn.join(';')]); }
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  downloadBlob(csv,'Theme_Dictionary_v'+STATE.dictVersion+'.csv','text/csv');
+  toast('Dictionary exported');
+  logAudit('EXPORT','Theme Dictionary CSV exported');
+}
+
+function exportAuditCSV(){
+  const rows=[['Timestamp','Actor','Action','Detail']];
+  STATE.audit.forEach(a=>rows.push([a.ts,a.actor,a.action,a.detail]));
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  downloadBlob(csv,'Audit_Trail.csv','text/csv');
+  toast('Audit trail exported');
+  logAudit('EXPORT','Audit Trail CSV exported');
+}
+
+function downloadBlob(content,filename,contentType){
+  const blob=new Blob([content],{type:contentType});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* Boot */
+window.onload=()=>{
+  P1();
+};
+</script>
+</body>
+</html>
